@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   // Send bekræftelsesmail med Resend
   await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? "hej@albertdieckmann.dk",
-    to: "hej@albertdieckmann.dk",
+    to: "ad.albertdieckmann@gmail.com",
     subject: `Ny henvendelse fra ${name}`,
     text: `Fra: ${name} <${email}>\n\n${message}`,
   });
