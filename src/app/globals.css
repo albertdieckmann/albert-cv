@@ -310,13 +310,13 @@ h2 {
 .skill-chip span {
   display: block;
   font-size: 10px;
-  color: var(--bg3);
+  color: var(--muted);
   margin-top: 4px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: color 0.2s;
 }
-.skill-chip:hover span { color: rgba(200,240,96,0.4); }
+.skill-chip:hover span { color: rgba(200,240,96,0.6); }
 
 /* ROSKILDE */
 .roskilde-box {
@@ -391,6 +391,90 @@ h2 {
 .contact-link-arrow { color: var(--muted); transition: transform 0.2s; }
 .contact-link:hover .contact-link-arrow { transform: translateX(4px); color: var(--accent); }
 
+/* CONTACT FORM */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.contact-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg2);
+}
+.contact-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem 0.75rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+}
+.contact-input::placeholder { color: var(--muted); opacity: 0.5; }
+.contact-input:focus { border-color: rgba(200,240,96,0.4); }
+.contact-textarea { line-height: 1.6; }
+.contact-submit {
+  margin-top: 1px;
+  padding: 0.9rem 1.75rem;
+  background: var(--accent);
+  color: #0a0a0a;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  align-self: flex-start;
+}
+.contact-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,240,96,0.25);
+}
+.contact-submit:disabled { opacity: 0.6; cursor: default; }
+.contact-error {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #ff6b6b;
+  margin-top: 0.75rem;
+}
+.contact-success {
+  border: 1px solid rgba(200,240,96,0.2);
+  padding: 2.5rem;
+  text-align: center;
+}
+.contact-success-icon {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+.contact-success-title {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+.contact-success-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* FOOTER */
 footer {
   padding: 2rem 3rem;
@@ -447,9 +531,71 @@ footer p {
   transition: opacity 0.1s;
 }
 
+/* AUTH SIDER */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 2rem;
+}
+
+
+/* HAMBURGER */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger-line {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--muted);
+  transition: all 0.25s;
+  transform-origin: center;
+}
+.nav-hamburger-line.open:nth-child(1) { transform: translateY(6px) rotate(45deg); background: var(--accent); }
+.nav-hamburger-line.open:nth-child(2) { opacity: 0; }
+.nav-hamburger-line.open:nth-child(3) { transform: translateY(-6px) rotate(-45deg); background: var(--accent); }
+
+/* MOBIL MENU */
+.nav-mobile {
+  position: fixed;
+  top: 57px;
+  left: 0; right: 0;
+  z-index: 99;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 1px;
+}
+.nav-mobile-link {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.nav-mobile-link:hover { color: var(--text); }
+.nav-mobile-auth { padding-top: 1rem; }
+
 @media (max-width: 768px) {
   nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
   .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
   .hero-right { display: none; }
   section { padding: 4rem 1.5rem; }

@@ -1,5 +1,6 @@
 import EasterEggs from "@/components/EasterEggs";
 import NavBar from "@/components/NavBar";
+import ContactForm from "@/components/ContactForm";
 
 export default function Home() {
   return (
@@ -179,22 +180,23 @@ export default function Home() {
               Har du et projekt, en idé eller bare lyst til at tale om GenAI,
               agil leverance eller Roskilde Festival?
             </p>
+            <div className="contact-links" style={{ marginTop: "2rem" }}>
+              <a
+                href="https://linkedin.com/in/albertdieckmann"
+                className="contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>LinkedIn</span>
+                <span className="contact-link-arrow">→</span>
+              </a>
+              <a href="mailto:hej@albertdieckmann.dk" className="contact-link">
+                <span>hej@albertdieckmann.dk</span>
+                <span className="contact-link-arrow">→</span>
+              </a>
+            </div>
           </div>
-          <div className="contact-links">
-            <a
-              href="https://linkedin.com/in/albertdieckmann"
-              className="contact-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>LinkedIn</span>
-              <span className="contact-link-arrow">→</span>
-            </a>
-            <a href="mailto:hej@albertdieckmann.dk" className="contact-link">
-              <span>hej@albertdieckmann.dk</span>
-              <span className="contact-link-arrow">→</span>
-            </a>
-          </div>
+          <ContactForm />
         </div>
       </section>
 
