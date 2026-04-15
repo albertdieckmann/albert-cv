@@ -1,17 +1,10 @@
 import EasterEggs from "@/components/EasterEggs";
+import NavBar from "@/components/NavBar";
 
 export default function Home() {
   return (
     <>
-      <nav>
-        <a href="#" className="nav-logo" id="nav-logo">AD_</a>
-        <ul className="nav-links">
-          <li><a href="#om">Om</a></li>
-          <li><a href="#erfaring">Erfaring</a></li>
-          <li><a href="#kompetencer">Kompetencer</a></li>
-          <li><a href="#kontakt">Kontakt</a></li>
-        </ul>
-      </nav>
+      <NavBar />
 
       <section className="hero">
         <div className="hero-left">

@@ -63,6 +63,27 @@ nav {
 }
 .nav-links a:hover { color: var(--text); }
 
+.nav-auth-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: none;
+  border: 1px solid rgba(200,240,96,0.3);
+  padding: 0.35rem 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-auth-btn:hover {
+  background: rgba(200,240,96,0.06);
+  border-color: var(--accent);
+}
+.nav-user-avatar {
+  width: 28px !important;
+  height: 28px !important;
+}
+
 /* HERO */
 .hero {
   min-height: 100vh;

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Mono, Instrument_Sans } from "next/font/google";
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -38,18 +38,7 @@ export default function RootLayout({
         lang="da"
         className={`${dmSerif.variable} ${dmMono.variable} ${instrumentSans.variable}`}
       >
-        <body>
-          <div id="clerk-auth" style={{ position: "fixed", top: "1.25rem", right: "3rem", zIndex: 200, display: "flex", gap: "0.75rem", alignItems: "center" }}>
-            <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton />
-            </Show>
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
-          </div>
-          {children}
-        </body>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   );
