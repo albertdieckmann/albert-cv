@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       text: `Fra: ${name} <${email}>\n\n${message}`,
     });
 
-    return NextResponse.json({ ok: true, resend: result });
+    return NextResponse.json({ ok: true });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return NextResponse.json({ error: msg }, { status: 500 });
