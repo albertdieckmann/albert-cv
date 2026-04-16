@@ -1,6 +1,8 @@
 import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import yaml from 'js-yaml'
+
+export const dynamic = 'force-dynamic'
 import EasterEggs from "@/components/EasterEggs";
 import NavBar from "@/components/NavBar";
 import ContactForm from "@/components/ContactForm";

@@ -121,11 +121,18 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
       })
 
       if (res.ok) {
-        setUploadStatus('ok')
-        setGallery(g => ({
-          ...g,
-          images: [...g.images, { filename, caption: '', order: g.images.length }]
-        }))
+        // Byg den opdaterede gallery-data og gem den med det samme
+        const newImage = { filename, caption: '', order: gallery.images.length }
+        const updatedGallery = { ...gallery, images: [...gallery.images, newImage] }
+        setGallery(updatedGallery)
+
+        // Auto-gem gallery.yaml
+        const saveRes = await fetch('/api/admin/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ section: 'gallery', data: updatedGallery }),
+        })
+        setUploadStatus(saveRes.ok ? 'ok' : 'error')
         setTimeout(() => setUploadStatus('idle'), 3000)
       } else {
         setUploadStatus('error')
