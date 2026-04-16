@@ -25,7 +25,7 @@ type Status = 'idle' | 'loading' | 'ok' | 'error'
 const s = {
   wrap: { display: 'flex', minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e0', fontFamily: 'monospace' } as React.CSSProperties,
   sidebar: { width: '220px', flexShrink: 0, background: '#0d0d0d', borderRight: '1px solid #1e1e1e', display: 'flex', flexDirection: 'column' as const },
-  sidebarTop: { padding: '1.75rem 1.5rem 1rem', borderBottom: '1px solid #1e1e1e' },
+  sidebarTop: { padding: '4rem 1.5rem 1rem', borderBottom: '1px solid #1e1e1e' },
   brand: { color: '#c8f060', fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, fontWeight: 700, margin: 0 },
   backLink: { color: '#888880', fontSize: '0.75rem', textDecoration: 'none', display: 'block', marginTop: '0.5rem' },
   nav: { padding: '1rem 0', flex: 1 },
