@@ -32,11 +32,10 @@ const s = {
   navItem: (active: boolean): React.CSSProperties => ({
     display: 'block', width: '100%', padding: '0.6rem 1.5rem',
     background: active ? 'rgba(200,240,96,0.06)' : 'transparent',
-    borderLeft: `2px solid ${active ? '#c8f060' : 'transparent'}`,
-    color: active ? '#e8e8e0' : '#888880',
-    fontSize: '0.85rem', cursor: 'pointer', border: 'none',
     borderLeftStyle: 'solid', borderLeftWidth: '2px',
     borderLeftColor: active ? '#c8f060' : 'transparent',
+    color: active ? '#e8e8e0' : '#888880',
+    fontSize: '0.85rem', cursor: 'pointer', border: 'none',
     textAlign: 'left', fontFamily: 'monospace', transition: 'all 0.1s',
   }),
   sidebarBottom: { padding: '1rem 1.5rem', borderTop: '1px solid #1e1e1e' },
@@ -47,11 +46,13 @@ const s = {
   label: { display: 'block', color: '#666660', fontSize: '0.7rem', textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: '0.35rem' } as React.CSSProperties,
   input: { display: 'block', width: '100%', background: '#111', border: '1px solid #222', color: '#e8e8e0', padding: '0.6rem 0.75rem', fontFamily: 'monospace', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box' as const, marginBottom: '1.25rem' } as React.CSSProperties,
   textarea: { display: 'block', width: '100%', background: '#111', border: '1px solid #222', color: '#e8e8e0', padding: '0.6rem 0.75rem', fontFamily: 'monospace', fontSize: '0.875rem', outline: 'none', resize: 'vertical' as const, minHeight: '90px', boxSizing: 'border-box' as const, marginBottom: '1.25rem' } as React.CSSProperties,
-  row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' } as React.CSSProperties,
-  card: { background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '1.25rem', marginBottom: '1rem' } as React.CSSProperties,
+  row: { display: 'grid', gap: '0.75rem' } as React.CSSProperties,
+  card: { background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '1.25rem', marginBottom: '1rem', position: 'relative' as const },
   cardLabel: { color: '#555550', fontSize: '0.65rem', textTransform: 'uppercase' as const, letterSpacing: '0.1em', margin: '0 0 1rem', fontFamily: 'monospace' } as React.CSSProperties,
   footer: { display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #1e1e1e' } as React.CSSProperties,
   btn: (loading: boolean): React.CSSProperties => ({ background: loading ? '#8aa840' : '#c8f060', color: '#0a0a0a', fontWeight: 700, border: 'none', padding: '0.65rem 1.5rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'monospace', fontSize: '0.85rem', letterSpacing: '0.03em' }),
+  addBtn: { background: 'transparent', border: '1px dashed #2a2a2a', color: '#888880', padding: '0.6rem 1rem', cursor: 'pointer', fontFamily: 'monospace', fontSize: '0.8rem', width: '100%', marginBottom: '1rem', transition: 'all 0.15s' } as React.CSSProperties,
+  removeBtn: { position: 'absolute' as const, top: '0.75rem', right: '0.75rem', background: 'none', border: 'none', color: '#555550', cursor: 'pointer', fontSize: '1rem', lineHeight: 1, padding: '0.25rem', fontFamily: 'monospace' },
   statusMsg: (st: Status): React.CSSProperties => ({ fontSize: '0.8rem', color: st === 'ok' ? '#c8f060' : st === 'error' ? '#ff6060' : '#888880' }),
 }
 
@@ -65,6 +66,11 @@ function SaveBar({ section, status, onSave }: { section: string; status: Status;
       {status === 'error' && <span style={s.statusMsg('error')}>Noget gik galt — prøv igen</span>}
     </div>
   )
+}
+
+function slugify(str: string) {
+  return str.toLowerCase().replace(/[æ]/g, 'ae').replace(/[ø]/g, 'oe').replace(/[å]/g, 'aa')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || `entry-${Date.now()}`
 }
 
 export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact: c0, experiences: ex0 }: Props) {
@@ -103,7 +109,6 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
 
   return (
     <div style={s.wrap}>
-      {/* Sidebar */}
       <div style={s.sidebar}>
         <div style={s.sidebarTop}>
           <p style={s.brand}>AD_ Admin</p>
@@ -121,7 +126,6 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
         </div>
       </div>
 
-      {/* Indhold */}
       <main style={s.main}>
 
         {/* HERO */}
@@ -140,13 +144,19 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
 
           <label style={s.label}>Faktaboks</label>
           {hero.stats.map((stat, i) => (
-            <div key={i} style={{ ...s.row, marginBottom: '0.5rem' }}>
-              <input style={{ ...s.input, marginBottom: 0 }} placeholder="Label" value={stat.label}
-                onChange={e => setHero(h => ({ ...h, stats: h.stats.map((st, j) => j === i ? { ...st, label: e.target.value } : st) }))} />
-              <input style={{ ...s.input, marginBottom: 0 }} placeholder="Værdi" value={stat.value}
-                onChange={e => setHero(h => ({ ...h, stats: h.stats.map((st, j) => j === i ? { ...st, value: e.target.value } : st) }))} />
+            <div key={i} style={{ ...s.card, padding: '0.75rem 2.5rem 0.75rem 0.75rem' }}>
+              <button style={s.removeBtn} title="Fjern" onClick={() => setHero(h => ({ ...h, stats: h.stats.filter((_, j) => j !== i) }))}>✕</button>
+              <div style={{ ...s.row, gridTemplateColumns: '1fr 1fr' }}>
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="Label" value={stat.label}
+                  onChange={e => setHero(h => ({ ...h, stats: h.stats.map((st, j) => j === i ? { ...st, label: e.target.value } : st) }))} />
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="Værdi" value={stat.value}
+                  onChange={e => setHero(h => ({ ...h, stats: h.stats.map((st, j) => j === i ? { ...st, value: e.target.value } : st) }))} />
+              </div>
             </div>
           ))}
+          <button style={s.addBtn} onClick={() => setHero(h => ({ ...h, stats: [...h.stats, { label: '', value: '' }] }))}>
+            + Tilføj stat
+          </button>
 
           <SaveBar section="hero" status={statuses['hero'] ?? 'idle'} onSave={() => save('hero', hero)} />
         </>}
@@ -166,6 +176,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
           <label style={{ ...s.label, marginTop: '0.5rem' }}>Punkter (højre side)</label>
           {about.items.map((item, i) => (
             <div key={i} style={s.card}>
+              <button style={s.removeBtn} title="Fjern" onClick={() => setAbout(a => ({ ...a, items: a.items.filter((_, j) => j !== i) }))}>✕</button>
               <p style={s.cardLabel}>Punkt {i + 1}</p>
               <label style={s.label}>Ikon</label>
               <input style={s.input} value={item.icon}
@@ -178,6 +189,9 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
                 onChange={e => setAbout(a => ({ ...a, items: a.items.map((it, j) => j === i ? { ...it, description: e.target.value } : it) }))} />
             </div>
           ))}
+          <button style={s.addBtn} onClick={() => setAbout(a => ({ ...a, items: [...a.items, { icon: '', title: '', description: '' }] }))}>
+            + Tilføj punkt
+          </button>
 
           <SaveBar section="about" status={statuses['about'] ?? 'idle'} onSave={() => save('about', about)} />
         </>}
@@ -189,8 +203,9 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
 
           {exps.map((exp, i) => (
             <div key={exp.slug} style={s.card}>
-              <p style={s.cardLabel}>{exp.org} — {exp.title}</p>
-              <div style={{ ...s.row, marginBottom: '0' }}>
+              <button style={s.removeBtn} title="Fjern" onClick={() => setExps(xs => xs.filter((_, j) => j !== i))}>✕</button>
+              <p style={s.cardLabel}>{exp.org || 'Ny post'} {exp.title ? `— ${exp.title}` : ''}</p>
+              <div style={{ ...s.row, gridTemplateColumns: '1fr 1fr', marginBottom: 0 }}>
                 <div>
                   <label style={s.label}>Periode</label>
                   <input style={s.input} value={exp.period}
@@ -208,15 +223,29 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
               <label style={s.label}>Beskrivelse</label>
               <textarea style={s.textarea} value={exp.description}
                 onChange={e => setExps(xs => xs.map((x, j) => j === i ? { ...x, description: e.target.value } : x))} />
-              <div style={{ width: '100px' }}>
+              <div style={{ width: '120px' }}>
                 <label style={s.label}>Rækkefølge</label>
                 <input style={s.input} type="number" value={exp.order ?? 0}
                   onChange={e => setExps(xs => xs.map((x, j) => j === i ? { ...x, order: parseInt(e.target.value) || 0 } : x))} />
               </div>
             </div>
           ))}
+          <button style={s.addBtn} onClick={() => {
+            const maxOrder = exps.reduce((m, e) => Math.max(m, e.order ?? 0), 0)
+            setExps(xs => [...xs, { period: '', org: '', title: '', description: '', order: maxOrder + 1, slug: `ny-${Date.now()}` }])
+          }}>
+            + Tilføj erfaring
+          </button>
 
-          <SaveBar section="experience" status={statuses['experience'] ?? 'idle'} onSave={() => save('experience', { entries: exps })} />
+          <SaveBar section="experience" status={statuses['experience'] ?? 'idle'} onSave={() => {
+            // Generer slugs for nye poster (dem der starter med 'ny-')
+            const withSlugs = exps.map(e => ({
+              ...e,
+              slug: e.slug.startsWith('ny-') ? slugify(e.org + '-' + e.title) || e.slug : e.slug
+            }))
+            setExps(withSlugs)
+            save('experience', { entries: withSlugs })
+          }} />
         </>}
 
         {/* KOMPETENCER */}
@@ -226,20 +255,27 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
 
           <label style={s.label}>Kompetencer</label>
           {skills.chips.map((chip, i) => (
-            <div key={i} style={{ ...s.row, marginBottom: '0.5rem' }}>
-              <input style={{ ...s.input, marginBottom: 0 }} placeholder="Kompetence" value={chip.name}
-                onChange={e => setSkills(sk => ({ ...sk, chips: sk.chips.map((c, j) => j === i ? { ...c, name: e.target.value } : c) }))} />
-              <input style={{ ...s.input, marginBottom: 0 }} placeholder="Kategori" value={chip.category}
-                onChange={e => setSkills(sk => ({ ...sk, chips: sk.chips.map((c, j) => j === i ? { ...c, category: e.target.value } : c) }))} />
+            <div key={i} style={{ ...s.card, padding: '0.75rem 2.5rem 0.75rem 0.75rem' }}>
+              <button style={s.removeBtn} title="Fjern" onClick={() => setSkills(sk => ({ ...sk, chips: sk.chips.filter((_, j) => j !== i) }))}>✕</button>
+              <div style={{ ...s.row, gridTemplateColumns: '1fr 1fr' }}>
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="Kompetence" value={chip.name}
+                  onChange={e => setSkills(sk => ({ ...sk, chips: sk.chips.map((c, j) => j === i ? { ...c, name: e.target.value } : c) }))} />
+                <input style={{ ...s.input, marginBottom: 0 }} placeholder="Kategori" value={chip.category}
+                  onChange={e => setSkills(sk => ({ ...sk, chips: sk.chips.map((c, j) => j === i ? { ...c, category: e.target.value } : c) }))} />
+              </div>
             </div>
           ))}
+          <button style={s.addBtn} onClick={() => setSkills(sk => ({ ...sk, chips: [...sk.chips, { name: '', category: '' }] }))}>
+            + Tilføj kompetence
+          </button>
 
-          <div style={{ marginTop: '2rem' }}>
-            <label style={s.label}>Roskilde — titel</label>
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #1e1e1e' }}>
+            <label style={{ ...s.label, marginBottom: '1rem', color: '#888880' }}>Roskilde Festival</label>
+            <label style={s.label}>Titel</label>
             <input style={s.input} value={skills.roskildeTitle} onChange={e => setSkills(sk => ({ ...sk, roskildeTitle: e.target.value }))} />
-            <label style={s.label}>Roskilde — undertitel</label>
+            <label style={s.label}>Undertitel</label>
             <input style={s.input} value={skills.roskildeSubtitle} onChange={e => setSkills(sk => ({ ...sk, roskildeSubtitle: e.target.value }))} />
-            <label style={s.label}>Roskilde — badge</label>
+            <label style={s.label}>Badge</label>
             <input style={s.input} value={skills.roskildeBadge} onChange={e => setSkills(sk => ({ ...sk, roskildeBadge: e.target.value }))} />
           </div>
 
