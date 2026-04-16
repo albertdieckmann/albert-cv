@@ -2,9 +2,13 @@ import { config, collection, singleton, fields } from '@keystatic/core'
 
 export default config({
   storage:
-    process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG
-      ? { kind: 'github', repo: 'albertdieckmann/albert-cv' }
+    process.env.NODE_ENV === 'production'
+      ? { kind: 'cloud' }
       : { kind: 'local' },
+
+  cloud: {
+    project: 'albert-dieckmann/albert-cv',
+  },
 
   singletons: {
     hero: singleton({
