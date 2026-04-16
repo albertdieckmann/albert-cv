@@ -603,3 +603,20 @@ footer p {
   .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
   footer { flex-direction: column; gap: 0.5rem; text-align: center; }
 }
+
+/* Gallery carousel */
+#galleri { padding: 6rem 3rem; }
+.gallery-wrap { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 1rem; max-width: 900px; margin: 0 auto; }
+.gallery-arrow { background: none; border: none; color: var(--muted); font-size: 2rem; cursor: pointer; padding: 0.5rem; transition: color 0.2s; line-height: 1; }
+.gallery-arrow:hover { color: var(--accent); }
+.gallery-img-wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.gallery-img { max-height: 65vh; max-width: 100%; object-fit: contain; display: block; }
+.gallery-caption { color: var(--muted); font-size: 0.9rem; text-align: center; max-width: 600px; line-height: 1.6; }
+.gallery-dots { display: flex; gap: 0.5rem; justify-content: center; }
+.gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
+.gallery-dot.active { background: var(--accent); }
+@media (max-width: 600px) {
+  #galleri { padding: 4rem 1rem; }
+  .gallery-wrap { grid-template-columns: 36px 1fr 36px; }
+  .gallery-arrow { font-size: 1.5rem; }
+}

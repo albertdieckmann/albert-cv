@@ -4,6 +4,7 @@ import yaml from 'js-yaml'
 import EasterEggs from "@/components/EasterEggs";
 import NavBar from "@/components/NavBar";
 import ContactForm from "@/components/ContactForm";
+import GalleryCarousel from "@/components/GalleryCarousel";
 
 function readYaml<T>(file: string): T {
   return yaml.load(readFileSync(join(process.cwd(), file), 'utf8')) as T
@@ -62,11 +63,15 @@ interface ExpEntry {
   slug?: string
 }
 
+interface GalleryImage { filename: string; caption: string; order?: number }
+interface GalleryData { images: GalleryImage[] }
+
 export default async function Home() {
   const hero = readYaml<HeroData>('content/hero.yaml')
   const about = readYaml<AboutData>('content/about.yaml')
   const skills = readYaml<SkillsData>('content/skills.yaml')
   const contact = readYaml<ContactData>('content/contact.yaml')
+  const gallery = readYaml<GalleryData>('content/gallery.yaml')
 
   const expFiles = readdirSync(join(process.cwd(), 'content/experience'))
   const experiences = expFiles
@@ -135,6 +140,13 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {(gallery?.images ?? []).length > 0 && (
+        <section id="galleri">
+          <p className="section-tag">Galleri</p>
+          <GalleryCarousel images={gallery.images.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))} />
+        </section>
+      )}
 
       <section id="kompetencer">
         <p className="section-tag">Kompetencer</p>

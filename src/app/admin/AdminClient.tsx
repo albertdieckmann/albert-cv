@@ -11,6 +11,8 @@ interface ChipItem { name: string; category: string }
 interface SkillsData { chips: ChipItem[]; roskildeTitle: string; roskildeSubtitle: string; roskildeBadge: string }
 interface ContactData { heading: string; description: string; linkedinUrl: string; email: string }
 interface ExpEntry { period: string; org: string; title: string; description: string; order?: number; slug: string }
+interface GalleryImage { filename: string; caption: string; order?: number }
+interface GalleryData { images: GalleryImage[] }
 
 interface Props {
   hero: HeroData
@@ -18,6 +20,7 @@ interface Props {
   skills: SkillsData
   contact: ContactData
   experiences: ExpEntry[]
+  gallery: GalleryData
 }
 
 type Status = 'idle' | 'loading' | 'ok' | 'error'
@@ -73,7 +76,7 @@ function slugify(str: string) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || `entry-${Date.now()}`
 }
 
-export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact: c0, experiences: ex0 }: Props) {
+export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact: c0, experiences: ex0, gallery: g0 }: Props) {
   const { signOut } = useClerk()
   const [active, setActive] = useState('hero')
   const [statuses, setStatuses] = useState<Record<string, Status>>({})
@@ -82,6 +85,8 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
   const [skills, setSkills] = useState(sk0)
   const [contact, setContact] = useState(c0)
   const [exps, setExps] = useState(ex0)
+  const [gallery, setGallery] = useState(g0)
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'ok' | 'error'>('idle')
 
   async function save(key: string, data: unknown) {
     setStatuses(prev => ({ ...prev, [key]: 'loading' }))
@@ -99,12 +104,43 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
     }
   }
 
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadStatus('uploading')
+
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1]
+      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, base64, contentType: file.type }),
+      })
+
+      if (res.ok) {
+        setUploadStatus('ok')
+        setGallery(g => ({
+          ...g,
+          images: [...g.images, { filename, caption: '', order: g.images.length }]
+        }))
+        setTimeout(() => setUploadStatus('idle'), 3000)
+      } else {
+        setUploadStatus('error')
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
   const nav = [
     { key: 'hero', label: '🏠 Hero' },
     { key: 'om', label: '👤 Om mig' },
     { key: 'erfaring', label: '💼 Erfaring' },
     { key: 'kompetencer', label: '🧠 Kompetencer' },
     { key: 'kontakt', label: '✉️ Kontakt' },
+    { key: 'galleri', label: '🖼️ Galleri' },
   ]
 
   return (
@@ -290,6 +326,45 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
           <input style={s.input} value={contact.email} onChange={e => setContact(c => ({ ...c, email: e.target.value }))} />
 
           <SaveBar section="contact" status={statuses['contact'] ?? 'idle'} onSave={() => save('contact', contact)} />
+        </>}
+
+        {/* GALLERI */}
+        {active === 'galleri' && <>
+          <p style={s.sectionTitle}>Sektion</p>
+          <h1 style={s.sectionHeading}>Galleri</h1>
+
+          {/* Upload */}
+          <div style={{ marginBottom: '2rem' }}>
+            <label style={s.label}>Upload billede</label>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ ...s.input, padding: '0.4rem' }}
+              onChange={handleImageUpload}
+            />
+            {uploadStatus === 'uploading' && <p style={{ color: '#888880', fontSize: '0.8rem' }}>Uploader...</p>}
+            {uploadStatus === 'ok' && <p style={{ color: '#c8f060', fontSize: '0.8rem' }}>✓ Billede uploadet</p>}
+            {uploadStatus === 'error' && <p style={{ color: '#ff6060', fontSize: '0.8rem' }}>Upload fejlede</p>}
+          </div>
+
+          {/* Eksisterende billeder */}
+          {gallery.images.map((img, i) => (
+            <div key={i} style={s.card}>
+              <button style={s.removeBtn} onClick={() => setGallery(g => ({ ...g, images: g.images.filter((_, j) => j !== i) }))}>✕</button>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/gallery/${img.filename}`} alt={img.caption} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', marginBottom: '0.75rem' }} />
+              <label style={s.label}>Billedtekst</label>
+              <input style={s.input} value={img.caption}
+                onChange={e => setGallery(g => ({ ...g, images: g.images.map((im, j) => j === i ? { ...im, caption: e.target.value } : im) }))} />
+              <div style={{ width: '120px' }}>
+                <label style={s.label}>Rækkefølge</label>
+                <input style={s.input} type="number" value={img.order ?? i}
+                  onChange={e => setGallery(g => ({ ...g, images: g.images.map((im, j) => j === i ? { ...im, order: parseInt(e.target.value) || 0 } : im) }))} />
+              </div>
+            </div>
+          ))}
+
+          <SaveBar section="gallery" status={statuses['gallery'] ?? 'idle'} onSave={() => save('gallery', gallery)} />
         </>}
 
       </main>

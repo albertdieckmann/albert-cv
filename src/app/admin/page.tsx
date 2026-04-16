@@ -62,6 +62,9 @@ interface ExpEntry {
   slug: string
 }
 
+interface GalleryImage { filename: string; caption: string; order?: number }
+interface GalleryData { images: GalleryImage[] }
+
 export default async function AdminPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
@@ -79,6 +82,8 @@ export default async function AdminPage() {
     })
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
+  const gallery = readYaml<GalleryData>('content/gallery.yaml')
+
   return (
     <AdminClient
       hero={hero}
@@ -86,6 +91,7 @@ export default async function AdminPage() {
       skills={skills}
       contact={contact}
       experiences={experiences}
+      gallery={gallery}
     />
   )
 }
