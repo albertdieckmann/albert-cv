@@ -109,25 +109,23 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
     if (!file) return
     setUploadStatus('uploading')
 
-    const reader = new FileReader()
-    reader.onload = async () => {
-      const base64 = (reader.result as string).split(',')[1]
-      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`
+    try {
+      // Konverter til JPEG i browseren via canvas (håndterer HEIC, PNG, WebP osv.)
+      const base64Jpeg = await convertToJpeg(file)
+      const filename = `${Date.now()}-${file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '-')}.jpg`
 
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename, base64, contentType: file.type }),
+        body: JSON.stringify({ filename, base64: base64Jpeg, contentType: 'image/jpeg' }),
       })
 
       if (res.ok) {
-        // Brug det filnavn serveren returnerer (altid .jpg efter konvertering)
         const { filename: savedFilename } = await res.json() as { filename: string }
         const newImage = { filename: savedFilename, caption: '', order: gallery.images.length }
         const updatedGallery = { ...gallery, images: [...gallery.images, newImage] }
         setGallery(updatedGallery)
 
-        // Auto-gem gallery.yaml
         const saveRes = await fetch('/api/admin/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -138,8 +136,35 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
       } else {
         setUploadStatus('error')
       }
+    } catch {
+      setUploadStatus('error')
     }
-    reader.readAsDataURL(file)
+  }
+
+  function convertToJpeg(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        const canvas = document.createElement('canvas')
+        // Max 2400px på den længste side
+        const maxSize = 2400
+        let { width, height } = img
+        if (width > maxSize || height > maxSize) {
+          if (width > height) { height = Math.round(height * maxSize / width); width = maxSize }
+          else { width = Math.round(width * maxSize / height); height = maxSize }
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, width, height)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
+        resolve(dataUrl.split(',')[1])
+      }
+      img.onerror = reject
+      img.src = url
+    })
   }
 
   const nav = [

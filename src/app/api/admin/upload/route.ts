@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import sharp from 'sharp'
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
 const REPO = 'albertdieckmann/albert-cv'
@@ -21,17 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Kun billeder tilladt' }, { status: 400 })
   }
 
-  // Konverter til JPEG via sharp (håndterer HEIC, PNG, WebP, osv.)
-  const inputBuffer = Buffer.from(base64, 'base64')
-  const jpegBuffer = await sharp(inputBuffer)
-    .rotate() // respekter EXIF-rotation (vigtigt for iPhone-billeder)
-    .jpeg({ quality: 85 })
-    .toBuffer()
-
-  // Brug altid .jpg extension
-  const jpegFilename = filename.replace(/\.[^.]+$/, '') + '.jpg'
-  const encodedContent = jpegBuffer.toString('base64')
-  const path = `public/gallery/${jpegFilename}`
+  const path = `public/gallery/${filename}`
 
   const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
     method: 'PUT',
@@ -41,8 +30,8 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: `Upload billede: ${jpegFilename}`,
-      content: encodedContent,
+      message: `Upload billede: ${filename}`,
+      content: base64,
       branch: BRANCH,
     }),
   })
@@ -52,5 +41,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: JSON.stringify(err) }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, filename: jpegFilename })
+  return NextResponse.json({ ok: true, filename })
 }
