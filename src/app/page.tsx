@@ -146,13 +146,6 @@ export default async function Home() {
           ))}
         </div>
 
-        <div className="roskilde-box">
-          <div>
-            <p className="roskilde-title">{skills?.roskildeTitle ?? ''}</p>
-            <p className="roskilde-sub">{skills?.roskildeSubtitle ?? ''}</p>
-          </div>
-          <span className="roskilde-badge">{skills?.roskildeBadge ?? ''}</span>
-        </div>
       </section>
 
       <section id="kontakt">
