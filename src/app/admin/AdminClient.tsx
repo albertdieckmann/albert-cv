@@ -269,16 +269,6 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj kompetence
           </button>
 
-          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #1e1e1e' }}>
-            <label style={{ ...s.label, marginBottom: '1rem', color: '#888880' }}>Roskilde Festival</label>
-            <label style={s.label}>Titel</label>
-            <input style={s.input} value={skills.roskildeTitle} onChange={e => setSkills(sk => ({ ...sk, roskildeTitle: e.target.value }))} />
-            <label style={s.label}>Undertitel</label>
-            <input style={s.input} value={skills.roskildeSubtitle} onChange={e => setSkills(sk => ({ ...sk, roskildeSubtitle: e.target.value }))} />
-            <label style={s.label}>Badge</label>
-            <input style={s.input} value={skills.roskildeBadge} onChange={e => setSkills(sk => ({ ...sk, roskildeBadge: e.target.value }))} />
-          </div>
-
           <SaveBar section="skills" status={statuses['skills'] ?? 'idle'} onSave={() => save('skills', skills)} />
         </>}
 
