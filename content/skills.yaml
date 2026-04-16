@@ -3,8 +3,6 @@ chips:
     category: Teknologi
   - name: Product Ownership
     category: Ledelse
-  - name: Delivery Management
-    category: Ledelse
   - name: Teamledelse
     category: People
   - name: Kommunikation
