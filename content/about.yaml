@@ -1,16 +1,25 @@
-paragraph1: "Jeg startede min karriere i kommunikation og markedsføring – men det varede ikke længe inden IT trak mig ind. Det viser sig at organisationer, processer og teknologi er mere interessant end at skrive pressemeddelelser."
-paragraph2: "I dag leder jeg DR's GenAI-team, hvor vi arbejder med at omsætte kunstig intelligens til noget der rent faktisk giver mening i en medievirksomhed. Inden da har jeg brugt år på at lære offentlige organisationer op i agil leverance – primært i Skatteforvaltningen."
-paragraph3: "Jeg er mest glad når der er en klar retning, et engageret team og kaffe inden standup."
+paragraph1: >-
+  Jeg startede min karriere i kommunikation og markedsføring – men det varede
+  ikke længe inden IT trak mig ind. Det viser sig at organisationer, processer
+  og teknologi er mere interessant end at skrive pressemeddelelser.
+paragraph2: >-
+  I dag leder jeg DR's GenAI-team, hvor vi arbejder med at omsætte kunstig
+  intelligens til noget der rent faktisk giver mening i en medievirksomhed.
+  Inden da har jeg brugt år på at lære offentlige organisationer op i agil
+  leverance – primært i Skatteforvaltningen.
+paragraph3: >-
+  Jeg er mest glad når der er en klar retning, et engageret team og kaffe inden
+  standup.
 items:
-  - icon: "01"
-    title: "Levering & struktur"
-    description: "Scrum, SAFe, agil leverance i komplekse organisationer"
-  - icon: "02"
-    title: "GenAI & produktudvikling"
-    description: "Fra idé til produkt – med AI som drivkraft"
-  - icon: "03"
-    title: "Kommunikation"
-    description: "Fortælle historier der giver tekniske beslutninger mening"
-  - icon: "🎪"
-    title: "Roskilde Festival"
-    description: "Frivillig teamchef for intern pressehåndtering under afvikling"
+  - icon: '01'
+    title: Levering & struktur
+    description: Scrum, SAFe, agil leverance i komplekse organisationer
+  - icon: '02'
+    title: GenAI & produktudvikling
+    description: Fra idé til produkt – med AI som drivkraft
+  - icon: '03'
+    title: Kommunikation
+    description: Fortælle historier der giver tekniske beslutninger mening
+  - icon: '04'
+    title: Roskilde Festival
+    description: Frivillig teamchef for intern pressehåndtering under afvikling
