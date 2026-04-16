@@ -10,69 +10,75 @@ export default config({
     project: 'albert-dieckmann/albert-cv',
   },
 
+  ui: {
+    brand: {
+      name: 'albertdieckmann.dk',
+    },
+  },
+
   singletons: {
     hero: singleton({
-      label: 'Hero',
+      label: '🏠 Forside – hero',
       path: 'content/hero',
       format: { data: 'yaml' },
       schema: {
-        tag: fields.text({ label: 'Tag' }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        ctaText: fields.text({ label: 'CTA Text' }),
+        tag: fields.text({ label: 'Topbanner (f.eks. "Tilgængelig for nye projekter")' }),
+        description: fields.text({ label: 'Beskrivelse under navn', multiline: true }),
+        ctaText: fields.text({ label: 'Knaptekst' }),
         stats: fields.array(
           fields.object({
             label: fields.text({ label: 'Label' }),
-            value: fields.text({ label: 'Value' }),
+            value: fields.text({ label: 'Værdi' }),
           }),
-          { label: 'Stats', itemLabel: (props) => props.fields.label.value }
+          { label: 'Faktaboks (højre side)', itemLabel: (props) => props.fields.label.value }
         ),
       },
     }),
 
     about: singleton({
-      label: 'About',
+      label: '👤 Om mig',
       path: 'content/about',
       format: { data: 'yaml' },
       schema: {
-        paragraph1: fields.text({ label: 'Paragraph 1', multiline: true }),
-        paragraph2: fields.text({ label: 'Paragraph 2', multiline: true }),
-        paragraph3: fields.text({ label: 'Paragraph 3', multiline: true }),
+        paragraph1: fields.text({ label: 'Afsnit 1', multiline: true }),
+        paragraph2: fields.text({ label: 'Afsnit 2', multiline: true }),
+        paragraph3: fields.text({ label: 'Afsnit 3', multiline: true }),
         items: fields.array(
           fields.object({
-            icon: fields.text({ label: 'Icon' }),
-            title: fields.text({ label: 'Title' }),
-            description: fields.text({ label: 'Description' }),
+            icon: fields.text({ label: 'Ikon (emoji eller tal)' }),
+            title: fields.text({ label: 'Titel' }),
+            description: fields.text({ label: 'Beskrivelse' }),
           }),
-          { label: 'Items', itemLabel: (props) => props.fields.title.value }
+          { label: 'Punkter (højre side)', itemLabel: (props) => props.fields.title.value }
         ),
       },
     }),
 
     skills: singleton({
-      label: 'Skills',
+      label: '🧠 Kompetencer',
       path: 'content/skills',
       format: { data: 'yaml' },
       schema: {
         chips: fields.array(
           fields.object({
-            name: fields.text({ label: 'Name' }),
-            category: fields.text({ label: 'Category' }),
+            name: fields.text({ label: 'Kompetence' }),
+            category: fields.text({ label: 'Kategori' }),
           }),
-          { label: 'Chips', itemLabel: (props) => props.fields.name.value }
+          { label: 'Kompetencer', itemLabel: (props) => props.fields.name.value }
         ),
-        roskildeTitle: fields.text({ label: 'Roskilde Title' }),
-        roskildeSubtitle: fields.text({ label: 'Roskilde Subtitle' }),
-        roskildeBadge: fields.text({ label: 'Roskilde Badge' }),
+        roskildeTitle: fields.text({ label: 'Roskilde – titel' }),
+        roskildeSubtitle: fields.text({ label: 'Roskilde – undertitel' }),
+        roskildeBadge: fields.text({ label: 'Roskilde – badge' }),
       },
     }),
 
     contact: singleton({
-      label: 'Contact',
+      label: '✉️ Kontakt',
       path: 'content/contact',
       format: { data: 'yaml' },
       schema: {
-        heading: fields.text({ label: 'Heading' }),
-        description: fields.text({ label: 'Description', multiline: true }),
+        heading: fields.text({ label: 'Overskrift' }),
+        description: fields.text({ label: 'Beskrivelse', multiline: true }),
         linkedinUrl: fields.text({ label: 'LinkedIn URL' }),
         email: fields.text({ label: 'Email' }),
       },
@@ -81,16 +87,16 @@ export default config({
 
   collections: {
     experience: collection({
-      label: 'Experience',
+      label: '💼 Erfaring',
       path: 'content/experience/*',
       format: { data: 'yaml' },
       slugField: 'title',
       schema: {
-        period: fields.text({ label: 'Period' }),
+        period: fields.text({ label: 'Periode (Nu / Tidligere / Frivillig)' }),
         org: fields.text({ label: 'Organisation' }),
-        title: fields.text({ label: 'Title' }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        order: fields.integer({ label: 'Order' }),
+        title: fields.text({ label: 'Jobtitel' }),
+        description: fields.text({ label: 'Beskrivelse', multiline: true }),
+        order: fields.integer({ label: 'Rækkefølge (1 = øverst)' }),
       },
     }),
   },
