@@ -121,8 +121,9 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
       })
 
       if (res.ok) {
-        // Byg den opdaterede gallery-data og gem den med det samme
-        const newImage = { filename, caption: '', order: gallery.images.length }
+        // Brug det filnavn serveren returnerer (altid .jpg efter konvertering)
+        const { filename: savedFilename } = await res.json() as { filename: string }
+        const newImage = { filename: savedFilename, caption: '', order: gallery.images.length }
         const updatedGallery = { ...gallery, images: [...gallery.images, newImage] }
         setGallery(updatedGallery)
 
