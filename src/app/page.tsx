@@ -1,23 +1,80 @@
-import { createReader } from '@keystatic/core/reader'
-import keystaticConfig from '../../keystatic.config'
+import { readFileSync, readdirSync } from 'fs'
+import { join } from 'path'
+import yaml from 'js-yaml'
 import EasterEggs from "@/components/EasterEggs";
 import NavBar from "@/components/NavBar";
 import ContactForm from "@/components/ContactForm";
 
-const reader = createReader(process.cwd(), keystaticConfig)
+function readYaml<T>(file: string): T {
+  return yaml.load(readFileSync(join(process.cwd(), file), 'utf8')) as T
+}
+
+interface StatItem {
+  label: string
+  value: string
+}
+
+interface HeroData {
+  tag: string
+  description: string
+  ctaText: string
+  stats: StatItem[]
+}
+
+interface AboutItem {
+  icon: string
+  title: string
+  description: string
+}
+
+interface AboutData {
+  paragraph1: string
+  paragraph2: string
+  paragraph3: string
+  items: AboutItem[]
+}
+
+interface ChipItem {
+  name: string
+  category: string
+}
+
+interface SkillsData {
+  chips: ChipItem[]
+  roskildeTitle: string
+  roskildeSubtitle: string
+  roskildeBadge: string
+}
+
+interface ContactData {
+  heading: string
+  description: string
+  linkedinUrl: string
+  email: string
+}
+
+interface ExpEntry {
+  period: string
+  org: string
+  title: string
+  description: string
+  order?: number
+  slug?: string
+}
 
 export default async function Home() {
-  const [hero, about, experiences, skills, contact] = await Promise.all([
-    reader.singletons.hero.read(),
-    reader.singletons.about.read(),
-    reader.collections.experience.all(),
-    reader.singletons.skills.read(),
-    reader.singletons.contact.read(),
-  ])
+  const hero = readYaml<HeroData>('content/hero.yaml')
+  const about = readYaml<AboutData>('content/about.yaml')
+  const skills = readYaml<SkillsData>('content/skills.yaml')
+  const contact = readYaml<ContactData>('content/contact.yaml')
 
-  const sortedExp = [...(experiences ?? [])].sort(
-    (a, b) => (a.entry.order ?? 0) - (b.entry.order ?? 0)
-  )
+  const expFiles = readdirSync(join(process.cwd(), 'content/experience'))
+  const experiences = expFiles
+    .map(f => {
+      const entry = readYaml<ExpEntry>('content/experience/' + f)
+      return { ...entry, slug: f.replace('.yaml', '') }
+    })
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
   return (
     <>
@@ -65,14 +122,14 @@ export default async function Home() {
       <section id="erfaring">
         <p className="section-tag">Erfaring</p>
         <div className="exp-list">
-          {sortedExp.map((exp) => (
+          {experiences.map((exp) => (
             <div key={exp.slug} className="exp-item">
               <div className="exp-meta">
-                {exp.entry.period}<span className="exp-org">{exp.entry.org}</span>
+                {exp.period}<span className="exp-org">{exp.org}</span>
               </div>
               <div>
-                <p className="exp-title">{exp.entry.title}</p>
-                <p className="exp-desc">{exp.entry.description}</p>
+                <p className="exp-title">{exp.title}</p>
+                <p className="exp-desc">{exp.description}</p>
               </div>
             </div>
           ))}
