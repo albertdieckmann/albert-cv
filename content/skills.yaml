@@ -1,0 +1,24 @@
+chips:
+  - name: "GenAI & AI-produktudvikling"
+    category: Teknologi
+  - name: Product Ownership
+    category: Ledelse
+  - name: Delivery Management
+    category: Ledelse
+  - name: "Scrum & SAFe"
+    category: Agil
+  - name: Release Train Engineering
+    category: Agil
+  - name: Teamledelse
+    category: People
+  - name: Kommunikation
+    category: Baggrund
+  - name: Stakeholder Management
+    category: Ledelse
+  - name: "Pressehåndtering"
+    category: "Komm."
+  - name: Forandringsledelse
+    category: "Org."
+roskildeTitle: Roskilde Festival
+roskildeSubtitle: "Frivillig teamchef for intern pressehåndtering · Under afvikling · Hvert år"
+roskildeBadge: Frivillig
