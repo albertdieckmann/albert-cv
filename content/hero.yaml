@@ -1,6 +1,9 @@
 tag: Tilgængelig for nye projekter
-description: "Delivery manager, product owner og GenAI-teamleder hos DR. Starter i kommunikation, ender altid med at skrive YAML."
-ctaText: "Tag kontakt →"
+description: >-
+  Delivery manager, product owner og GenAI-teamleder hos DR. Troede jeg skulle
+  lave kommunikation og markedsføring, men fandt ud af at det var sjovere at få
+  mennesker til at få mere ud af IT.
+ctaText: Tag kontakt →
 stats:
   - label: Nuværende rolle
     value: Teamleder
@@ -9,4 +12,4 @@ stats:
   - label: Roskilde Festival
     value: Teamchef
   - label: Baggrund
-    value: "Komm. & Marketing"
+    value: Komm. & Marketing
