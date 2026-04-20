@@ -233,16 +233,9 @@ export default function MadspildPage() {
           </div>
         )}
 
-        {/* Loading skeleton */}
+        {/* Loading */}
         {loading && !data && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {[1, 2, 3].map(i => (
-              <div key={i} style={{ background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '1.5rem', animation: 'pulse 1.5s ease-in-out infinite' }}>
-                <div style={{ width: '40%', height: '1rem', background: '#1e1e1e', marginBottom: '0.75rem' }} />
-                <div style={{ width: '25%', height: '0.7rem', background: '#1a1a1a' }} />
-              </div>
-            ))}
-          </div>
+          <div style={{ color: '#888880', fontSize: '0.85rem', padding: '2rem 0' }}>Henter varer...</div>
         )}
 
         {/* Results */}
@@ -390,12 +383,6 @@ export default function MadspildPage() {
         <a href="/" style={{ color: '#666660', textDecoration: 'none' }}>albertdieckmann.dk</a>
       </footer>
 
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-      `}</style>
     </div>
   )
 }
