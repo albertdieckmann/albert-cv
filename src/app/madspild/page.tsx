@@ -116,8 +116,8 @@ export default function MadspildPage() {
     try {
       const res = await fetch(`/api/salling/food-waste?zip=${encodeURIComponent(z)}`)
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}))
-        throw new Error((json as { error?: string }).error ?? `HTTP ${res.status}`)
+        const json = await res.json().catch(() => ({})) as { error?: string; detail?: string; url?: string }
+        throw new Error(`${json.error ?? `HTTP ${res.status}`}${json.detail ? ` — ${json.detail}` : ''}`)
       }
       const json = await res.json() as FoodWasteEntry[]
       setData(json)

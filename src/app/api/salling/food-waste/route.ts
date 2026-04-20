@@ -30,7 +30,8 @@ export async function GET(req: NextRequest) {
 
   if (!res.ok) {
     const text = await res.text()
-    return NextResponse.json({ error: `Salling API svarede ${res.status}`, detail: text }, { status: res.status })
+    console.error(`[salling] ${res.status} for ${url}:`, text)
+    return NextResponse.json({ error: `Salling API svarede ${res.status}`, detail: text, url }, { status: res.status })
   }
 
   const data = await res.json()
