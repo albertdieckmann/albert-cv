@@ -136,35 +136,42 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
       } else {
         setUploadStatus('error')
       }
-    } catch {
+    } catch (err) {
+      console.error('Upload fejl:', err)
       setUploadStatus('error')
     }
   }
 
-  function convertToJpeg(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      const url = URL.createObjectURL(file)
-      img.onload = () => {
-        URL.revokeObjectURL(url)
-        const canvas = document.createElement('canvas')
-        // Max 2400px på den længste side
-        const maxSize = 2400
-        let { width, height } = img
-        if (width > maxSize || height > maxSize) {
-          if (width > height) { height = Math.round(height * maxSize / width); width = maxSize }
-          else { width = Math.round(width * maxSize / height); height = maxSize }
-        }
-        canvas.width = width
-        canvas.height = height
-        const ctx = canvas.getContext('2d')!
-        ctx.drawImage(img, 0, 0, width, height)
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
-        resolve(dataUrl.split(',')[1])
-      }
-      img.onerror = reject
-      img.src = url
-    })
+  async function convertToJpeg(file: File): Promise<string> {
+    const isHeic =
+      file.type === 'image/heic' ||
+      file.type === 'image/heif' ||
+      file.name.toLowerCase().endsWith('.heic') ||
+      file.name.toLowerCase().endsWith('.heif')
+
+    let blob: Blob = file
+    if (isHeic) {
+      // heic2any dekoder HEIC i browseren uden OS-support (virker i Chrome på Mac)
+      const heic2any = (await import('heic2any')).default
+      blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.88 }) as Blob
+    }
+
+    const bitmap = await createImageBitmap(blob)
+
+    const maxSize = 2400
+    let { width, height } = bitmap
+    if (width > maxSize || height > maxSize) {
+      if (width > height) { height = Math.round(height * maxSize / width); width = maxSize }
+      else { width = Math.round(width * maxSize / height); height = maxSize }
+    }
+
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(bitmap, 0, 0, width, height)
+    bitmap.close()
+    return canvas.toDataURL('image/jpeg', 0.88).split(',')[1]
   }
 
   const nav = [
