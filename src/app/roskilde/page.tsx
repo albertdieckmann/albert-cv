@@ -509,9 +509,15 @@ export default function RoskildePage() {
                       <p className={s.actMeta}>{act.type ?? "Act"}</p>
                       <p className={s.actMeta}>{schedule(act)}</p>
                     </div>
-                    <span className={`${s.tag} ${act.type === "Music" ? s.catMust : s.catBeer}`}>
-                      {act.type ?? "Act"}
-                    </span>
+                    {mine ? (
+                      <span className={`${s.myPickBadge} ${CATEGORY_META[mine].cls}`}>
+                        ✓ {CATEGORY_META[mine].label}
+                      </span>
+                    ) : (
+                      <span className={`${s.tag} ${act.type === "Music" ? s.catMust : s.catBeer}`}>
+                        {act.type ?? "Act"}
+                      </span>
+                    )}
                   </div>
 
                   <div className={s.catGrid}>
@@ -522,7 +528,7 @@ export default function RoskildePage() {
                         onClick={() => handlePick(act.name, key)}
                         disabled={!session.user || !session.activeGroup}
                       >
-                        {meta.label}
+                        {mine === key ? "✓ " : ""}{meta.label}
                       </button>
                     ))}
                   </div>

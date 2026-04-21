@@ -583,9 +583,23 @@
 .catBtn.catShould { border-color: rgba(255, 180, 60, 0.15);  }
 .catBtn.catBeer   { border-color: rgba(100, 160, 255, 0.15); }
 
-.catBtnActive.catMust   { background: rgba(200, 240, 96, 0.15); color: var(--accent); border-color: rgba(200, 240, 96, 0.4);  }
-.catBtnActive.catShould { background: rgba(255, 180, 60, 0.12);  color: #ffb43c;      border-color: rgba(255, 180, 60, 0.4);  }
-.catBtnActive.catBeer   { background: rgba(100, 160, 255, 0.12); color: #7aabff;      border-color: rgba(100, 160, 255, 0.4); }
+.catBtnActive.catMust   { background: rgba(200, 240, 96, 0.22); color: var(--accent); border-color: var(--accent);  border-width: 2px; font-weight: 600; }
+.catBtnActive.catShould { background: rgba(255, 180, 60, 0.2);  color: #ffb43c;       border-color: #ffb43c;        border-width: 2px; font-weight: 600; }
+.catBtnActive.catBeer   { background: rgba(100, 160, 255, 0.2); color: #7aabff;       border-color: #7aabff;        border-width: 2px; font-weight: 600; }
+
+/* Badge der vises på kortets øverste højre hjørne når brugeren har valgt */
+.myPickBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-width: 2px;
+}
 
 .pickNote {
   font-family: var(--mono);
