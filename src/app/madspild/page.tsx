@@ -1,7 +1,7 @@
-‘use client’
+'use client'
 
-import { useState, useEffect, useCallback } from ‘react’
-import Link from ‘next/link’
+import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 
 /* ── Types ──────────────────────────────────────────────── */
 interface Offer {
@@ -48,47 +48,47 @@ coordinates?: { lat: number; lng: number }
 interface FoodWasteEntry {
 store: Store
 clearances: Clearance[]
-distance?: number // km – tilføjet client-side
+distance?: number // km -- tilføjet client-side
 }
 
 type GeoState =
-| { status: ‘idle’ }
-| { status: ‘requesting’ }
-| { status: ‘granted’; lat: number; lng: number }
-| { status: ‘denied’; reason: string }
+| { status: 'idle' }
+| { status: 'requesting' }
+| { status: 'granted'; lat: number; lng: number }
+| { status: 'denied'; reason: string }
 
 /* ── Helpers ────────────────────────────────────────────── */
 function brandColor(brand?: string): string {
 const map: Record<string, string> = {
-netto: ‘#FFDE00’,
-foetex: ‘#E4002B’,
-bilka: ‘#00539B’,
-basalt: ‘#5a3f8f’,
+netto: '#FFDE00',
+foetex: '#E4002B',
+bilka: '#00539B',
+basalt: '#5a3f8f',
 }
-return map[brand?.toLowerCase() ?? ‘’] ?? ‘#c8f060’
+return map[brand?.toLowerCase() ?? ''] ?? '#c8f060'
 }
 
 function brandLabel(brand?: string): string {
 const map: Record<string, string> = {
-netto: ‘Netto’,
-foetex: ‘Føtex’,
-bilka: ‘Bilka’,
-basalt: ‘Basalt’,
+netto: 'Netto',
+foetex: 'Føtex',
+bilka: 'Bilka',
+basalt: 'Basalt',
 }
-return map[brand?.toLowerCase() ?? ‘’] ?? (brand ?? ‘Butik’)
+return map[brand?.toLowerCase() ?? ''] ?? (brand ?? 'Butik')
 }
 
 function formatTime(iso?: string): string {
-if (!iso) return ‘’
+if (!iso) return ''
 try {
-return new Date(iso).toLocaleTimeString(‘da-DK’, { hour: ‘2-digit’, minute: ‘2-digit’ })
+return new Date(iso).toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })
 } catch {
-return ‘’
+return ''
 }
 }
 
 function formatDate(iso?: string): string {
-if (!iso) return ‘ukendt tidspunkt’
+if (!iso) return 'ukendt tidspunkt'
 try {
 const d = new Date(iso)
 const today = new Date()
@@ -96,31 +96,31 @@ const tomorrow = new Date(today)
 tomorrow.setDate(today.getDate() + 1)
 if (d.toDateString() === today.toDateString()) return `i dag kl. ${formatTime(iso)}`
 if (d.toDateString() === tomorrow.toDateString()) return `i morgen kl. ${formatTime(iso)}`
-return d.toLocaleDateString(‘da-DK’, { day: ‘numeric’, month: ‘short’ }) + ` kl. ${formatTime(iso)}`
+return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' }) + ` kl. ${formatTime(iso)}`
 } catch {
 return iso
 }
 }
 
 function urgencyColor(endTime?: string): string {
-if (!endTime) return ‘#888880’
+if (!endTime) return '#888880'
 try {
 const ms = new Date(endTime).getTime() - Date.now()
 const hours = ms / 3_600_000
-if (hours < 2) return ‘#ff6060’
-if (hours < 6) return ‘#f0a020’
-return ‘#c8f060’
+if (hours < 2) return '#ff6060'
+if (hours < 6) return '#f0a020'
+return '#c8f060'
 } catch {
-return ‘#888880’
+return '#888880'
 }
 }
 
 function fmt(n?: number): string {
-if (n == null || isNaN(n)) return ‘–’
-return n.toFixed(2).replace(’.’, ‘,’)
+if (n == null || isNaN(n)) return '--'
+return n.toFixed(2).replace('.', ',')
 }
 
-// Haversine-formel – returnerer afstand i km
+// Haversine-formel -- returnerer afstand i km
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
 const R = 6371
 const dLat = ((lat2 - lat1) * Math.PI) / 180
@@ -140,13 +140,13 @@ return `${km.toFixed(1).replace('.', ',')} km`
 
 /* ── Component ──────────────────────────────────────────── */
 export default function MadspildPage() {
-const [zip, setZip] = useState(‘8000’)
-const [inputZip, setInputZip] = useState(‘8000’)
+const [zip, setZip] = useState('8000')
+const [inputZip, setInputZip] = useState('8000')
 const [data, setData] = useState<FoodWasteEntry[] | null>(null)
 const [loading, setLoading] = useState(false)
 const [error, setError] = useState<string | null>(null)
 const [lastFetched, setLastFetched] = useState<string | null>(null)
-const [geo, setGeo] = useState<GeoState>({ status: ‘idle’ })
+const [geo, setGeo] = useState<GeoState>({ status: 'idle' })
 const [usingGeo, setUsingGeo] = useState(false)
 
 /* ── Fetch by zip ── */
@@ -162,9 +162,9 @@ const e = json as { error?: string; detail?: string }
 throw new Error(e.error ? `${e.error}${e.detail ? `\n\n${e.detail}` : ''}` : `HTTP ${res.status}`)
 }
 setData(Array.isArray(json) ? json as FoodWasteEntry[] : [])
-setLastFetched(new Date().toLocaleTimeString(‘da-DK’, { hour: ‘2-digit’, minute: ‘2-digit’ }))
+setLastFetched(new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }))
 } catch (e) {
-setError(e instanceof Error ? e.message : ‘Ukendt fejl’)
+setError(e instanceof Error ? e.message : 'Ukendt fejl')
 } finally {
 setLoading(false)
 }
@@ -183,7 +183,7 @@ const e = json as { error?: string; detail?: string }
 throw new Error(e.error ? `${e.error}${e.detail ? `\n\n${e.detail}` : ''}` : `HTTP ${res.status}`)
 }
 const entries = (Array.isArray(json) ? json as FoodWasteEntry[] : []).map(entry => ({
-…entry,
+...entry,
 distance: entry.store.coordinates
 ? haversineKm(lat, lng, entry.store.coordinates.lat, entry.store.coordinates.lng)
 : undefined,
@@ -191,9 +191,9 @@ distance: entry.store.coordinates
 // Sortér nærmest først
 entries.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
 setData(entries)
-setLastFetched(new Date().toLocaleTimeString(‘da-DK’, { hour: ‘2-digit’, minute: ‘2-digit’ }))
+setLastFetched(new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }))
 } catch (e) {
-setError(e instanceof Error ? e.message : ‘Ukendt fejl’)
+setError(e instanceof Error ? e.message : 'Ukendt fejl')
 setUsingGeo(false)
 } finally {
 setLoading(false)
@@ -203,24 +203,24 @@ setLoading(false)
 /* ── Geolocation ── */
 const requestGeo = useCallback(() => {
 if (!navigator.geolocation) {
-setGeo({ status: ‘denied’, reason: ‘Din browser understøtter ikke geolocation.’ })
+setGeo({ status: 'denied', reason: 'Din browser understøtter ikke geolocation.' })
 return
 }
-setGeo({ status: ‘requesting’ })
+setGeo({ status: 'requesting' })
 navigator.geolocation.getCurrentPosition(
 pos => {
 const { latitude: lat, longitude: lng } = pos.coords
-setGeo({ status: ‘granted’, lat, lng })
+setGeo({ status: 'granted', lat, lng })
 fetchByCoords(lat, lng)
 },
 err => {
 const reason =
 err.code === 1
-? ‘Du afslog adgang til din placering.’
+? 'Du afslog adgang til din placering.'
 : err.code === 2
-? ‘Kunne ikke bestemme din placering.’
-: ‘Timeout ved hentning af placering.’
-setGeo({ status: ‘denied’, reason })
+? 'Kunne ikke bestemme din placering.'
+: 'Timeout ved hentning af placering.'
+setGeo({ status: 'denied', reason })
 },
 { timeout: 8000, maximumAge: 60_000 }
 )
@@ -228,7 +228,7 @@ setGeo({ status: ‘denied’, reason })
 
 /* ── Auto-request geo on mount ── */
 useEffect(() => {
-if (‘geolocation’ in navigator) {
+if ('geolocation' in navigator) {
 requestGeo()
 } else {
 fetchByZip(zip)
@@ -238,7 +238,7 @@ fetchByZip(zip)
 
 function handleSearch(e: React.FormEvent) {
 e.preventDefault()
-const clean = inputZip.trim().replace(/\D/g, ‘’).slice(0, 4)
+const clean = inputZip.trim().replace(/\D/g, '').slice(0, 4)
 if (clean.length === 4) {
 setZip(clean)
 fetchByZip(clean)
@@ -249,9 +249,8 @@ const storesWithItems = (data ?? []).filter(e => (e.clearances ?? []).length > 0
 const totalClearances = storesWithItems.reduce((s, e) => s + e.clearances.length, 0)
 
 return (
-<div style={{ minHeight: ‘100vh’, background: ‘#0a0a0a’, color: ‘#e8e8e0’, fontFamily: ‘var(–font-dm-mono, monospace)’ }}>
+<div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e0', fontFamily: 'var(--font-dm-mono, monospace)' }}>
 
-```
   {/* Header */}
   <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1.25rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 10 }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -298,7 +297,7 @@ return (
     {geo.status === 'idle' || geo.status === 'requesting' ? (
       <div style={{ background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '0.875rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <span style={{ color: '#888880', fontSize: '0.75rem' }}>
-          {geo.status === 'requesting' ? '📍 Henter din placering…' : '📍 Henter placering…'}
+          {geo.status === 'requesting' ? '📍 Henter din placering...' : '📍 Henter placering...'}
         </span>
       </div>
     ) : geo.status === 'denied' ? (
@@ -340,7 +339,7 @@ return (
       }} disabled={loading} title="Opdater" style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#888880', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.75rem', height: '42px' }}>
         ↻
       </button>
-      {/* Geo-knap – vis kun hvis denied eller hvis brugeren søgte på postnummer */}
+      {/* Geo-knap -- vis kun hvis denied eller hvis brugeren søgte på postnummer */}
       {(geo.status === 'granted' && !usingGeo) && (
         <button
           type="button"
@@ -363,7 +362,7 @@ return (
     {/* Loading */}
     {loading && (
       <div style={{ color: '#888880', fontSize: '0.85rem', padding: '2rem 0' }}>
-        {usingGeo ? 'Henter nærmeste butikker…' : `Henter varer i postnummer ${zip}…`}
+        {usingGeo ? 'Henter nærmeste butikker...' : `Henter varer i postnummer ${zip}...`}
       </div>
     )}
 
@@ -406,8 +405,6 @@ return (
     <a href="/" style={{ color: '#666660', textDecoration: 'none' }}>albertdieckmann.dk</a>
   </footer>
 </div>
-```
-
 )
 }
 
@@ -415,42 +412,41 @@ return (
 function Stat({ value, label }: { value: string | number; label: string }) {
 return (
 <div>
-<span style={{ color: ‘#c8f060’, fontSize: ‘1.4rem’, fontWeight: 700 }}>{value}</span>
-<span style={{ color: ‘#888880’, fontSize: ‘0.75rem’, display: ‘block’, marginTop: ‘0.1rem’ }}>{label}</span>
+<span style={{ color: '#c8f060', fontSize: '1.4rem', fontWeight: 700 }}>{value}</span>
+<span style={{ color: '#888880', fontSize: '0.75rem', display: 'block', marginTop: '0.1rem' }}>{label}</span>
 </div>
 )
 }
 
 function StoreSection({ entry }: { entry: FoodWasteEntry }) {
 const clearances = entry.clearances ?? []
-const sorted = […clearances].sort((a, b) => {
+const sorted = [...clearances].sort((a, b) => {
 const ta = a.offer?.endTime ? new Date(a.offer.endTime).getTime() : Infinity
 const tb = b.offer?.endTime ? new Date(b.offer.endTime).getTime() : Infinity
 return ta - tb
 })
 
 return (
-<div style={{ marginBottom: ‘2.5rem’ }}>
+<div style={{ marginBottom: '2.5rem' }}>
 {/* Store header */}
-<div style={{ display: ‘flex’, alignItems: ‘center’, gap: ‘0.75rem’, marginBottom: ‘1rem’, paddingBottom: ‘0.75rem’, borderBottom: ‘1px solid #1e1e1e’ }}>
-<span style={{ background: brandColor(entry.store.brand), color: ‘#0a0a0a’, fontSize: ‘0.65rem’, fontWeight: 700, padding: ‘0.2rem 0.5rem’, letterSpacing: ‘0.08em’, textTransform: ‘uppercase’ as const, flexShrink: 0 }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid #1e1e1e' }}>
+<span style={{ background: brandColor(entry.store.brand), color: '#0a0a0a', fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.5rem', letterSpacing: '0.08em', textTransform: 'uppercase' as const, flexShrink: 0 }}>
 {brandLabel(entry.store.brand)}
 </span>
 <div>
-<p style={{ margin: 0, fontSize: ‘0.95rem’, fontWeight: 600, color: ‘#e8e8e0’ }}>{entry.store.name ?? ‘Ukendt butik’}</p>
-<p style={{ margin: 0, fontSize: ‘0.72rem’, color: ‘#666660’ }}>
-{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(’ · ’)}
+<p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600, color: '#e8e8e0' }}>{entry.store.name ?? 'Ukendt butik'}</p>
+<p style={{ margin: 0, fontSize: '0.72rem', color: '#666660' }}>
+{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}
 {entry.distance != null && (
-<span style={{ color: ‘#c8f060’, marginLeft: ‘0.5rem’ }}>· {formatDistance(entry.distance)}</span>
+<span style={{ color: '#c8f060', marginLeft: '0.5rem' }}>· {formatDistance(entry.distance)}</span>
 )}
 </p>
 </div>
-<span style={{ marginLeft: ‘auto’, color: ‘#888880’, fontSize: ‘0.75rem’, flexShrink: 0 }}>
-{clearances.length} vare{clearances.length !== 1 ? ‘r’ : ‘’}
+<span style={{ marginLeft: 'auto', color: '#888880', fontSize: '0.75rem', flexShrink: 0 }}>
+{clearances.length} vare{clearances.length !== 1 ? 'r' : ''}
 </span>
 </div>
 
-```
   {/* Product grid */}
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
     {sorted.map((clearance, idx) => (
@@ -458,7 +454,6 @@ return (
     ))}
   </div>
 </div>
-```
 
 )
 }
@@ -468,19 +463,18 @@ const { offer, product } = clearance
 const urgency = urgencyColor(offer?.endTime)
 const discount = offer?.percentDiscount ?? offer?.discount
 const newPrice = offer?.newPrice ?? offer?.price
-const stockLabel = offer?.stockUnit === ‘each’ || offer?.stockUnit === ‘stk’
-? ‘stk’
-: (offer?.stockUnit ?? ‘stk’)
+const stockLabel = offer?.stockUnit === 'each' || offer?.stockUnit === 'stk'
+? 'stk'
+: (offer?.stockUnit ?? 'stk')
 
 return (
-<div style={{ background: ‘#0f0f0f’, border: ‘1px solid #1e1e1e’, padding: ‘1rem’, display: ‘flex’, gap: ‘0.875rem’, position: ‘relative’, overflow: ‘hidden’ }}>
+<div style={{ background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '1rem', display: 'flex', gap: '0.875rem', position: 'relative', overflow: 'hidden' }}>
 {discount != null && (
-<div style={{ position: ‘absolute’, top: ‘0.6rem’, right: ‘0.6rem’, background: ‘#c8f060’, color: ‘#0a0a0a’, fontSize: ‘0.65rem’, fontWeight: 700, padding: ‘0.15rem 0.4rem’ }}>
+<div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: '#c8f060', color: '#0a0a0a', fontSize: '0.65rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
 -{discount}%
 </div>
 )}
 
-```
   {product?.image ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -525,7 +519,6 @@ return (
     </div>
   </div>
 </div>
-```
 
 )
 }
