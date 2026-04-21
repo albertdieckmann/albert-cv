@@ -37,12 +37,21 @@ street?: string
 zip?: string
 }
 
+interface StoreHours {
+date: string      // 'YYYY-MM-DD'
+type: string
+open: string      // 'HH:MM'
+close: string     // 'HH:MM'
+closed: boolean
+}
+
 interface Store {
 id: string
 name?: string
 brand?: string
 address?: StoreAddress
 coordinates?: { lat: number; lng: number }
+hours?: StoreHours[]
 }
 
 interface FoodWasteEntry {
@@ -136,6 +145,28 @@ return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 function formatDistance(km: number): string {
 if (km < 1) return `${Math.round(km * 1000)} m`
 return `${km.toFixed(1).replace('.', ',')} km`
+}
+
+function todayHours(hours?: StoreHours[]): { label: string; color: string } | null {
+if (!hours?.length) return null
+const todayStr = new Date().toISOString().slice(0, 10)
+const today = hours.find(h => h.date === todayStr)
+if (!today) return null
+if (today.closed) return { label: 'Lukket i dag', color: '#ff6060' }
+// Check if currently open
+const now = new Date()
+const [oh, om] = today.open.split(':').map(Number)
+const [ch, cm] = today.close.split(':').map(Number)
+const openMin = oh * 60 + om
+const closeMin = ch * 60 + cm
+const nowMin = now.getHours() * 60 + now.getMinutes()
+const isOpen = nowMin >= openMin && nowMin < closeMin
+return {
+  label: isOpen
+    ? `Åben · lukker ${today.close}`
+    : `Lukket · åbner ${today.open}`,
+  color: isOpen ? '#c8f060' : '#888880',
+}
 }
 
 /* ── Component ──────────────────────────────────────────── */
@@ -428,6 +459,7 @@ const ta = a.offer?.endTime ? new Date(a.offer.endTime).getTime() : Infinity
 const tb = b.offer?.endTime ? new Date(b.offer.endTime).getTime() : Infinity
 return ta - tb
 })
+const hours = todayHours(entry.store.hours)
 
 return (
 <div style={{ marginBottom: '2.5rem' }}>
@@ -438,10 +470,13 @@ return (
 </span>
 <div>
 <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600, color: '#e8e8e0' }}>{entry.store.name ?? 'Ukendt butik'}</p>
-<p style={{ margin: 0, fontSize: '0.72rem', color: '#666660' }}>
-{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}
+<p style={{ margin: '0.15rem 0 0', fontSize: '0.72rem', color: '#666660', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
+<span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
 {entry.distance != null && (
-<span style={{ color: '#c8f060', marginLeft: '0.5rem' }}>· {formatDistance(entry.distance)}</span>
+  <span style={{ color: '#c8f060' }}>· {formatDistance(entry.distance)}</span>
+)}
+{hours && (
+  <span style={{ color: hours.color }}>· {hours.label}</span>
 )}
 </p>
 </div>
