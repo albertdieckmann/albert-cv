@@ -364,7 +364,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
           <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#c8f060' }}>
             {fmt(offer?.price)} kr
           </span>
-          {offer?.originalPrice != null && offer.originalPrice !== offer.price && (
+          {offer?.originalPrice != null && offer.originalPrice > 0 && (
             <span style={{ fontSize: '0.72rem', color: '#555550', textDecoration: 'line-through' }}>
               {fmt(offer.originalPrice)} kr
             </span>
