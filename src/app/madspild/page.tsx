@@ -314,6 +314,11 @@ export default function MadspildPage() {
       }
       const rawEntries = Array.isArray(json) ? json as FoodWasteEntry[] : []
 
+      if (rawEntries[0]?.store) {
+        console.log('[madspild] store keys:', Object.keys(rawEntries[0].store))
+        console.log('[madspild] store.hours:', JSON.stringify(rawEntries[0].store.hours))
+      }
+
       const entries = rawEntries.map(entry => {
         const c = entry.store.coordinates
         // Salling returnerer GeoJSON-format: [longitude, latitude]
