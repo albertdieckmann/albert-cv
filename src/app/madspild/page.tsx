@@ -7,7 +7,8 @@ import Link from 'next/link'
 interface Offer {
   ean?: string
   currency?: string
-  price?: number
+  price?: number       // some versions
+  newPrice?: number    // Salling API actual field
   originalPrice?: number
   discount?: number
   percentDiscount?: number
@@ -325,6 +326,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
   const { offer, product } = clearance
   const urgency = urgencyColor(offer?.endTime)
   const discount = offer?.percentDiscount ?? offer?.discount
+  const newPrice = offer?.newPrice ?? offer?.price
   const stockLabel = offer?.stockUnit === 'each' || offer?.stockUnit === 'stk'
     ? 'stk'
     : (offer?.stockUnit ?? 'stk')
@@ -362,7 +364,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#c8f060' }}>
-            {fmt(offer?.price)} kr
+            {fmt(newPrice)} kr
           </span>
           {offer?.originalPrice != null && offer.originalPrice > 0 && (
             <span style={{ fontSize: '0.72rem', color: '#555550', textDecoration: 'line-through' }}>
