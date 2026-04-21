@@ -172,6 +172,46 @@ function todayHours(hours?: StoreHours[]): { label: string; isOpen: boolean } | 
   }
 }
 
+const DA_DAYS = ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø']
+
+function weekHours(hours?: StoreHours[]): { date: string; dayLabel: string; open: string; close: string; closed: boolean; isToday: boolean }[] {
+  if (!hours?.length) return []
+  const todayStr = new Date().toISOString().slice(0, 10)
+  return hours
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(h => {
+      const d = new Date(h.date)
+      return {
+        date: h.date,
+        dayLabel: DA_DAYS[d.getDay()],
+        open: h.open,
+        close: h.close,
+        closed: h.closed,
+        isToday: h.date === todayStr,
+      }
+    })
+}
+
+function nextOpening(hours?: StoreHours[]): string | null {
+  if (!hours?.length) return null
+  const now = new Date()
+  const todayStr = now.toISOString().slice(0, 10)
+  const nowMin = now.getHours() * 60 + now.getMinutes()
+  const sorted = hours.slice().sort((a, b) => a.date.localeCompare(b.date))
+  for (const h of sorted) {
+    if (h.closed) continue
+    if (h.date < todayStr) continue
+    const [oh, om] = h.open.split(':').map(Number)
+    const openMin = oh * 60 + om
+    if (h.date === todayStr && nowMin >= openMin) continue // allerede passeret
+    const d = new Date(h.date)
+    const dayLabel = h.date === todayStr ? 'i dag' : DA_DAYS[d.getDay()]
+    return `${dayLabel} kl. ${h.open}`
+  }
+  return null
+}
+
 // Absolut besparelse i kr — kun når begge priser er kendte
 function savingsKr(c: Clearance): number {
   const orig = c.offer?.originalPrice
@@ -528,6 +568,7 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
   storePromos: Promotion[]
 }) {
   const [spotExpanded, setSpotExpanded] = useState(false)
+  const [hoursExpanded, setHoursExpanded] = useState(false)
   const clearances = entry.clearances ?? []
   const sorted = [...clearances].sort((a, b) => {
     const sa = sortScore(a), sb = sortScore(b)
@@ -535,6 +576,8 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
     return sb.kr - sa.kr                              // tiebreaker: størst kr-besparelse
   })
   const hours = todayHours(entry.store.hours)
+  const week = weekHours(entry.store.hours)
+  const next = !hours?.isOpen ? nextOpening(entry.store.hours) : null
   const dist = entry.distance != null ? formatDistance(entry.distance) : null
 
   return (
@@ -576,6 +619,57 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
               <ProductCard key={clearance.offer?.ean ?? idx} clearance={clearance} />
             ))}
           </div>
+
+          {/* Åbningstider — collapsible */}
+          {week.length > 0 && (
+            <div style={{ borderTop: '1px solid #1e1e1e', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
+              <button
+                onClick={() => setHoursExpanded(v => !v)}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '0.5rem 0.75rem', background: 'transparent',
+                  border: '1px solid #1e1e1e', cursor: 'pointer',
+                  fontFamily: 'inherit', color: '#555550',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '0.62rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Åbningstider</span>
+                  {next && !hoursExpanded && (
+                    <span style={{ fontSize: '0.62rem', color: '#888880' }}>· Åbner {next}</span>
+                  )}
+                </div>
+                <span style={{ fontSize: '0.65rem', transform: hoursExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
+              </button>
+
+              {hoursExpanded && (
+                <div style={{ border: '1px solid #1e1e1e', borderTop: 'none', padding: '0.6rem 0.75rem' }}>
+                  {week.map(h => (
+                    <div key={h.date} style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '0.25rem 0',
+                      borderBottom: '1px solid #141414',
+                    }}>
+                      <span style={{
+                        fontSize: '0.7rem', fontWeight: h.isToday ? 700 : 400,
+                        color: h.isToday ? '#e8e8e0' : '#555550',
+                        minWidth: '2rem',
+                      }}>
+                        {h.dayLabel}
+                        {h.isToday && <span style={{ color: '#c8f060', fontSize: '0.55rem', marginLeft: '0.3rem' }}>i dag</span>}
+                      </span>
+                      <span style={{
+                        fontSize: '0.7rem',
+                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#c8f060' : '#888880') : '#666660',
+                        fontWeight: h.isToday && hours?.isOpen ? 600 : 400,
+                      }}>
+                        {h.closed ? 'Lukket' : `${h.open}–${h.close}`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Spotvarer for butikken — collapsible, mindre prominent */}
           {storePromos.length > 0 && (
