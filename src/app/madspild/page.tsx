@@ -423,13 +423,13 @@ export default function MadspildPage() {
         {/* Title */}
         <div style={{ marginBottom: '2.5rem' }}>
           <p style={{ color: '#888880', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', margin: '0 0 0.5rem' }}>
-            Salling Group · Food Waste API
+            Madspildsvarer hos Føtex, Netto og Bilka nær dig
           </p>
           <h1 style={{ fontFamily: 'var(--font-dm-serif, serif)', fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 400, margin: '0 0 0.75rem', lineHeight: 1.1 }}>
             Varer på <em>tilbud</em> inden<br />de udløber
           </h1>
           <p style={{ color: '#888880', fontSize: '0.875rem', margin: 0, maxWidth: '500px', lineHeight: 1.6 }}>
-            Salling Group åbner deres madspildsdata som et gratis API. Her kan du se hvilke varer der snart udløber i din nærmeste butik.
+            Et lille forsøg med madspildsvarer
           </p>
         </div>
 
