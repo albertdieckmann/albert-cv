@@ -50,7 +50,11 @@ interface Store {
   name?: string
   brand?: string
   address?: StoreAddress
-  coordinates?: { lat?: number; lng?: number; lon?: number }
+  // Salling bruger ét af disse formater — alle håndteres
+  coordinates?: {
+    lat?: number; lng?: number; lon?: number
+    latitude?: number; longitude?: number
+  }
   hours?: StoreHours[]
 }
 
@@ -273,9 +277,10 @@ export default function MadspildPage() {
       }
       const entries = (Array.isArray(json) ? json as FoodWasteEntry[] : []).map(entry => {
         const c = entry.store.coordinates
-        const storeLng = c?.lng ?? c?.lon
-        const dist = (c?.lat != null && storeLng != null)
-          ? haversineKm(lat, lng, c.lat, storeLng)
+        const storeLat = c?.lat ?? c?.latitude
+        const storeLng = c?.lng ?? c?.lon ?? c?.longitude
+        const dist = (storeLat != null && storeLng != null && isFinite(storeLat) && isFinite(storeLng))
+          ? haversineKm(lat, lng, storeLat, storeLng)
           : undefined
         return { ...entry, distance: dist }
       })
