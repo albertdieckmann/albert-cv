@@ -100,7 +100,7 @@ export default function RoskildePage() {
   const [ready,         setReady]         = useState(false);
 
   const activeGroupIdRef = useRef<number | null>(null);
-  const statusTimer      = useRef<ReturnType<typeof setTimeout>>();
+  const statusTimer      = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   function flash(msg: string) {
     setStatus(msg);
