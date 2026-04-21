@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.875rem 1.25rem;
+  padding: 0.625rem 1rem;
   background: rgba(10, 10, 10, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -103,7 +103,7 @@
 /* ── hero ───────────────────────────────────────────────────────────────────── */
 
 .hero {
-  padding: 2.5rem 1.25rem 2rem;
+  padding: 1.5rem 1rem 1.25rem;
   border-bottom: 1px solid var(--border);
 }
 
@@ -153,7 +153,7 @@
 
 .statCard {
   background: var(--bg);
-  padding: 1rem 1.25rem;
+  padding: 0.625rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -180,7 +180,7 @@
 /* ── sections ────────────────────────────────────────────────────────────────── */
 
 .section {
-  padding: 1.75rem 1.25rem;
+  padding: 1.25rem 1rem;
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -525,7 +525,7 @@
 
 .actCard {
   border: 1px solid var(--border);
-  padding: 1rem;
+  padding: 0.75rem 0.875rem;
   background: var(--bg2);
   display: flex;
   flex-direction: column;
@@ -539,6 +539,22 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.actTopRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.chevron {
+  font-size: 9px;
+  color: var(--muted);
+  opacity: 0.5;
 }
 
 .actName {
@@ -738,8 +754,8 @@
 /* ── desktop tweaks ──────────────────────────────────────────────────────────── */
 
 @media (min-width: 640px) {
-  .hero     { padding: 3rem 2rem 2.5rem; }
-  .section  { padding: 2rem; }
+  .hero     { padding: 2rem 1.5rem 1.75rem; }
+  .section  { padding: 1.5rem; }
   .statsStrip { grid-template-columns: repeat(4, 1fr); }
 
   .catGrid {

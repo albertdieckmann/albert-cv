@@ -93,6 +93,7 @@ export default function RoskildePage() {
   const [session,       setSession]       = useState<SessionData>({ user: null, groups: [], activeGroup: null });
   const [search,        setSearch]        = useState("");
   const [selectedOnly,  setSelectedOnly]  = useState(false);
+  const [expandedAct,   setExpandedAct]   = useState<string | null>(null);
   const [groupName,     setGroupName]     = useState("");
   const [inviteCode,    setInviteCode]    = useState("");
   const [status,        setStatus]        = useState("");
@@ -500,85 +501,6 @@ export default function RoskildePage() {
         </section>
       )}
 
-      {/* ── line-up ── */}
-      <section className={s.section}>
-        <p className={s.sectionTag}>Line-up</p>
-
-        <div className={s.filterBar}>
-          <input
-            type="search"
-            className={s.searchInput}
-            placeholder="Søg i line-up…"
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
-          />
-          <label className={s.toggleRow}>
-            <input
-              type="checkbox"
-              checked={selectedOnly}
-              onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }}
-            />
-            <span>Vis kun valgte</span>
-          </label>
-        </div>
-
-        <p className={s.hint}>
-          {session.user
-            ? `Dine valg gemmes som ${session.user.name}`
-            : "Log ind for at markere favoritter"}
-        </p>
-
-        {acts.length === 0 ? (
-          <div className={s.empty}>Ingen acts matcher dit søgeord.</div>
-        ) : (
-          <div className={s.actsList}>
-            {acts.map((act) => {
-              const picks = picksFor(act.name);
-              const mine  = myPick(act.name);
-              const note  = picks.length
-                ? picks.map((p) => `${p.user_name}: ${CATEGORY_META[p.category].label}`).join(" · ")
-                : null;
-
-              return (
-                <article key={act.name} className={s.actCard}>
-                  <div className={s.actTop}>
-                    <div>
-                      <h3 className={s.actName}>{act.name}</h3>
-                      <p className={s.actMeta}>{act.type ?? "Act"}</p>
-                      <p className={s.actMeta}>{schedule(act)}</p>
-                    </div>
-                    {mine ? (
-                      <span className={`${s.myPickBadge} ${CATEGORY_META[mine].cls}`}>
-                        ✓ {CATEGORY_META[mine].label}
-                      </span>
-                    ) : (
-                      <span className={`${s.tag} ${act.type === "Music" ? s.catMust : s.catBeer}`}>
-                        {act.type ?? "Act"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={s.catGrid}>
-                    {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
-                      <button
-                        key={key}
-                        className={`${s.catBtn} ${meta.cls} ${mine === key ? s.catBtnActive : ""}`}
-                        onClick={() => handlePick(act.name, key)}
-                        disabled={!session.user || !session.activeGroup}
-                      >
-                        {mine === key ? "✓ " : ""}{meta.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {note && <p className={s.pickNote}>{note}</p>}
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
       {/* ── tidsplan ── */}
       <section className={s.section}>
         <p className={s.sectionTag}>Tidsplan</p>
@@ -620,6 +542,96 @@ export default function RoskildePage() {
               ))}
             </div>
           ))
+        )}
+      </section>
+
+      {/* ── line-up ── */}
+      <section className={s.section}>
+        <p className={s.sectionTag}>Line-up</p>
+
+        <div className={s.filterBar}>
+          <input
+            type="search"
+            className={s.searchInput}
+            placeholder="Søg i line-up…"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
+          />
+          <label className={s.toggleRow}>
+            <input
+              type="checkbox"
+              checked={selectedOnly}
+              onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }}
+            />
+            <span>Vis kun valgte</span>
+          </label>
+        </div>
+
+        <p className={s.hint}>
+          {session.user
+            ? `Dine valg gemmes som ${session.user.name}`
+            : "Log ind for at markere favoritter"}
+        </p>
+
+        {acts.length === 0 ? (
+          <div className={s.empty}>Ingen acts matcher dit søgeord.</div>
+        ) : (
+          <div className={s.actsList}>
+            {acts.map((act) => {
+              const picks = picksFor(act.name);
+              const mine  = myPick(act.name);
+              const note  = picks.length
+                ? picks.map((p) => `${p.user_name}: ${CATEGORY_META[p.category].label}`).join(" · ")
+                : null;
+
+              const isExpanded = expandedAct === act.name;
+              return (
+                <article key={act.name} className={s.actCard}>
+                  <div
+                    className={s.actTop}
+                    onClick={() => setExpandedAct(isExpanded ? null : act.name)}
+                    role="button"
+                    aria-expanded={isExpanded}
+                  >
+                    <div>
+                      <h3 className={s.actName}>{act.name}</h3>
+                      <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
+                    </div>
+                    <div className={s.actTopRight}>
+                      {mine ? (
+                        <span className={`${s.myPickBadge} ${CATEGORY_META[mine].cls}`}>
+                          ✓ {CATEGORY_META[mine].label}
+                        </span>
+                      ) : (
+                        <span className={`${s.tag} ${act.type === "Music" ? s.catMust : s.catBeer}`}>
+                          {act.type ?? "Act"}
+                        </span>
+                      )}
+                      <span className={s.chevron}>{isExpanded ? "▲" : "▼"}</span>
+                    </div>
+                  </div>
+
+                  {isExpanded && (
+                    <>
+                      <div className={s.catGrid}>
+                        {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
+                          <button
+                            key={key}
+                            className={`${s.catBtn} ${meta.cls} ${mine === key ? s.catBtnActive : ""}`}
+                            onClick={() => handlePick(act.name, key)}
+                            disabled={!session.user || !session.activeGroup}
+                          >
+                            {mine === key ? "✓ " : ""}{meta.label}
+                          </button>
+                        ))}
+                      </div>
+                      {note && <p className={s.pickNote}>{note}</p>}
+                    </>
+                  )}
+                </article>
+              );
+            })}
+          </div>
         )}
       </section>
 
