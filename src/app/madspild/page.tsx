@@ -275,7 +275,15 @@ export default function MadspildPage() {
         const e = json as { error?: string; detail?: string }
         throw new Error(e.error ? `${e.error}${e.detail ? `\n\n${e.detail}` : ''}` : `HTTP ${res.status}`)
       }
-      const entries = (Array.isArray(json) ? json as FoodWasteEntry[] : []).map(entry => {
+      const rawEntries = Array.isArray(json) ? json as FoodWasteEntry[] : []
+
+      // DEBUG: vis koordinat-format i konsol — fjernes igen bagefter
+      if (rawEntries[0]?.store) {
+        console.log('[madspild] første butik koordinater:', JSON.stringify(rawEntries[0].store.coordinates))
+        console.log('[madspild] første butik fuld store:', JSON.stringify(rawEntries[0].store))
+      }
+
+      const entries = rawEntries.map(entry => {
         const c = entry.store.coordinates
         const storeLat = c?.lat ?? c?.latitude
         const storeLng = c?.lng ?? c?.lon ?? c?.longitude
