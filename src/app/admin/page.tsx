@@ -65,6 +65,9 @@ interface ExpEntry {
 interface GalleryImage { filename: string; caption: string; order?: number }
 interface GalleryData { images: GalleryImage[] }
 
+interface ProjectItem { title: string; description: string; href: string; tags?: string; live?: boolean; order?: number }
+interface ProjectsData { projects: ProjectItem[] }
+
 export default async function AdminPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
@@ -83,6 +86,7 @@ export default async function AdminPage() {
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
   const gallery = readYaml<GalleryData>('content/gallery.yaml')
+  const projectsData = readYaml<ProjectsData>('content/projects.yaml')
 
   return (
     <AdminClient
@@ -92,6 +96,7 @@ export default async function AdminPage() {
       contact={contact}
       experiences={experiences}
       gallery={gallery}
+      projects={projectsData?.projects ?? []}
     />
   )
 }

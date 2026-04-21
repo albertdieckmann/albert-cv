@@ -68,12 +68,24 @@ interface ExpEntry {
 interface GalleryImage { filename: string; caption: string; order?: number }
 interface GalleryData { images: GalleryImage[] }
 
+interface ProjectItem {
+  title: string
+  description: string
+  href: string
+  tags?: string
+  live?: boolean
+  order?: number
+}
+interface ProjectsData { projects: ProjectItem[] }
+
 export default async function Home() {
   const hero = readYaml<HeroData>('content/hero.yaml')
   const about = readYaml<AboutData>('content/about.yaml')
   const skills = readYaml<SkillsData>('content/skills.yaml')
   const contact = readYaml<ContactData>('content/contact.yaml')
   const gallery = readYaml<GalleryData>('content/gallery.yaml')
+  const projectsData = readYaml<ProjectsData>('content/projects.yaml')
+  const projects = (projectsData?.projects ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
   const expFiles = readdirSync(join(process.cwd(), 'content/experience'))
   const experiences = expFiles
@@ -110,20 +122,31 @@ export default async function Home() {
           Ting jeg har bygget i fritiden — mest for at lære, lidt for at bruge dem.
         </p>
         <div className="projects-grid">
-          <a href="/madspild" className="project-card">
-            <div className="project-card-top">
-              <span className="project-card-tag">Salling API · Next.js</span>
-              <span className="project-card-arrow">→</span>
-            </div>
-            <h3 className="project-card-title">Madspild</h3>
-            <p className="project-card-desc">
-              Varer tæt på udløbsdato hos Føtex, Netto og Bilka nær dig — sorteret efter størst besparelse. Trækker live data fra Sallings åbne API.
-            </p>
-            <div className="project-card-footer">
-              <span className="project-card-status project-card-status--live">● Live</span>
-            </div>
-          </a>
-
+          {projects.map((p, i) => (
+            p.href ? (
+              <a key={i} href={p.href} className="project-card">
+                <div className="project-card-top">
+                  {p.tags && <span className="project-card-tag">{p.tags}</span>}
+                  <span className="project-card-arrow">→</span>
+                </div>
+                <h3 className="project-card-title">{p.title}</h3>
+                <p className="project-card-desc">{p.description}</p>
+                {p.live && (
+                  <div className="project-card-footer">
+                    <span className="project-card-status project-card-status--live">● Live</span>
+                  </div>
+                )}
+              </a>
+            ) : (
+              <div key={i} className="project-card project-card--placeholder">
+                <div className="project-card-top">
+                  {p.tags && <span className="project-card-tag">{p.tags}</span>}
+                </div>
+                <h3 className="project-card-title" style={{ opacity: 0.3 }}>{p.title}</h3>
+                <p className="project-card-desc" style={{ opacity: 0.3 }}>{p.description}</p>
+              </div>
+            )
+          ))}
           <div className="project-card project-card--placeholder">
             <div className="project-card-top">
               <span className="project-card-tag">Kommer</span>

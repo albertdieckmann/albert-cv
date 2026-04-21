@@ -14,6 +14,8 @@ interface ExpEntry { period: string; org: string; title: string; description: st
 interface GalleryImage { filename: string; caption: string; order?: number }
 interface GalleryData { images: GalleryImage[] }
 
+interface ProjectItem { title: string; description: string; href: string; tags?: string; live?: boolean; order?: number }
+
 interface Props {
   hero: HeroData
   about: AboutData
@@ -21,6 +23,7 @@ interface Props {
   contact: ContactData
   experiences: ExpEntry[]
   gallery: GalleryData
+  projects: ProjectItem[]
 }
 
 type Status = 'idle' | 'loading' | 'ok' | 'error'
@@ -76,7 +79,7 @@ function slugify(str: string) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || `entry-${Date.now()}`
 }
 
-export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact: c0, experiences: ex0, gallery: g0 }: Props) {
+export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact: c0, experiences: ex0, gallery: g0, projects: pr0 }: Props) {
   const { signOut } = useClerk()
   const [active, setActive] = useState('hero')
   const [statuses, setStatuses] = useState<Record<string, Status>>({})
@@ -86,6 +89,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
   const [contact, setContact] = useState(c0)
   const [exps, setExps] = useState(ex0)
   const [gallery, setGallery] = useState(g0)
+  const [projects, setProjects] = useState(pr0)
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'ok' | 'error'>('idle')
 
   async function save(key: string, data: unknown) {
@@ -176,6 +180,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
 
   const nav = [
     { key: 'hero', label: '🏠 Hero' },
+    { key: 'projekter', label: '🚀 Projekter' },
     { key: 'om', label: '👤 Om mig' },
     { key: 'erfaring', label: '💼 Erfaring' },
     { key: 'kompetencer', label: '🧠 Kompetencer' },
@@ -235,6 +240,57 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
           </button>
 
           <SaveBar section="hero" status={statuses['hero'] ?? 'idle'} onSave={() => save('hero', hero)} />
+        </>}
+
+        {/* PROJEKTER */}
+        {active === 'projekter' && <>
+          <p style={s.sectionTitle}>Forside</p>
+          <h1 style={s.sectionHeading}>Projekter</h1>
+
+          {projects.map((p, i) => (
+            <div key={i} style={s.card}>
+              <button style={s.removeBtn} title="Fjern" onClick={() => setProjects(ps => ps.filter((_, j) => j !== i))}>✕</button>
+              <p style={s.cardLabel}>{p.title || 'Nyt projekt'}</p>
+
+              <label style={s.label}>Titel</label>
+              <input style={s.input} value={p.title}
+                onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, title: e.target.value } : x))} />
+
+              <label style={s.label}>Beskrivelse</label>
+              <textarea style={s.textarea} value={p.description}
+                onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, description: e.target.value } : x))} />
+
+              <label style={s.label}>Link (href) — lad stå tomt for placeholder</label>
+              <input style={s.input} placeholder="/mit-projekt" value={p.href}
+                onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, href: e.target.value } : x))} />
+
+              <label style={s.label}>Tags (vises som fx &quot;Salling API · Next.js&quot;)</label>
+              <input style={s.input} placeholder="API · Next.js" value={p.tags ?? ''}
+                onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, tags: e.target.value } : x))} />
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.25rem' }}>
+                <div style={{ width: '120px' }}>
+                  <label style={s.label}>Rækkefølge</label>
+                  <input style={{ ...s.input, marginBottom: 0 }} type="number" value={p.order ?? i}
+                    onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, order: parseInt(e.target.value) || 0 } : x))} />
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginTop: '1.1rem' }}>
+                  <input type="checkbox" checked={p.live ?? false}
+                    onChange={e => setProjects(ps => ps.map((x, j) => j === i ? { ...x, live: e.target.checked } : x))} />
+                  <span style={{ color: '#888880', fontSize: '0.75rem' }}>Vis &quot;● Live&quot; badge</span>
+                </label>
+              </div>
+            </div>
+          ))}
+
+          <button style={s.addBtn} onClick={() => {
+            const maxOrder = projects.reduce((m, p) => Math.max(m, p.order ?? 0), 0)
+            setProjects(ps => [...ps, { title: '', description: '', href: '', tags: '', live: false, order: maxOrder + 1 }])
+          }}>
+            + Tilføj projekt
+          </button>
+
+          <SaveBar section="projects" status={statuses['projects'] ?? 'idle'} onSave={() => save('projects', { projects })} />
         </>}
 
         {/* OM MIG */}

@@ -1,0 +1,9 @@
+projects:
+  - title: Madspild
+    description: >-
+      Varer tæt på udløbsdato hos Føtex, Netto og Bilka nær dig —
+      sorteret efter størst besparelse. Trækker live data fra Sallings åbne API.
+    href: /madspild
+    tags: Salling API · Next.js
+    live: true
+    order: 1
