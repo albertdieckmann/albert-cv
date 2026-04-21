@@ -44,9 +44,6 @@ interface ChipItem {
 
 interface SkillsData {
   chips: ChipItem[]
-  roskildeTitle: string
-  roskildeSubtitle: string
-  roskildeBadge: string
 }
 
 interface ContactData {
@@ -244,7 +241,7 @@ export default async function Home() {
       </section>
 
       <footer>
-        <p>© 2025 Albert Dieckmann</p>
+        <p>© 2026 Albert Dieckmann</p>
         <p id="footer-secret">albertdieckmann.dk</p>
       </footer>
 

@@ -318,45 +318,6 @@ h2 {
 }
 .skill-chip:hover span { color: rgba(200,240,96,0.6); }
 
-/* ROSKILDE */
-.roskilde-box {
-  border: 1px solid var(--border);
-  padding: 2.5rem;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  margin-top: 1px;
-}
-.roskilde-box::after {
-  content: '⬤ ⬤ ⬤ ⬤ ⬤';
-  position: absolute;
-  right: -20px; bottom: -10px;
-  font-size: 80px;
-  opacity: 0.03;
-  letter-spacing: -10px;
-  color: var(--accent);
-}
-.roskilde-title {
-  font-family: var(--serif);
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-}
-.roskilde-sub { color: var(--muted); font-size: 0.9rem; }
-.roskilde-badge {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--accent);
-  border: 1px solid rgba(200,240,96,0.3);
-  padding: 0.5rem 1rem;
-  white-space: nowrap;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 /* CONTACT */
 .contact-inner {
   display: grid;
@@ -701,4 +662,11 @@ footer p {
 
 @media (max-width: 768px) {
   .projects-grid { grid-template-columns: 1fr; }
+}
+
+/* MADSPILD — responsiv header */
+.madspild-header-right { display: flex; align-items: center; gap: 1rem; }
+.madspild-geo-badge { display: flex; align-items: center; gap: 0.3rem; }
+@media (max-width: 600px) {
+  .madspild-geo-badge { display: none; }
 }

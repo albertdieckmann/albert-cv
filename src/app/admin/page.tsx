@@ -41,9 +41,6 @@ interface ChipItem {
 
 interface SkillsData {
   chips: ChipItem[]
-  roskildeTitle: string
-  roskildeSubtitle: string
-  roskildeBadge: string
 }
 
 interface ContactData {

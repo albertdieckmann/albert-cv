@@ -401,20 +401,19 @@ export default function MadspildPage() {
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e0', fontFamily: 'var(--font-dm-mono, monospace)' }}>
 
       {/* Header */}
-      <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1.25rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <Link href="/" style={{ color: '#888880', fontSize: '0.75rem', textDecoration: 'none', letterSpacing: '0.05em' }}>← albertdieckmann.dk</Link>
-          <span style={{ color: '#1e1e1e' }}>|</span>
-          <span style={{ color: '#c8f060', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700 }}>Madspild</span>
+      <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+          <Link href="/" style={{ color: '#888880', fontSize: '0.75rem', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>←</Link>
+          <span style={{ color: '#c8f060', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>Madspild</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="madspild-header-right" style={{ flexShrink: 0 }}>
           {geo.status === 'granted' && usingGeo && (
-            <span style={{ color: '#c8f060', fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <span className="madspild-geo-badge" style={{ color: '#c8f060', fontSize: '0.65rem' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#c8f060', display: 'inline-block' }} />
               Din placering
             </span>
           )}
-          {lastFetched && <span style={{ color: '#444440', fontSize: '0.7rem' }}>Opdateret {lastFetched}</span>}
+          {lastFetched && <span style={{ color: '#444440', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>Opdateret {lastFetched}</span>}
         </div>
       </header>
 

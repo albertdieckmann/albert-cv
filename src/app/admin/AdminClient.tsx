@@ -8,7 +8,7 @@ interface HeroData { tag: string; description: string; ctaText: string; stats: S
 interface AboutItem { icon: string; title: string; description: string }
 interface AboutData { paragraph1: string; paragraph2: string; paragraph3: string; items: AboutItem[] }
 interface ChipItem { name: string; category: string }
-interface SkillsData { chips: ChipItem[]; roskildeTitle: string; roskildeSubtitle: string; roskildeBadge: string }
+interface SkillsData { chips: ChipItem[] }
 interface ContactData { heading: string; description: string; linkedinUrl: string; email: string }
 interface ExpEntry { period: string; org: string; title: string; description: string; order?: number; slug: string }
 interface GalleryImage { filename: string; caption: string; order?: number }
