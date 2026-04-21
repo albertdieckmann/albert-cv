@@ -204,6 +204,17 @@ export default function RoskildePage() {
     });
   }
 
+  async function handleDeleteGroup(id: number, name: string) {
+    if (!confirm(`Slet gruppen "${name}"? Dette fjerner alle valg og invite-koder i gruppen.`)) return;
+    await run(async () => {
+      await api(`/api/roskilde/groups/${id}`, { method: "DELETE" });
+      activeGroupIdRef.current = null;
+      saveUi({ activeGroupId: null });
+      await fetchSession(null);
+      flash("Gruppen er slettet.");
+    });
+  }
+
   async function handleSwitchGroup(id: number) {
     activeGroupIdRef.current = id;
     saveUi({ activeGroupId: id });
@@ -418,6 +429,17 @@ export default function RoskildePage() {
                   </button>
                 )}
               </div>
+
+              {session.activeGroup.members.find(
+                (m) => m.id === session.user?.id && m.role === "owner"
+              ) && (
+                <button
+                  className={s.deleteBtn}
+                  onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}
+                >
+                  Slet gruppe
+                </button>
+              )}
             </>
           )}
 
