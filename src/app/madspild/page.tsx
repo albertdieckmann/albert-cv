@@ -293,64 +293,67 @@ return (
       </p>
     </div>
 
-    {/* Geo-banner */}
-    {geo.status === 'idle' || geo.status === 'requesting' ? (
-      <div style={{ background: '#0f0f0f', border: '1px solid #1e1e1e', padding: '0.875rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <span style={{ color: '#888880', fontSize: '0.75rem' }}>
-          {geo.status === 'requesting' ? '📍 Henter din placering...' : '📍 Henter placering...'}
-        </span>
-      </div>
-    ) : geo.status === 'denied' ? (
-      <div style={{ background: '#0f0f0f', border: '1px solid #2a2a2a', padding: '0.875rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-        <span style={{ color: '#888880', fontSize: '0.75rem' }}>
-          📍 {geo.reason} Brug postnummer i stedet.
-        </span>
-        <button
-          onClick={requestGeo}
-          style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#888880', padding: '0.35rem 0.75rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem' }}
-        >
-          Prøv igen
+    {/* Søgesektion — fremtrædende kun når geo er afvist */}
+    {(geo.status === 'denied' || !usingGeo) ? (
+      <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+        <div>
+          <label style={{ display: 'block', color: '#666660', fontSize: '0.65rem', textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: '0.4rem' }}>
+            Postnummer
+          </label>
+          <input
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+            value={inputZip}
+            onChange={e => setInputZip(e.target.value)}
+            placeholder="8000"
+            style={{ background: '#111', border: '1px solid #222', color: '#e8e8e0', padding: '0.65rem 1rem', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', width: '110px', letterSpacing: '0.1em' }}
+          />
+        </div>
+        <button type="submit" disabled={loading} style={{ background: loading ? '#8aa840' : '#c8f060', color: '#0a0a0a', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
+          {loading ? 'Henter...' : 'Søg'}
         </button>
-      </div>
-    ) : null}
-
-    {/* Search */}
-    <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
-      <div>
-        <label style={{ display: 'block', color: '#666660', fontSize: '0.65rem', textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: '0.4rem' }}>
-          Postnummer
-        </label>
-        <input
-          type="text"
-          inputMode="numeric"
-          maxLength={4}
-          value={inputZip}
-          onChange={e => setInputZip(e.target.value)}
-          placeholder="8000"
-          style={{ background: '#111', border: '1px solid #222', color: '#e8e8e0', padding: '0.65rem 1rem', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', width: '110px', letterSpacing: '0.1em' }}
-        />
-      </div>
-      <button type="submit" disabled={loading} style={{ background: loading ? '#8aa840' : '#c8f060', color: '#0a0a0a', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
-        {loading ? 'Henter...' : 'Søg'}
-      </button>
-      <button type="button" onClick={() => {
-        if (geo.status === 'granted' && usingGeo) fetchByCoords(geo.lat, geo.lng)
-        else fetchByZip(zip)
-      }} disabled={loading} title="Opdater" style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#888880', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.75rem', height: '42px' }}>
-        ↻
-      </button>
-      {/* Geo-knap -- vis kun hvis denied eller hvis brugeren søgte på postnummer */}
-      {(geo.status === 'granted' && !usingGeo) && (
+        {geo.status === 'granted' && (
+          <button
+            type="button"
+            onClick={() => fetchByCoords((geo as { status: 'granted'; lat: number; lng: number }).lat, (geo as { status: 'granted'; lat: number; lng: number }).lng)}
+            disabled={loading}
+            style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#c8f060', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px' }}
+          >
+            📍 Min placering
+          </button>
+        )}
+      </form>
+    ) : (
+      /* Geo aktiv: postnummer-søgning trykket ned til diskret sekundær linje */
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
         <button
-          type="button"
-          onClick={() => fetchByCoords((geo as { status: 'granted'; lat: number; lng: number }).lat, (geo as { status: 'granted'; lat: number; lng: number }).lng)}
+          onClick={() => {
+            if (geo.status === 'granted') fetchByCoords(geo.lat, geo.lng)
+          }}
           disabled={loading}
-          style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#c8f060', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px', letterSpacing: '0.05em' }}
+          style={{ background: 'transparent', border: 'none', color: '#888880', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.75rem' }}
         >
-          📍 Brug min placering
+          ↻ {loading ? 'Opdaterer...' : 'Opdater'}
         </button>
-      )}
-    </form>
+        <span style={{ color: '#1e1e1e' }}>·</span>
+        <form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ color: '#555550', fontSize: '0.72rem' }}>Søg på postnummer:</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+            value={inputZip}
+            onChange={e => setInputZip(e.target.value)}
+            placeholder="8000"
+            style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #2a2a2a', color: '#888880', padding: '0.1rem 0.25rem', fontFamily: 'inherit', fontSize: '0.72rem', outline: 'none', width: '48px', letterSpacing: '0.05em' }}
+          />
+          <button type="submit" disabled={loading} style={{ background: 'none', border: 'none', color: '#555550', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.72rem', padding: 0 }}>
+            →
+          </button>
+        </form>
+      </div>
+    )}
 
     {/* Error */}
     {error && (
