@@ -38,10 +38,10 @@ interface StoreAddress {
 }
 
 interface StoreHours {
-  date: string      // 'YYYY-MM-DD'
+  date: string
   type: string
-  open: string      // 'HH:MM'
-  close: string     // 'HH:MM'
+  open: string
+  close: string
   closed: boolean
 }
 
@@ -50,7 +50,7 @@ interface Store {
   name?: string
   brand?: string
   address?: StoreAddress
-  coordinates?: { lat?: number; lng?: number; lon?: number } // Salling bruger 'lon'
+  coordinates?: { lat?: number; lng?: number; lon?: number }
   hours?: StoreHours[]
 }
 
@@ -58,6 +58,25 @@ interface FoodWasteEntry {
   store: Store
   clearances: Clearance[]
   distance?: number
+}
+
+// Tilbudsvarer / spotvarer fra promotions-API
+interface Promotion {
+  id?: string
+  heading?: string
+  description?: string
+  category?: string
+  price?: number
+  originalPrice?: number
+  percentDiscount?: number
+  image?: string
+  validFrom?: string
+  validTo?: string
+  storeIds?: string[]
+  // Salling bruger muligvis andre feltnavne — begge håndteres
+  name?: string
+  title?: string
+  newPrice?: number
 }
 
 type GeoState =
@@ -133,7 +152,6 @@ function formatDistance(km: number): string {
   return `${km.toFixed(1).replace('.', ',')} km`
 }
 
-// Returnerer { label, isOpen } for i dag — viser "Åben 08:00–21:00" eller "Åbner 08:00"
 function todayHours(hours?: StoreHours[]): { label: string; isOpen: boolean } | null {
   if (!hours?.length) return null
   const todayStr = new Date().toISOString().slice(0, 10)
@@ -159,6 +177,23 @@ function savingsKr(c: Clearance): number {
   return orig - curr
 }
 
+function promoLabel(p: Promotion): string {
+  return p.heading ?? p.title ?? p.name ?? p.description ?? 'Tilbud'
+}
+
+function promoNewPrice(p: Promotion): number | undefined {
+  return p.newPrice ?? p.price
+}
+
+function promoDiscount(p: Promotion): number | undefined {
+  if (p.percentDiscount) return p.percentDiscount
+  const np = promoNewPrice(p)
+  if (np != null && p.originalPrice && p.originalPrice > 0) {
+    return Math.round((1 - np / p.originalPrice) * 100)
+  }
+  return undefined
+}
+
 /* ── Main component ─────────────────────────────────────── */
 export default function MadspildPage() {
   const [zip, setZip] = useState('8000')
@@ -171,6 +206,11 @@ export default function MadspildPage() {
   const [usingGeo, setUsingGeo] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
+  // Promotions state
+  const [promos, setPromos] = useState<Promotion[] | null>(null)
+  const [promosExpanded, setPromosExpanded] = useState(false)
+  const [promosLoading, setPromosLoading] = useState(false)
+
   function toggleStore(id: string) {
     setExpanded(prev => {
       const next = new Set(prev)
@@ -178,6 +218,21 @@ export default function MadspildPage() {
       return next
     })
   }
+
+  // Hent tilbudsvarer
+  const fetchPromos = useCallback(async (z?: string) => {
+    setPromosLoading(true)
+    try {
+      const params = z ? `?zip=${encodeURIComponent(z)}` : ''
+      const res = await fetch(`/api/salling/promotions${params}`)
+      const json = await res.json()
+      if (res.ok) {
+        setPromos(Array.isArray(json) ? json as Promotion[] : json?.items ?? json?.promotions ?? [])
+      }
+      // Stille fejl — promotions er add-on, ikke kritisk
+    } catch { /* ignorér */ }
+    finally { setPromosLoading(false) }
+  }, [])
 
   const fetchByZip = useCallback(async (z: string) => {
     setLoading(true); setError(null); setUsingGeo(false)
@@ -188,14 +243,14 @@ export default function MadspildPage() {
         const e = json as { error?: string; detail?: string }
         throw new Error(e.error ? `${e.error}${e.detail ? `\n\n${e.detail}` : ''}` : `HTTP ${res.status}`)
       }
-      const entries = Array.isArray(json) ? json as FoodWasteEntry[] : []
-      setData(entries)
+      setData(Array.isArray(json) ? json as FoodWasteEntry[] : [])
       setExpanded(new Set())
       setLastFetched(new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }))
+      fetchPromos(z)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Ukendt fejl')
     } finally { setLoading(false) }
-  }, [])
+  }, [fetchPromos])
 
   const fetchByCoords = useCallback(async (lat: number, lng: number) => {
     setLoading(true); setError(null); setUsingGeo(true)
@@ -218,11 +273,12 @@ export default function MadspildPage() {
       setData(entries)
       setExpanded(new Set())
       setLastFetched(new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }))
+      fetchPromos()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Ukendt fejl')
       setUsingGeo(false)
     } finally { setLoading(false) }
-  }, [])
+  }, [fetchPromos])
 
   const requestGeo = useCallback(() => {
     if (!navigator.geolocation) {
@@ -260,6 +316,14 @@ export default function MadspildPage() {
   const storesWithItems = (data ?? []).filter(e => (e.clearances ?? []).length > 0)
   const totalClearances = storesWithItems.reduce((s, e) => s + e.clearances.length, 0)
 
+  // Gruppér tilbud på kategori
+  const promosByCategory = (promos ?? []).reduce<Record<string, Promotion[]>>((acc, p) => {
+    const cat = p.category ?? 'Øvrige tilbud'
+    ;(acc[cat] ??= []).push(p)
+    return acc
+  }, {})
+  const promoCategories = Object.keys(promosByCategory).sort()
+
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e0', fontFamily: 'var(--font-dm-mono, monospace)' }}>
 
@@ -296,7 +360,7 @@ export default function MadspildPage() {
           </p>
         </div>
 
-        {/* Søg — fremtrædende kun uden geo */}
+        {/* Søg */}
         {(geo.status === 'denied' || !usingGeo) ? (
           <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div>
@@ -337,26 +401,63 @@ export default function MadspildPage() {
           </div>
         )}
 
-        {/* Loading */}
         {loading && (
           <div style={{ color: '#888880', fontSize: '0.85rem', padding: '2rem 0' }}>
             {usingGeo ? 'Henter nærmeste butikker...' : `Henter varer i postnummer ${zip}...`}
           </div>
         )}
 
-        {/* Results */}
+        {/* ── TILBUDSVARER (promotions) — øverst, mindre prominent ── */}
+        {promos !== null && promos.length > 0 && (
+          <div style={{ marginBottom: '2rem' }}>
+            <button
+              onClick={() => setPromosExpanded(v => !v)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '0.75rem 1rem', background: 'transparent',
+                border: '1px solid #1e1e1e',
+                borderBottom: promosExpanded ? 'none' : '1px solid #1e1e1e',
+                cursor: 'pointer', fontFamily: 'inherit', color: '#888880',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#555550' }}>Tilbudsvarer</span>
+                <span style={{ fontSize: '0.68rem', color: '#444440' }}>{promos.length} tilbud · {promoCategories.length} kategorier</span>
+                {promosLoading && <span style={{ fontSize: '0.65rem', color: '#444440' }}>opdaterer...</span>}
+              </div>
+              <span style={{ fontSize: '0.7rem', color: '#333330', transform: promosExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
+            </button>
+
+            {promosExpanded && (
+              <div style={{ border: '1px solid #1e1e1e', borderTop: 'none', padding: '1rem' }}>
+                {promoCategories.map(cat => (
+                  <div key={cat} style={{ marginBottom: '1.25rem' }}>
+                    <p style={{ margin: '0 0 0.6rem', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#444440' }}>{cat}</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.5rem' }}>
+                      {promosByCategory[cat].map((p, i) => (
+                        <PromoCard key={p.id ?? i} promo={p} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── MADSPILD BUTIKKER ── */}
         {!loading && data !== null && (
           <>
             <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', padding: '1rem 1.25rem', background: '#0f0f0f', border: '1px solid #1e1e1e', flexWrap: 'wrap' }}>
               <Stat value={storesWithItems.length} label="butikker" />
               <div style={{ width: '1px', background: '#1e1e1e' }} />
-              <Stat value={totalClearances} label="varer på tilbud" />
+              <Stat value={totalClearances} label="madspildsvarer" />
               <div style={{ width: '1px', background: '#1e1e1e' }} />
               <Stat value={usingGeo ? '📍 din placering' : zip} label={usingGeo ? 'sorteret efter afstand' : 'postnummer'} />
             </div>
 
             {expanded.size === 0 && storesWithItems.length > 0 && (
-              <p style={{ color: '#555550', fontSize: '0.72rem', marginBottom: '1.5rem' }}>
+              <p style={{ color: '#555550', fontSize: '0.72rem', marginBottom: '1rem' }}>
                 Tryk på en butik for at se varerne
               </p>
             )}
@@ -376,6 +477,9 @@ export default function MadspildPage() {
                 entry={entry}
                 isExpanded={expanded.has(entry.store.id)}
                 onToggle={() => toggleStore(entry.store.id)}
+                storePromos={(promos ?? []).filter(p =>
+                  !p.storeIds || p.storeIds.length === 0 || p.storeIds.includes(entry.store.id)
+                )}
               />
             ))}
           </>
@@ -384,8 +488,8 @@ export default function MadspildPage() {
 
       <footer style={{ borderTop: '1px solid #1e1e1e', padding: '1.5rem 2rem', textAlign: 'center', color: '#444440', fontSize: '0.7rem', marginTop: '4rem' }}>
         Data fra{' '}
-        <a href="https://developer.sallinggroup.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666660', textDecoration: 'none' }}>Salling Group Food Waste API</a>
-        {' · '}Opdateres hvert 5. minut{' · '}
+        <a href="https://developer.sallinggroup.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666660', textDecoration: 'none' }}>Salling Group API</a>
+        {' · '}
         <a href="/" style={{ color: '#666660', textDecoration: 'none' }}>albertdieckmann.dk</a>
       </footer>
     </div>
@@ -402,34 +506,31 @@ function Stat({ value, label }: { value: string | number; label: string }) {
   )
 }
 
-function StoreSection({ entry, isExpanded, onToggle }: { entry: FoodWasteEntry; isExpanded: boolean; onToggle: () => void }) {
+function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
+  entry: FoodWasteEntry
+  isExpanded: boolean
+  onToggle: () => void
+  storePromos: Promotion[]
+}) {
+  const [spotExpanded, setSpotExpanded] = useState(false)
   const clearances = entry.clearances ?? []
-
-  // Sortér: størst besparelse (kr) først
   const sorted = [...clearances].sort((a, b) => savingsKr(b) - savingsKr(a))
-
   const hours = todayHours(entry.store.hours)
   const dist = entry.distance != null ? formatDistance(entry.distance) : null
 
   return (
     <div style={{ marginBottom: '0.5rem' }}>
       {/* Klikbar store-header */}
-      <button
-        onClick={onToggle}
-        style={{
-          width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-          padding: '0.875rem 1rem', background: '#0f0f0f',
-          border: '1px solid', borderColor: isExpanded ? '#2a2a2a' : '#1e1e1e',
-          borderBottom: isExpanded ? 'none' : '1px solid #1e1e1e',
-          cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
-        }}
-      >
-        {/* Brand badge */}
+      <button onClick={onToggle} style={{
+        width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+        padding: '0.875rem 1rem', background: '#0f0f0f',
+        border: '1px solid', borderColor: isExpanded ? '#2a2a2a' : '#1e1e1e',
+        borderBottom: isExpanded ? 'none' : '1px solid #1e1e1e',
+        cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+      }}>
         <span style={{ background: brandColor(entry.store.brand), color: '#0a0a0a', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.45rem', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
           {brandLabel(entry.store.brand)}
         </span>
-
-        {/* Name + meta */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: '#e8e8e0' }}>
             {entry.store.name ?? 'Ukendt butik'}
@@ -437,15 +538,9 @@ function StoreSection({ entry, isExpanded, onToggle }: { entry: FoodWasteEntry; 
           <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
             <span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
             {dist && <span style={{ color: '#888880' }}>· {dist}</span>}
-            {hours && (
-              <span style={{ color: hours.isOpen ? '#c8f060' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>
-                · {hours.label}
-              </span>
-            )}
+            {hours && <span style={{ color: hours.isOpen ? '#c8f060' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
           </p>
         </div>
-
-        {/* Count + chevron */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
           <span style={{ color: '#c8f060', fontSize: '0.8rem', fontWeight: 700 }}>
             {clearances.length} vare{clearances.length !== 1 ? 'r' : ''}
@@ -454,12 +549,42 @@ function StoreSection({ entry, isExpanded, onToggle }: { entry: FoodWasteEntry; 
         </div>
       </button>
 
-      {/* Produkt-grid — kun når åbnet */}
       {isExpanded && (
-        <div style={{ border: '1px solid #2a2a2a', borderTop: 'none', padding: '0.875rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
-          {sorted.map((clearance, idx) => (
-            <ProductCard key={clearance.offer?.ean ?? idx} clearance={clearance} />
-          ))}
+        <div style={{ border: '1px solid #2a2a2a', borderTop: 'none' }}>
+          {/* Madspildsvarer */}
+          <div style={{ padding: '0.875rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
+            {sorted.map((clearance, idx) => (
+              <ProductCard key={clearance.offer?.ean ?? idx} clearance={clearance} />
+            ))}
+          </div>
+
+          {/* Spotvarer for butikken — collapsible, mindre prominent */}
+          {storePromos.length > 0 && (
+            <div style={{ borderTop: '1px solid #1e1e1e', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
+              <button
+                onClick={() => setSpotExpanded(v => !v)}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '0.5rem 0.75rem', background: 'transparent',
+                  border: '1px solid #1e1e1e', cursor: 'pointer',
+                  fontFamily: 'inherit', color: '#555550',
+                }}
+              >
+                <span style={{ fontSize: '0.62rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  Spotvarer · {storePromos.length} tilbud
+                </span>
+                <span style={{ fontSize: '0.65rem', transform: spotExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
+              </button>
+
+              {spotExpanded && (
+                <div style={{ padding: '0.75rem', border: '1px solid #1e1e1e', borderTop: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
+                  {storePromos.map((p, i) => (
+                    <PromoCard key={p.id ?? i} promo={p} compact />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -481,7 +606,6 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
           -{discount}%
         </div>
       )}
-
       {product?.image ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={product.image} alt={product.description ?? ''} width={56} height={56}
@@ -490,22 +614,19 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
       ) : (
         <div style={{ width: '56px', height: '56px', background: '#1a1a1a', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>🛒</div>
       )}
-
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ margin: '0 0 0.4rem', fontSize: '0.78rem', color: '#e8e8e0', lineHeight: 1.3, paddingRight: discount != null ? '2.25rem' : '0' }}>
           {product?.description ?? 'Ukendt vare'}
         </p>
-
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginBottom: '0.4rem' }}>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#c8f060' }}>{fmt(newPrice)} kr</span>
           {offer?.originalPrice != null && offer.originalPrice > 0 && (
             <span style={{ fontSize: '0.7rem', color: '#555550', textDecoration: 'line-through' }}>{fmt(offer.originalPrice)} kr</span>
           )}
           {savings > 0 && (
-            <span style={{ fontSize: '0.65rem', color: '#888880', marginLeft: 'auto' }}>spar {fmt(savings)} kr</span>
+            <span style={{ fontSize: '0.62rem', color: '#888880', marginLeft: 'auto' }}>spar {fmt(savings)} kr</span>
           )}
         </div>
-
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
           {offer?.endTime && (
             <span style={{ fontSize: '0.62rem', color: urgency, border: `1px solid ${urgency}33`, padding: '0.1rem 0.35rem', flexShrink: 0 }}>
@@ -518,6 +639,46 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
             </span>
           )}
         </div>
+      </div>
+    </div>
+  )
+}
+
+function PromoCard({ promo, compact = false }: { promo: Promotion; compact?: boolean }) {
+  const label = promoLabel(promo)
+  const np = promoNewPrice(promo)
+  const disc = promoDiscount(promo)
+
+  return (
+    <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', padding: compact ? '0.6rem' : '0.75rem', display: 'flex', gap: '0.5rem', position: 'relative' }}>
+      {disc != null && (
+        <div style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', background: '#2a2a2a', color: '#888880', fontSize: '0.55rem', fontWeight: 700, padding: '0.1rem 0.35rem' }}>
+          -{disc}%
+        </div>
+      )}
+      {promo.image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={promo.image} alt={label} width={40} height={40}
+          style={{ width: '40px', height: '40px', objectFit: 'contain', flexShrink: 0, background: '#fff', padding: '2px' }}
+          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ margin: '0 0 0.3rem', fontSize: compact ? '0.7rem' : '0.75rem', color: '#aaa8a0', lineHeight: 1.3, paddingRight: disc != null ? '2rem' : '0' }}>
+          {label}
+        </p>
+        {np != null && (
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#888880' }}>{fmt(np)} kr</span>
+            {promo.originalPrice != null && promo.originalPrice > 0 && (
+              <span style={{ fontSize: '0.65rem', color: '#444440', textDecoration: 'line-through' }}>{fmt(promo.originalPrice)} kr</span>
+            )}
+          </div>
+        )}
+        {promo.validTo && (
+          <p style={{ margin: '0.25rem 0 0', fontSize: '0.6rem', color: '#444440' }}>
+            Gælder til {new Date(promo.validTo).toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}
+          </p>
+        )}
       </div>
     </div>
   )
