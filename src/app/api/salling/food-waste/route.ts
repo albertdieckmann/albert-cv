@@ -15,18 +15,24 @@ export async function GET(req: NextRequest) {
   const zip = searchParams.get('zip')
   const storeId = searchParams.get('store')
   const geo = searchParams.get('geo')
-  const radius = searchParams.get('radius') ?? '5'
+  const lat = searchParams.get('lat')
+  const lng = searchParams.get('lng')
+  const radius = searchParams.get('radius') ?? '10'
 
   let url: string
   if (storeId) {
     url = `${BASE}${encodeURIComponent(storeId)}`
+  } else if (lat && lng) {
+    // Koordinater sendt som ?lat=XX&lng=YY fra frontend
+    url = `${BASE}?geo=${encodeURIComponent(`${lat},${lng}`)}&radius=${encodeURIComponent(radius)}`
   } else if (geo) {
+    // Bagudkompatibelt: ?geo=lat,lng
     url = `${BASE}?geo=${encodeURIComponent(geo)}&radius=${encodeURIComponent(radius)}`
   } else if (zip) {
     url = `${BASE}?zip=${encodeURIComponent(zip)}`
   } else {
     return NextResponse.json(
-      { error: 'Angiv ?zip=XXXX, ?geo=lat,lon&radius=km eller ?store=ID' },
+      { error: 'Angiv ?zip=XXXX, ?lat=XX&lng=YY, ?geo=lat,lon&radius=km eller ?store=ID' },
       { status: 400 }
     )
   }
@@ -37,7 +43,6 @@ export async function GET(req: NextRequest) {
         Authorization: `Bearer ${TOKEN}`,
         Accept: 'application/json',
       },
-      // Undgå Next.js-cache der kan give stale data
       cache: 'no-store',
     })
 
@@ -51,7 +56,6 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Parse og send videre med kort cache
     const data = JSON.parse(text)
     return NextResponse.json(data, {
       headers: {
