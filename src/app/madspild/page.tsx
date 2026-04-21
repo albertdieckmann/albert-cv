@@ -159,13 +159,11 @@ function todayHours(hours?: StoreHours[]): { label: string; isOpen: boolean } | 
   const today = hours.find(h => h.date === todayStr)
   if (!today) return null
   if (today.closed) return { label: 'Lukket i dag', isOpen: false }
-  const [oh, om] = today.open.split(':').map(Number)
-  const [ch, cm] = today.close.split(':').map(Number)
-  const openMin = oh * 60 + om
-  const closeMin = ch * 60 + cm
+  const openMin = toMinutes(today.open)
+  const closeMin = toMinutes(today.close)
   const nowMin = new Date().getHours() * 60 + new Date().getMinutes()
   const isOpen = nowMin >= openMin && nowMin < closeMin
-  const range = `${today.open}–${today.close}`
+  const range = `${extractHHMM(today.open)}–${extractHHMM(today.close)}`
   return {
     label: isOpen ? `Åben ${range}` : nowMin < openMin ? `Åbner ${today.open}` : `Lukket (lukkede ${today.close})`,
     isOpen,
@@ -173,6 +171,27 @@ function todayHours(hours?: StoreHours[]): { label: string; isOpen: boolean } | 
 }
 
 const DA_DAYS = ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø']
+
+// Udtrækker "HH:MM" fra enten "HH:MM" eller "2026-04-21T07:00:00"
+function extractHHMM(value?: string): string {
+  if (!value) return ''
+  if (value.includes('T')) {
+    const t = new Date(value)
+    return t.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })
+  }
+  return value.slice(0, 5)
+}
+
+// Minutter siden midnat fra enten "HH:MM" eller ISO
+function toMinutes(value?: string): number {
+  if (!value) return 0
+  if (value.includes('T')) {
+    const d = new Date(value)
+    return d.getHours() * 60 + d.getMinutes()
+  }
+  const [h, m] = value.split(':').map(Number)
+  return h * 60 + m
+}
 
 function weekHours(hours?: StoreHours[]): { date: string; dayLabel: string; open: string; close: string; closed: boolean; isToday: boolean }[] {
   if (!hours?.length) return []
@@ -185,8 +204,8 @@ function weekHours(hours?: StoreHours[]): { date: string; dayLabel: string; open
       return {
         date: h.date,
         dayLabel: DA_DAYS[d.getDay()],
-        open: h.open,
-        close: h.close,
+        open: extractHHMM(h.open),
+        close: extractHHMM(h.close),
         closed: h.closed,
         isToday: h.date === todayStr,
       }
@@ -202,12 +221,11 @@ function nextOpening(hours?: StoreHours[]): string | null {
   for (const h of sorted) {
     if (h.closed) continue
     if (h.date < todayStr) continue
-    const [oh, om] = h.open.split(':').map(Number)
-    const openMin = oh * 60 + om
+    const openMin = toMinutes(h.open)
     if (h.date === todayStr && nowMin >= openMin) continue // allerede passeret
     const d = new Date(h.date)
     const dayLabel = h.date === todayStr ? 'i dag' : DA_DAYS[d.getDay()]
-    return `${dayLabel} kl. ${h.open}`
+    return `${dayLabel} kl. ${extractHHMM(h.open)}`
   }
   return null
 }
@@ -313,11 +331,6 @@ export default function MadspildPage() {
         throw new Error(e.error ? `${e.error}${e.detail ? `\n\n${e.detail}` : ''}` : `HTTP ${res.status}`)
       }
       const rawEntries = Array.isArray(json) ? json as FoodWasteEntry[] : []
-
-      if (rawEntries[0]?.store) {
-        console.log('[madspild] store keys:', Object.keys(rawEntries[0].store))
-        console.log('[madspild] store.hours:', JSON.stringify(rawEntries[0].store.hours))
-      }
 
       const entries = rawEntries.map(entry => {
         const c = entry.store.coordinates
