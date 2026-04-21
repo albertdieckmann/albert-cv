@@ -204,6 +204,17 @@ export default function RoskildePage() {
     });
   }
 
+  async function handleLeaveGroup(id: number, name: string) {
+    if (!confirm(`Forlad gruppen "${name}"? Dine valg i gruppen slettes.`)) return;
+    await run(async () => {
+      await api(`/api/roskilde/groups/${id}/leave`, { method: "DELETE" });
+      activeGroupIdRef.current = null;
+      saveUi({ activeGroupId: null });
+      await fetchSession(null);
+      flash("Du har forladt gruppen.");
+    });
+  }
+
   async function handleDeleteGroup(id: number, name: string) {
     if (!confirm(`Slet gruppen "${name}"? Dette fjerner alle valg og invite-koder i gruppen.`)) return;
     await run(async () => {
@@ -430,14 +441,19 @@ export default function RoskildePage() {
                 )}
               </div>
 
-              {session.activeGroup.members.find(
-                (m) => m.id === session.user?.id && m.role === "owner"
-              ) && (
+              {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
                 <button
                   className={s.deleteBtn}
                   onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}
                 >
                   Slet gruppe
+                </button>
+              ) : (
+                <button
+                  className={s.deleteBtn}
+                  onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}
+                >
+                  Forlad gruppe
                 </button>
               )}
             </>
