@@ -12,9 +12,9 @@ export default function NavBar() {
 
         {/* Desktop links */}
         <ul className="nav-links">
+          <li><a href="#projekter">Projekter</a></li>
           <li><a href="#om">Om</a></li>
           <li><a href="#erfaring">Erfaring</a></li>
-          <li><a href="#kompetencer">Kompetencer</a></li>
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
 
@@ -34,9 +34,9 @@ export default function NavBar() {
       {/* Mobil menu */}
       {open && (
         <div className="nav-mobile" onClick={() => setOpen(false)}>
+          <a href="#projekter" className="nav-mobile-link">Projekter</a>
           <a href="#om" className="nav-mobile-link">Om</a>
           <a href="#erfaring" className="nav-mobile-link">Erfaring</a>
-          <a href="#kompetencer" className="nav-mobile-link">Kompetencer</a>
           <a href="#kontakt" className="nav-mobile-link">Kontakt</a>
         </div>
       )}

@@ -92,7 +92,7 @@ export default async function Home() {
           <p className="hero-tag">{hero?.tag ?? ''}</p>
           <h1>Albert<br /><em>Dieckmann</em></h1>
           <p className="hero-desc">{hero?.description ?? ''}</p>
-          <a href="#kontakt" className="hero-cta">{hero?.ctaText ?? 'Tag kontakt →'}</a>
+          <a href="#projekter" className="hero-cta">{hero?.ctaText ?? 'Se projekter →'}</a>
         </div>
         <div className="hero-right">
           {(hero?.stats ?? []).map((stat, i) => (
@@ -101,6 +101,38 @@ export default async function Home() {
               <span className="hero-stat-value">{stat.value}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section id="projekter" className="projects-section">
+        <p className="section-tag">Projekter</p>
+        <p className="projects-intro">
+          Ting jeg har bygget i fritiden — mest for at lære, lidt for at bruge dem.
+        </p>
+        <div className="projects-grid">
+          <a href="/madspild" className="project-card">
+            <div className="project-card-top">
+              <span className="project-card-tag">Salling API · Next.js</span>
+              <span className="project-card-arrow">→</span>
+            </div>
+            <h3 className="project-card-title">Madspild</h3>
+            <p className="project-card-desc">
+              Varer tæt på udløbsdato hos Føtex, Netto og Bilka nær dig — sorteret efter størst besparelse. Trækker live data fra Sallings åbne API.
+            </p>
+            <div className="project-card-footer">
+              <span className="project-card-status project-card-status--live">● Live</span>
+            </div>
+          </a>
+
+          <div className="project-card project-card--placeholder">
+            <div className="project-card-top">
+              <span className="project-card-tag">Kommer</span>
+            </div>
+            <h3 className="project-card-title" style={{ opacity: 0.3 }}>???</h3>
+            <p className="project-card-desc" style={{ opacity: 0.3 }}>
+              Næste vibe-coding-session afgør hvad der dukker op her.
+            </p>
+          </div>
         </div>
       </section>
 
