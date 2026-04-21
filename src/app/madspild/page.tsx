@@ -171,10 +171,20 @@ function todayHours(hours?: StoreHours[]): { label: string; isOpen: boolean } | 
   }
 }
 
+// Absolut besparelse i kr — kun når begge priser er kendte
 function savingsKr(c: Clearance): number {
-  const orig = c.offer?.originalPrice ?? 0
-  const curr = c.offer?.newPrice ?? c.offer?.price ?? orig
-  return orig - curr
+  const orig = c.offer?.originalPrice
+  const curr = c.offer?.newPrice ?? c.offer?.price
+  if (orig != null && orig > 0 && curr != null) return Math.max(0, orig - curr)
+  return 0
+}
+
+// Sortéringsværdi: % rabat primær (altid til stede), kr sekundær
+function sortScore(c: Clearance): { pct: number; kr: number } {
+  return {
+    pct: c.offer?.percentDiscount ?? c.offer?.discount ?? 0,
+    kr: savingsKr(c),
+  }
 }
 
 function promoLabel(p: Promotion): string {
@@ -514,7 +524,11 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
 }) {
   const [spotExpanded, setSpotExpanded] = useState(false)
   const clearances = entry.clearances ?? []
-  const sorted = [...clearances].sort((a, b) => savingsKr(b) - savingsKr(a))
+  const sorted = [...clearances].sort((a, b) => {
+    const sa = sortScore(a), sb = sortScore(b)
+    if (sb.pct !== sa.pct) return sb.pct - sa.pct   // størst % rabat først
+    return sb.kr - sa.kr                              // tiebreaker: størst kr-besparelse
+  })
   const hours = todayHours(entry.store.hours)
   const dist = entry.distance != null ? formatDistance(entry.distance) : null
 
