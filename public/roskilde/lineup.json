@@ -1,0 +1,5642 @@
+{
+  "source": "https://www.roskilde-festival.dk/en/line-up",
+  "generatedAt": "2026-04-21T21:56:59.312127Z",
+  "itemCount": 171,
+  "items": [
+    {
+      "name": "Ana Juél",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ana-juel",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Ana Juél"
+      }
+    },
+    {
+      "name": "Carlina de Place",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/carlina-de-place",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Carlina de Place"
+      }
+    },
+    {
+      "name": "Club Live",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/club-live",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Club Live"
+      }
+    },
+    {
+      "name": "Grande Mahogany",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/grande-mahogany",
+      "countryCode": "FI/GH",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Grande Mahogany"
+      }
+    },
+    {
+      "name": "Miaw",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/miaw",
+      "countryCode": "DK/NL",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Miaw"
+      }
+    },
+    {
+      "name": "Oskar Witt",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/oskar-witt",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Oskar Witt"
+      }
+    },
+    {
+      "name": "Ozzy",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ozzy",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Ozzy"
+      }
+    },
+    {
+      "name": "Ponny",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ponny",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Ponny"
+      }
+    },
+    {
+      "name": "Portal Pets",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/portal-pets",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Portal Pets"
+      }
+    },
+    {
+      "name": "SCAM",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/scam",
+      "countryCode": "IS",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "SCAM"
+      }
+    },
+    {
+      "name": "Smøgmænd",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/smoegmaend",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Smøgmænd"
+      }
+    },
+    {
+      "name": "Spawner",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/spawner",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T00:00:00",
+        "time": "00.00",
+        "name": "Spawner"
+      }
+    },
+    {
+      "name": "100%Wet",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/100wet",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "100%Wet"
+      }
+    },
+    {
+      "name": "A Good Year",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/a-good-year",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "A Good Year"
+      }
+    },
+    {
+      "name": "Alice Ai",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/alice-ai",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Alice Ai"
+      }
+    },
+    {
+      "name": "Demersal",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/demersal",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Demersal"
+      }
+    },
+    {
+      "name": "Dork",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/dork",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Dork"
+      }
+    },
+    {
+      "name": "Døtre",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/doetre",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Døtre"
+      }
+    },
+    {
+      "name": "GB",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/gb",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "GB"
+      }
+    },
+    {
+      "name": "Ida Duelund",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ida-duelund",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Ida Duelund"
+      }
+    },
+    {
+      "name": "Karoline Mousing",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/karoline-mousing",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Karoline Mousing"
+      }
+    },
+    {
+      "name": "Kayak",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kayak",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Kayak"
+      }
+    },
+    {
+      "name": "Masiv",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/masiv",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Masiv"
+      }
+    },
+    {
+      "name": "Michael Williams",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/michael-williams",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Michael Williams"
+      }
+    },
+    {
+      "name": "Morild",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/morild",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Morild"
+      }
+    },
+    {
+      "name": "Sa_G",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sa_g",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T00:00:00",
+        "time": "00.00",
+        "name": "Sa_G"
+      }
+    },
+    {
+      "name": "ALAWARI",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/alawari",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "ALAWARI"
+      }
+    },
+    {
+      "name": "Augusta Schackinger",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/augusta-schackinger",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Augusta Schackinger"
+      }
+    },
+    {
+      "name": "Berg",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/berg",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Berg"
+      }
+    },
+    {
+      "name": "Diket",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/diket",
+      "countryCode": "NO/SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Diket"
+      }
+    },
+    {
+      "name": "Eros For You",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/eros-for-you",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Eros For You"
+      }
+    },
+    {
+      "name": "Fauna",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/fauna",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Fauna"
+      }
+    },
+    {
+      "name": "Glayden",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/glayden",
+      "countryCode": "FI",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Glayden"
+      }
+    },
+    {
+      "name": "Mami Umami",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/mami-umami",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Mami Umami"
+      }
+    },
+    {
+      "name": "Muskila + Simona Abdallah",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/muskila-plus-simona-abdallah",
+      "countryCode": "DK/PS",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Muskila + Simona Abdallah"
+      }
+    },
+    {
+      "name": "Pistol Pistol Pistol",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/pistol-pistol-pistol",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Pistol Pistol Pistol"
+      }
+    },
+    {
+      "name": "Pumpegris",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/pumpegris",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Pumpegris"
+      }
+    },
+    {
+      "name": "Salver",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/salver",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Salver"
+      }
+    },
+    {
+      "name": "Will",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/will",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Will"
+      }
+    },
+    {
+      "name": "Zuloo",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/zuloo",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "TUESDAY 30 JUNE",
+      "date": "2026-06-30T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-30T00:00:00",
+        "time": "00.00",
+        "name": "Zuloo"
+      }
+    },
+    {
+      "name": "ANGÅENDE MIG",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/angaaende-mig",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "ANGÅENDE MIG"
+      }
+    },
+    {
+      "name": "Annie & the Caldwells",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/annie-and-the-caldwells",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Annie & the Caldwells"
+      }
+    },
+    {
+      "name": "Dying Wish",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/dying-wish",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Dying Wish"
+      }
+    },
+    {
+      "name": "EsDeeKid",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/esdeekid",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "EsDeeKid"
+      }
+    },
+    {
+      "name": "Hypnosis Therapy",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/hypnosis-therapy",
+      "countryCode": "KR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Hypnosis Therapy"
+      }
+    },
+    {
+      "name": "Indus",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/indus",
+      "countryCode": "CO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Indus"
+      }
+    },
+    {
+      "name": "Jade",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/jade",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Jade"
+      }
+    },
+    {
+      "name": "Joshua Idehen",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/joshua-idehen",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Joshua Idehen"
+      }
+    },
+    {
+      "name": "Marwan Moussa",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/marwan-moussa",
+      "countryCode": "EG",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Marwan Moussa"
+      }
+    },
+    {
+      "name": "Pa Salieu",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/pa-salieu",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Pa Salieu"
+      }
+    },
+    {
+      "name": "Pil",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/pil",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Pil"
+      }
+    },
+    {
+      "name": "Primitive Man",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/primitive-man",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Primitive Man"
+      }
+    },
+    {
+      "name": "Sherelle",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sherelle",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Sherelle"
+      }
+    },
+    {
+      "name": "SMAG PÅ DIG SELV",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/smag-paa-dig-selv",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "SMAG PÅ DIG SELV"
+      }
+    },
+    {
+      "name": "The Cure",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-cure",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "The Cure"
+      }
+    },
+    {
+      "name": "The Sophs",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-sophs",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "The Sophs"
+      }
+    },
+    {
+      "name": "Tuvaband",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/tuvaband",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Tuvaband"
+      }
+    },
+    {
+      "name": "Wolf Alice",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/wolf-alice",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "Wolf Alice"
+      }
+    },
+    {
+      "name": "¥ØU$UK€ ¥UK1MAT$U",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/yousuke-yukimatsu",
+      "countryCode": "JP",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Wednesday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "wednesday",
+      "dateLabel": "WEDNESDAY 1 JULY",
+      "date": "2026-07-01T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-01T00:00:00",
+        "time": "00.00",
+        "name": "¥ØU$UK€ ¥UK1MAT$U"
+      }
+    },
+    {
+      "name": "Adrian Quesada",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/adrian-quesada",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Adrian Quesada"
+      }
+    },
+    {
+      "name": "BB Trickz",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/bb-trickz",
+      "countryCode": "ES",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "BB Trickz"
+      }
+    },
+    {
+      "name": "Brutalismus 3000",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/brutalismus-3000",
+      "countryCode": "DE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Brutalismus 3000"
+      }
+    },
+    {
+      "name": "Cobrah",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/cobrah",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Cobrah"
+      }
+    },
+    {
+      "name": "Cortisa Star",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/cortisa-star",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Cortisa Star"
+      }
+    },
+    {
+      "name": "Dean Johnson",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/dean-johnson",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Dean Johnson"
+      }
+    },
+    {
+      "name": "Ecca Vandal",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ecca-vandal",
+      "countryCode": "AU",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Ecca Vandal"
+      }
+    },
+    {
+      "name": "Ethel Cain",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ethel-cain",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Ethel Cain"
+      }
+    },
+    {
+      "name": "Gorillaz",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/gorillaz",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Gorillaz"
+      }
+    },
+    {
+      "name": "Guldimund",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/guldimund",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Arena",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Arena",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Arena",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Guldimund"
+      }
+    },
+    {
+      "name": "Honningbarna",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/honningbarna",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Honningbarna"
+      }
+    },
+    {
+      "name": "Khana Bierbood",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/khana-bierbood",
+      "countryCode": "TH",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Khana Bierbood"
+      }
+    },
+    {
+      "name": "Kneecap",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kneecap",
+      "countryCode": "IE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Kneecap"
+      }
+    },
+    {
+      "name": "Krøyer",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kroeyer",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Krøyer"
+      }
+    },
+    {
+      "name": "KWN",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kwn",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "KWN"
+      }
+    },
+    {
+      "name": "Little Simz",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/little-simz",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Little Simz"
+      }
+    },
+    {
+      "name": "Lykke Li",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lykke-li",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Lykke Li"
+      }
+    },
+    {
+      "name": "Napalm Death",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/napalm-death",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Napalm Death"
+      }
+    },
+    {
+      "name": "Naïka",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/naika",
+      "countryCode": "FR/HT",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Naïka"
+      }
+    },
+    {
+      "name": "Nick León",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/nick-leon",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Nick León"
+      }
+    },
+    {
+      "name": "Royel Otis",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/royel-otis",
+      "countryCode": "AU",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Royel Otis"
+      }
+    },
+    {
+      "name": "Shovel Dance Collective",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/shovel-dance-collective",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday",
+        "Friday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        },
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Shovel Dance Collective"
+      }
+    },
+    {
+      "name": "The New Eves",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-new-eves",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "The New Eves"
+      }
+    },
+    {
+      "name": "The Zawose Queens",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-zawose-queens",
+      "countryCode": "TZ",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "The Zawose Queens"
+      }
+    },
+    {
+      "name": "Tobias Rahim",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/tobias-rahim",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Tobias Rahim"
+      }
+    },
+    {
+      "name": "Truck Violence",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/truck-violence",
+      "countryCode": "CA",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Truck Violence"
+      }
+    },
+    {
+      "name": "Uld",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/uld",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Uld"
+      }
+    },
+    {
+      "name": "Uncle Acid & The Deadbeats",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/uncle-acid-the-deadbeats",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Uncle Acid & The Deadbeats"
+      }
+    },
+    {
+      "name": "Vgtbl.pl",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/vgtblpl",
+      "countryCode": "PL",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Vgtbl.pl"
+      }
+    },
+    {
+      "name": "Vilde Tuv",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/vilde-tuv",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Vilde Tuv"
+      }
+    },
+    {
+      "name": "Wicky",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/wicky",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Wicky"
+      }
+    },
+    {
+      "name": "Yerai Cortés",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/yerai-cortes",
+      "countryCode": "ES",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "Yerai Cortés"
+      }
+    },
+    {
+      "name": "ŠIROM",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sirom",
+      "countryCode": "SI",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T00:00:00",
+        "time": "00.00",
+        "name": "ŠIROM"
+      }
+    },
+    {
+      "name": "Addison Rae",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/addison-rae",
+      "countryCode": "US",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Addison Rae"
+      }
+    },
+    {
+      "name": "Aphaca",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/aphaca",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Aphaca"
+      }
+    },
+    {
+      "name": "AySay",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/aysay",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "AySay"
+      }
+    },
+    {
+      "name": "BLAWAN",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/blawan",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "BLAWAN"
+      }
+    },
+    {
+      "name": "Cat Clyde",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/cat-clyde",
+      "countryCode": "CA",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Cat Clyde"
+      }
+    },
+    {
+      "name": "Chezile",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/chezile",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Chezile"
+      }
+    },
+    {
+      "name": "DBN Gogo",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/dbn-gogo",
+      "countryCode": "ZA",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "DBN Gogo"
+      }
+    },
+    {
+      "name": "Gwenifer Raymond",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/gwenifer-raymond",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Gwenifer Raymond"
+      }
+    },
+    {
+      "name": "Iglooghost",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/iglooghost",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Iglooghost"
+      }
+    },
+    {
+      "name": "Jim Legxacy",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/jim-legxacy",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Jim Legxacy"
+      }
+    },
+    {
+      "name": "Kin’Gongolo Kiniata",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kin-gongolo-kiniata",
+      "countryCode": "CG",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Kin’Gongolo Kiniata"
+      }
+    },
+    {
+      "name": "Lamisi",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lamisi",
+      "countryCode": "GH",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Lamisi"
+      }
+    },
+    {
+      "name": "Los Thuthanaka",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/los-thuthanaka",
+      "countryCode": "BO/US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Los Thuthanaka"
+      }
+    },
+    {
+      "name": "Luisa Almaguer",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/luisa-almaguer",
+      "countryCode": "MX",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Luisa Almaguer"
+      }
+    },
+    {
+      "name": "Mark William Lewis",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/mark-william-lewis",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Mark William Lewis"
+      }
+    },
+    {
+      "name": "Maruja",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/maruja",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Maruja"
+      }
+    },
+    {
+      "name": "Milkweed",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/milkweed",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Milkweed"
+      }
+    },
+    {
+      "name": "Mille",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/mille",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Mille"
+      }
+    },
+    {
+      "name": "No Joy",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/no-joy",
+      "countryCode": "CA",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "No Joy"
+      }
+    },
+    {
+      "name": "Oklou",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/oklou",
+      "countryCode": "FR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Oklou"
+      }
+    },
+    {
+      "name": "Rizwan-Muazzam Qawwali",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/rizwan-muazzam-qawwali",
+      "countryCode": "PK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Rizwan-Muazzam Qawwali"
+      }
+    },
+    {
+      "name": "Sammy Virji",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sammy-virji",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Sammy Virji"
+      }
+    },
+    {
+      "name": "Sierra Ferrell",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sierra-ferrell",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Sierra Ferrell"
+      }
+    },
+    {
+      "name": "Smerz",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/smerz",
+      "countryCode": "NO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Smerz"
+      }
+    },
+    {
+      "name": "Tessa",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/tessa",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Tessa"
+      }
+    },
+    {
+      "name": "The Savage Rose",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-savage-rose",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "The Savage Rose"
+      }
+    },
+    {
+      "name": "Tonser",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/tonser",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Tonser"
+      }
+    },
+    {
+      "name": "Vanessa Amara",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/vanessa-amara",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Vanessa Amara"
+      }
+    },
+    {
+      "name": "YOUNG MIKO",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/young-miko",
+      "countryCode": "PR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "YOUNG MIKO"
+      }
+    },
+    {
+      "name": "Yung Lean & Bladee",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/yung-lean-bladee",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T00:00:00",
+        "time": "00.00",
+        "name": "Yung Lean & Bladee"
+      }
+    },
+    {
+      "name": "David Byrne",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/david-byrne",
+      "countryCode": "US",
+      "lineupSceneLabel": "Arena",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T20:30:00",
+          "startTime": "2026-04-17T20:30:00",
+          "timeLabel": "20.30",
+          "stage": "Arena",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T20:30:00",
+      "timeLabel": "20.30",
+      "stage": "Arena",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T20:30:00",
+        "time": "20.30",
+        "name": "David Byrne"
+      }
+    },
+    {
+      "name": "1111",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/1111",
+      "countryCode": "ES",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "1111"
+      }
+    },
+    {
+      "name": "Albertslund Terror Korps",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/albertslund-terror-korps",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Albertslund Terror Korps"
+      }
+    },
+    {
+      "name": "Ata Kak",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ata-kak",
+      "countryCode": "GH",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Ata Kak"
+      }
+    },
+    {
+      "name": "Audrey Nuna",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/audrey-nuna",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Audrey Nuna"
+      }
+    },
+    {
+      "name": "Bad Gyal",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/bad-gyal",
+      "countryCode": "ES",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Bad Gyal"
+      }
+    },
+    {
+      "name": "Bruno Berle",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/bruno-berle",
+      "countryCode": "BR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Bruno Berle"
+      }
+    },
+    {
+      "name": "Clipse",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/clipse",
+      "countryCode": "US",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Clipse"
+      }
+    },
+    {
+      "name": "CRRDR",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/crrdr",
+      "countryCode": "CO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "CRRDR"
+      }
+    },
+    {
+      "name": "CUIRASS",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/cuirass",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "CUIRASS"
+      }
+    },
+    {
+      "name": "EEE GEE",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/eee-gee",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "EEE GEE"
+      }
+    },
+    {
+      "name": "Ela Lung",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ela-lung",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Ela Lung"
+      }
+    },
+    {
+      "name": "Frost Children",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/frost-children",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Frost Children"
+      }
+    },
+    {
+      "name": "Igorrr",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/igorrr",
+      "countryCode": "FR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Igorrr"
+      }
+    },
+    {
+      "name": "Jane Remover",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/jane-remover",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Jane Remover"
+      }
+    },
+    {
+      "name": "Jorjiana",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/jorjiana",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Jorjiana"
+      }
+    },
+    {
+      "name": "Kettama",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kettama",
+      "countryCode": "IE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Kettama"
+      }
+    },
+    {
+      "name": "Lily Allen",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lily-allen",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Lily Allen"
+      }
+    },
+    {
+      "name": "Liniker",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/liniker",
+      "countryCode": "BR",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Liniker"
+      }
+    },
+    {
+      "name": "Lojay",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lojay",
+      "countryCode": "NG",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Lojay"
+      }
+    },
+    {
+      "name": "Lord Snow",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lord-snow",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Lord Snow"
+      }
+    },
+    {
+      "name": "Los Mirlos",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/los-mirlos",
+      "countryCode": "PE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Los Mirlos"
+      }
+    },
+    {
+      "name": "Madra Salach",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/madra-salach",
+      "countryCode": "IE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Madra Salach"
+      }
+    },
+    {
+      "name": "Nourished By Time",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/nourished-by-time",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Nourished By Time"
+      }
+    },
+    {
+      "name": "Rochelle Jordan",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/rochelle-jordan",
+      "countryCode": "UK/CA",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Rochelle Jordan"
+      }
+    },
+    {
+      "name": "Sara Parkman",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sara-parkman",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Sara Parkman"
+      }
+    },
+    {
+      "name": "Snuggle",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/snuggle",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Snuggle"
+      }
+    },
+    {
+      "name": "Sorry",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/sorry",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Sorry"
+      }
+    },
+    {
+      "name": "SUSOBRINO",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/susobrino",
+      "countryCode": "BO",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "SUSOBRINO"
+      }
+    },
+    {
+      "name": "The Callous Daoboys",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/the-callous-daoboys",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "The Callous Daoboys"
+      }
+    },
+    {
+      "name": "TV-2",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/tv-2",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "TV-2"
+      }
+    },
+    {
+      "name": "Zar Paulo",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/zar-paulo",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Arena",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Arena",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Arena",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Zar Paulo"
+      }
+    },
+    {
+      "name": "Zara Larsson",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/zara-larsson",
+      "countryCode": "SE",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Zara Larsson"
+      }
+    },
+    {
+      "name": "ANDREAS HAGLUND",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/andreas-haglund",
+      "countryCode": "SE",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "ANDREAS HAGLUND"
+      }
+    },
+    {
+      "name": "ANNA WALTHER",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/anna-walther",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "ANNA WALTHER"
+      }
+    },
+    {
+      "name": "AROBAL & MIKKEL NIELSEN",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/arobal-mikkel-nielsen",
+      "countryCode": "DK/PL",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "AROBAL & MIKKEL NIELSEN"
+      }
+    },
+    {
+      "name": "DOROTEA SAYKALY & EMIL DAM SEIDEL",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/dorotea-saykaly-emil-dam-seidel",
+      "countryCode": "INT",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "DOROTEA SAYKALY & EMIL DAM SEIDEL"
+      }
+    },
+    {
+      "name": "ELLE FIERCE",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/elle-fierce",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "ELLE FIERCE"
+      }
+    },
+    {
+      "name": "ESBEN HOLK",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/esben-holk",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "ESBEN HOLK"
+      }
+    },
+    {
+      "name": "Folk Bitch Trio",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/folk-bitch-trio",
+      "countryCode": "AU",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "Folk Bitch Trio"
+      }
+    },
+    {
+      "name": "HEDESTRIK X NORDISK DANS",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/hedestrik-x-nordisk-dans",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "HEDESTRIK X NORDISK DANS"
+      }
+    },
+    {
+      "name": "JESSE DARLING",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/jesse-darling",
+      "countryCode": "UK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "JESSE DARLING"
+      }
+    },
+    {
+      "name": "JOANA ÖHLSCHLÄGER",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/joana-oehlschlaeger",
+      "countryCode": "DE",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "JOANA ÖHLSCHLÄGER"
+      }
+    },
+    {
+      "name": "Kōya",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kōya",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": "first-days",
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "Kōya"
+      },
+      "fetchError": "'ascii' codec can't encode character '\\u014d' in position 23: ordinal not in range(128)"
+    },
+    {
+      "name": "NOAH HOLTEGAARD",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/noah-holtegaard",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "NOAH HOLTEGAARD"
+      }
+    },
+    {
+      "name": "NOAH UMUR KANBER",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/noah-umur-kanber",
+      "countryCode": "DK/TR",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "NOAH UMUR KANBER"
+      }
+    },
+    {
+      "name": "SAHAR JAMILI",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/sahar-jamili",
+      "countryCode": "DK/AZ",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "SAHAR JAMILI"
+      }
+    },
+    {
+      "name": "SPELLCHESTRA",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/spellchestra",
+      "countryCode": "DK",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "SPELLCHESTRA"
+      }
+    },
+    {
+      "name": "THICKET",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/thicket",
+      "countryCode": "",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "THICKET"
+      }
+    }
+  ]
+}
