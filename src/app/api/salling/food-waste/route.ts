@@ -58,11 +58,6 @@ export async function GET(req: NextRequest) {
 
     const data = JSON.parse(text)
 
-    // Log koordinat-format fra første butik så vi kan debugge afstandsberegning
-    if (Array.isArray(data) && data[0]?.store?.coordinates) {
-      console.log('[salling] koordinater sample:', JSON.stringify(data[0].store.coordinates))
-    }
-
     return NextResponse.json(data, {
       headers: {
         'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60',
