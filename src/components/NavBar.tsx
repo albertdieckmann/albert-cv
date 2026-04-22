@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -18,17 +19,21 @@ export default function NavBar() {
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
 
-        {/* Hamburger knap (kun mobil) */}
-        <button
-          className="nav-hamburger"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-          aria-expanded={open}
-        >
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-        </button>
+        <div className="nav-actions">
+          <ThemeToggle />
+
+          {/* Hamburger knap (kun mobil) */}
+          <button
+            className="nav-hamburger"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobil menu */}

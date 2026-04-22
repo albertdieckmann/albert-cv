@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display, DM_Mono, Instrument_Sans } from "next/font/google";
+import { DM_Serif_Display, DM_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -16,7 +16,7 @@ const dmMono = DM_Mono({
   variable: "--font-dm-mono",
 });
 
-const instrumentSans = Instrument_Sans({
+const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   variable: "--font-instrument-sans",
@@ -43,7 +43,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="da"
-        className={`${dmSerif.variable} ${dmMono.variable} ${instrumentSans.variable}`}
+        className={`${dmSerif.variable} ${dmMono.variable} ${plusJakarta.variable}`}
       >
         <body>{children}</body>
       </html>
