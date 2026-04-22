@@ -257,9 +257,9 @@ const CATEGORY_KW: [string, string[]][] = [
   ['Færdigretter',  ['pizza', 'lasagne', 'suppe', 'sandwich', 'wrap', 'sushi', 'nuggets', 'frikadelle', 'falafel']],
 ]
 
-function firstString(val: unknown): string | null {
-  if (typeof val === 'string' && val.length > 1) return val
-  if (Array.isArray(val) && val.length > 0) return String(val[0])
+function topCategory(val: unknown): string | null {
+  if (typeof val === 'string' && val.length > 1) return val.split('>')[0].trim()
+  if (Array.isArray(val) && val.length > 0) return String(val[0]).split('>')[0].trim()
   return null
 }
 
@@ -267,12 +267,12 @@ function productCategory(product?: Product): string {
   if (product?.categories) {
     const cats = product.categories
     // String directly
-    const direct = firstString(cats)
+    const direct = topCategory(cats)
     if (direct) return direct
     // Object with locale keys e.g. { da: "..." } or { da: ["..."] }
     if (typeof cats === 'object' && !Array.isArray(cats)) {
       for (const val of Object.values(cats)) {
-        const s = firstString(val)
+        const s = topCategory(val)
         if (s) return s
       }
     }
