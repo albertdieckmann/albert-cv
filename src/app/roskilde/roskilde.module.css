@@ -302,7 +302,7 @@
   transition: transform 0.15s, box-shadow 0.15s;
   min-height: 44px;
 }
-.primaryBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 175, 124, 0.2); }
+.primaryBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184, 123, 110, 0.2); }
 .primaryBtn:disabled { opacity: 0.5; cursor: default; transform: none; }
 
 .ghostBtn {
@@ -321,7 +321,7 @@
   min-height: 40px;
   white-space: nowrap;
 }
-.ghostBtn:hover { border-color: rgba(200, 240, 96, 0.3); color: var(--accent); background: rgba(139, 175, 124, 0.05); }
+.ghostBtn:hover { border-color: rgba(200, 240, 96, 0.3); color: var(--accent); background: rgba(184, 123, 110, 0.05); }
 
 /* ── group ───────────────────────────────────────────────────────────────────── */
 
@@ -346,7 +346,7 @@
 .groupChip:hover, .groupChip.active {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(139, 175, 124, 0.06);
+  background: rgba(184, 123, 110, 0.06);
 }
 
 .memberList {
@@ -364,7 +364,7 @@
   font-size: 0.875rem;
   background: var(--bg3);
 }
-.friendChip.active { border-color: rgba(139, 175, 124, 0.3); }
+.friendChip.active { border-color: rgba(184, 123, 110, 0.3); }
 .friendChip small {
   font-family: var(--mono);
   font-size: 9px;
@@ -587,7 +587,7 @@
   flex-shrink: 0;
 }
 
-.catMust   { background: rgba(139, 175, 124, 0.14);  color: var(--accent); border: 1px solid rgba(139, 175, 124, 0.3);  }
+.catMust   { background: rgba(184, 123, 110, 0.14);  color: var(--accent); border: 1px solid rgba(184, 123, 110, 0.3);  }
 .catShould { background: rgba(255, 180, 60, 0.1);   color: #ffb43c;       border: 1px solid rgba(255, 180, 60, 0.25);  }
 .catBeer   { background: rgba(100, 160, 255, 0.1);  color: #7aabff;       border: 1px solid rgba(100, 160, 255, 0.25); }
 
@@ -617,11 +617,11 @@
 .catBtn:disabled { opacity: 0.25; cursor: default; }
 .catBtn:not(:disabled):hover { opacity: 0.85; }
 
-.catBtn.catMust   { border-color: rgba(139, 175, 124, 0.14); }
+.catBtn.catMust   { border-color: rgba(184, 123, 110, 0.14); }
 .catBtn.catShould { border-color: rgba(255, 180, 60, 0.12);  }
 .catBtn.catBeer   { border-color: rgba(100, 160, 255, 0.12); }
 
-.catBtnActive.catMust   { background: rgba(139, 175, 124, 0.2); color: var(--accent); border-color: var(--accent); }
+.catBtnActive.catMust   { background: rgba(184, 123, 110, 0.2); color: var(--accent); border-color: var(--accent); }
 .catBtnActive.catShould { background: rgba(255, 180, 60, 0.18); color: #ffb43c; border-color: #ffb43c; }
 .catBtnActive.catBeer   { background: rgba(100, 160, 255, 0.18); color: #7aabff; border-color: #7aabff; }
 
@@ -664,7 +664,7 @@
   border-right: 1px solid var(--border);
   min-width: 52px;
   text-align: center;
-  background: rgba(139, 175, 124, 0.04);
+  background: rgba(184, 123, 110, 0.04);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -690,7 +690,7 @@
   font-family: var(--mono);
   font-size: 10px;
   color: var(--accent);
-  background: rgba(139, 175, 124, 0.1);
+  background: rgba(184, 123, 110, 0.1);
   padding: 0.15rem 0.4rem;
   white-space: nowrap;
   flex-shrink: 0;

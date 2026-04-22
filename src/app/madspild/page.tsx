@@ -91,7 +91,7 @@ function brandColor(brand?: string): string {
   const map: Record<string, string> = {
     netto: '#FFDE00', foetex: '#E4002B', bilka: '#00539B', basalt: '#5a3f8f',
   }
-  return map[brand?.toLowerCase() ?? ''] ?? '#8BAF7C'
+  return map[brand?.toLowerCase() ?? ''] ?? '#B87B6E'
 }
 
 function brandLabel(brand?: string): string {
@@ -126,7 +126,7 @@ function urgencyColor(endTime?: string): string {
     const hours = (new Date(endTime).getTime() - Date.now()) / 3_600_000
     if (hours < 2) return '#ff6060'
     if (hours < 6) return '#f0a020'
-    return '#8BAF7C'
+    return '#B87B6E'
   } catch { return '#888880' }
 }
 
@@ -404,12 +404,12 @@ export default function MadspildPage() {
       <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', position: 'sticky', top: 0, background: '#1F2124', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
           <Link href="/" style={{ color: '#888880', fontSize: '0.75rem', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>←</Link>
-          <span style={{ color: '#8BAF7C', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>Madspild</span>
+          <span style={{ color: '#B87B6E', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>Madspild</span>
         </div>
         <div className="madspild-header-right" style={{ flexShrink: 0 }}>
           {geo.status === 'granted' && usingGeo && (
-            <span className="madspild-geo-badge" style={{ color: '#8BAF7C', fontSize: '0.65rem' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8BAF7C', display: 'inline-block' }} />
+            <span className="madspild-geo-badge" style={{ color: '#B87B6E', fontSize: '0.65rem' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#B87B6E', display: 'inline-block' }} />
               Din placering
             </span>
           )}
@@ -440,12 +440,12 @@ export default function MadspildPage() {
               <input type="text" inputMode="numeric" maxLength={4} value={inputZip} onChange={e => setInputZip(e.target.value)} placeholder="8000"
                 style={{ background: '#272B2E', border: '1px solid #222', color: '#e8e8e0', padding: '0.65rem 1rem', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', width: '110px', letterSpacing: '0.1em' }} />
             </div>
-            <button type="submit" disabled={loading} style={{ background: loading ? '#6A8A5C' : '#8BAF7C', color: '#1F2124', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
+            <button type="submit" disabled={loading} style={{ background: loading ? '#9A6258' : '#B87B6E', color: '#1F2124', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
               {loading ? 'Henter...' : 'Søg'}
             </button>
             {geo.status === 'granted' && (
               <button type="button" onClick={() => fetchByCoords((geo as { status: 'granted'; lat: number; lng: number }).lat, (geo as { status: 'granted'; lat: number; lng: number }).lng)} disabled={loading}
-                style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#8BAF7C', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px' }}>
+                style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#B87B6E', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px' }}>
                 📍 Min placering
               </button>
             )}
@@ -572,7 +572,7 @@ export default function MadspildPage() {
 function Stat({ value, label }: { value: string | number; label: string }) {
   return (
     <div>
-      <span style={{ color: '#8BAF7C', fontSize: '1.4rem', fontWeight: 700 }}>{value}</span>
+      <span style={{ color: '#B87B6E', fontSize: '1.4rem', fontWeight: 700 }}>{value}</span>
       <span style={{ color: '#888880', fontSize: '0.75rem', display: 'block', marginTop: '0.1rem' }}>{label}</span>
     </div>
   )
@@ -617,11 +617,11 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
             <span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
             {dist && <span style={{ color: '#888880' }}>· {dist}</span>}
-            {hours && <span style={{ color: hours.isOpen ? '#8BAF7C' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
+            {hours && <span style={{ color: hours.isOpen ? '#B87B6E' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-          <span style={{ color: '#8BAF7C', fontSize: '0.8rem', fontWeight: 700 }}>
+          <span style={{ color: '#B87B6E', fontSize: '0.8rem', fontWeight: 700 }}>
             {clearances.length} vare{clearances.length !== 1 ? 'r' : ''}
           </span>
           <span style={{ color: '#555550', fontSize: '0.75rem', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
@@ -672,11 +672,11 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
                         minWidth: '2rem',
                       }}>
                         {h.dayLabel}
-                        {h.isToday && <span style={{ color: '#8BAF7C', fontSize: '0.55rem', marginLeft: '0.3rem' }}>i dag</span>}
+                        {h.isToday && <span style={{ color: '#B87B6E', fontSize: '0.55rem', marginLeft: '0.3rem' }}>i dag</span>}
                       </span>
                       <span style={{
                         fontSize: '0.7rem',
-                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#8BAF7C' : '#888880') : '#666660',
+                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#B87B6E' : '#888880') : '#666660',
                         fontWeight: h.isToday && hours?.isOpen ? 600 : 400,
                       }}>
                         {h.closed ? 'Lukket' : `${h.open}–${h.close}`}
@@ -732,7 +732,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
   return (
     <div style={{ background: '#272B2E', border: '1px solid #1e1e1e', padding: '0.875rem', display: 'flex', gap: '0.75rem', position: 'relative' }}>
       {discount != null && (
-        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: '#8BAF7C', color: '#1F2124', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
+        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: '#B87B6E', color: '#1F2124', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
           -{discount}%
         </div>
       )}
@@ -749,7 +749,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
           {product?.description ?? 'Ukendt vare'}
         </p>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginBottom: '0.4rem' }}>
-          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#8BAF7C' }}>{fmt(newPrice)} kr</span>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#B87B6E' }}>{fmt(newPrice)} kr</span>
           {offer?.originalPrice != null && offer.originalPrice > 0 && (
             <span style={{ fontSize: '0.7rem', color: '#555550', textDecoration: 'line-through' }}>{fmt(offer.originalPrice)} kr</span>
           )}

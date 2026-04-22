@@ -1,9 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.setAttribute("data-theme", saved);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setTheme("dark");
+    }
+  }, []);
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  }
 
   return (
     <>
@@ -18,17 +36,28 @@ export default function NavBar() {
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
 
-        {/* Hamburger knap (kun mobil) */}
-        <button
-          className="nav-hamburger"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-          aria-expanded={open}
-        >
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-          <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
-        </button>
+        <div className="nav-actions">
+          <button
+            className="nav-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Skift til lyst tema" : "Skift til mørkt tema"}
+            title={theme === "dark" ? "Lyst tema" : "Mørkt tema"}
+          >
+            {theme === "dark" ? "☀" : "☾"}
+          </button>
+
+          {/* Hamburger knap (kun mobil) */}
+          <button
+            className="nav-hamburger"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+            <span className={`nav-hamburger-line ${open ? "open" : ""}`} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobil menu */}
