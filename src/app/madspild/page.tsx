@@ -91,7 +91,7 @@ function brandColor(brand?: string): string {
   const map: Record<string, string> = {
     netto: '#FFDE00', foetex: '#E4002B', bilka: '#00539B', basalt: '#5a3f8f',
   }
-  return map[brand?.toLowerCase() ?? ''] ?? '#c8f060'
+  return map[brand?.toLowerCase() ?? ''] ?? '#8BAF7C'
 }
 
 function brandLabel(brand?: string): string {
@@ -126,7 +126,7 @@ function urgencyColor(endTime?: string): string {
     const hours = (new Date(endTime).getTime() - Date.now()) / 3_600_000
     if (hours < 2) return '#ff6060'
     if (hours < 6) return '#f0a020'
-    return '#c8f060'
+    return '#8BAF7C'
   } catch { return '#888880' }
 }
 
@@ -398,18 +398,18 @@ export default function MadspildPage() {
   const promoCategories = Object.keys(promosByCategory).sort()
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e0', fontFamily: 'var(--font-dm-mono, monospace)' }}>
+    <div style={{ minHeight: '100vh', background: '#1F2124', color: '#e8e8e0', fontFamily: 'var(--font-dm-mono, monospace)' }}>
 
       {/* Header */}
-      <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 10 }}>
+      <header style={{ borderBottom: '1px solid #1e1e1e', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', position: 'sticky', top: 0, background: '#1F2124', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
           <Link href="/" style={{ color: '#888880', fontSize: '0.75rem', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>←</Link>
-          <span style={{ color: '#c8f060', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>Madspild</span>
+          <span style={{ color: '#8BAF7C', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>Madspild</span>
         </div>
         <div className="madspild-header-right" style={{ flexShrink: 0 }}>
           {geo.status === 'granted' && usingGeo && (
-            <span className="madspild-geo-badge" style={{ color: '#c8f060', fontSize: '0.65rem' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#c8f060', display: 'inline-block' }} />
+            <span className="madspild-geo-badge" style={{ color: '#8BAF7C', fontSize: '0.65rem' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8BAF7C', display: 'inline-block' }} />
               Din placering
             </span>
           )}
@@ -438,14 +438,14 @@ export default function MadspildPage() {
             <div>
               <label style={{ display: 'block', color: '#666660', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>Postnummer</label>
               <input type="text" inputMode="numeric" maxLength={4} value={inputZip} onChange={e => setInputZip(e.target.value)} placeholder="8000"
-                style={{ background: '#111', border: '1px solid #222', color: '#e8e8e0', padding: '0.65rem 1rem', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', width: '110px', letterSpacing: '0.1em' }} />
+                style={{ background: '#272B2E', border: '1px solid #222', color: '#e8e8e0', padding: '0.65rem 1rem', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', width: '110px', letterSpacing: '0.1em' }} />
             </div>
-            <button type="submit" disabled={loading} style={{ background: loading ? '#8aa840' : '#c8f060', color: '#0a0a0a', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
+            <button type="submit" disabled={loading} style={{ background: loading ? '#6A8A5C' : '#8BAF7C', color: '#1F2124', fontWeight: 700, border: 'none', padding: '0.65rem 1.25rem', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.85rem', height: '42px' }}>
               {loading ? 'Henter...' : 'Søg'}
             </button>
             {geo.status === 'granted' && (
               <button type="button" onClick={() => fetchByCoords((geo as { status: 'granted'; lat: number; lng: number }).lat, (geo as { status: 'granted'; lat: number; lng: number }).lng)} disabled={loading}
-                style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#c8f060', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px' }}>
+                style={{ background: 'transparent', border: '1px solid #2a2a2a', color: '#8BAF7C', padding: '0.65rem 1rem', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.7rem', height: '42px' }}>
                 📍 Min placering
               </button>
             )}
@@ -456,7 +456,7 @@ export default function MadspildPage() {
               style={{ background: 'transparent', border: 'none', color: '#888880', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.75rem' }}>
               ↻ {loading ? 'Opdaterer...' : 'Opdater'}
             </button>
-            <span style={{ color: '#1e1e1e' }}>·</span>
+            <span style={{ color: '#2E3237' }}>·</span>
             <form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ color: '#555550', fontSize: '0.72rem' }}>Søg på postnummer:</span>
               <input type="text" inputMode="numeric" maxLength={4} value={inputZip} onChange={e => setInputZip(e.target.value)} placeholder="8000"
@@ -520,11 +520,11 @@ export default function MadspildPage() {
         {/* ── MADSPILD BUTIKKER ── */}
         {!loading && data !== null && (
           <>
-            <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', padding: '1rem 1.25rem', background: '#0f0f0f', border: '1px solid #1e1e1e', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', padding: '1rem 1.25rem', background: '#242729', border: '1px solid #1e1e1e', flexWrap: 'wrap' }}>
               <Stat value={storesWithItems.length} label="butikker" />
-              <div style={{ width: '1px', background: '#1e1e1e' }} />
+              <div style={{ width: '1px', background: '#2E3237' }} />
               <Stat value={totalClearances} label="madspildsvarer" />
-              <div style={{ width: '1px', background: '#1e1e1e' }} />
+              <div style={{ width: '1px', background: '#2E3237' }} />
               <Stat value={usingGeo ? '📍 din placering' : zip} label={usingGeo ? 'sorteret efter afstand' : 'postnummer'} />
             </div>
 
@@ -572,7 +572,7 @@ export default function MadspildPage() {
 function Stat({ value, label }: { value: string | number; label: string }) {
   return (
     <div>
-      <span style={{ color: '#c8f060', fontSize: '1.4rem', fontWeight: 700 }}>{value}</span>
+      <span style={{ color: '#8BAF7C', fontSize: '1.4rem', fontWeight: 700 }}>{value}</span>
       <span style={{ color: '#888880', fontSize: '0.75rem', display: 'block', marginTop: '0.1rem' }}>{label}</span>
     </div>
   )
@@ -602,12 +602,12 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
       {/* Klikbar store-header */}
       <button onClick={onToggle} style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-        padding: '0.875rem 1rem', background: '#0f0f0f',
-        border: '1px solid', borderColor: isExpanded ? '#2a2a2a' : '#1e1e1e',
+        padding: '0.875rem 1rem', background: '#242729',
+        border: '1px solid', borderColor: isExpanded ? '#363B40' : '#2E3237',
         borderBottom: isExpanded ? 'none' : '1px solid #1e1e1e',
         cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
       }}>
-        <span style={{ background: brandColor(entry.store.brand), color: '#0a0a0a', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.45rem', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
+        <span style={{ background: brandColor(entry.store.brand), color: '#1F2124', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.45rem', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
           {brandLabel(entry.store.brand)}
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -617,11 +617,11 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
             <span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
             {dist && <span style={{ color: '#888880' }}>· {dist}</span>}
-            {hours && <span style={{ color: hours.isOpen ? '#c8f060' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
+            {hours && <span style={{ color: hours.isOpen ? '#8BAF7C' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-          <span style={{ color: '#c8f060', fontSize: '0.8rem', fontWeight: 700 }}>
+          <span style={{ color: '#8BAF7C', fontSize: '0.8rem', fontWeight: 700 }}>
             {clearances.length} vare{clearances.length !== 1 ? 'r' : ''}
           </span>
           <span style={{ color: '#555550', fontSize: '0.75rem', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
@@ -672,11 +672,11 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
                         minWidth: '2rem',
                       }}>
                         {h.dayLabel}
-                        {h.isToday && <span style={{ color: '#c8f060', fontSize: '0.55rem', marginLeft: '0.3rem' }}>i dag</span>}
+                        {h.isToday && <span style={{ color: '#8BAF7C', fontSize: '0.55rem', marginLeft: '0.3rem' }}>i dag</span>}
                       </span>
                       <span style={{
                         fontSize: '0.7rem',
-                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#c8f060' : '#888880') : '#666660',
+                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#8BAF7C' : '#888880') : '#666660',
                         fontWeight: h.isToday && hours?.isOpen ? 600 : 400,
                       }}>
                         {h.closed ? 'Lukket' : `${h.open}–${h.close}`}
@@ -730,9 +730,9 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
   const stockLabel = (offer?.stockUnit === 'each' || offer?.stockUnit === 'stk') ? 'stk' : (offer?.stockUnit ?? 'stk')
 
   return (
-    <div style={{ background: '#111', border: '1px solid #1e1e1e', padding: '0.875rem', display: 'flex', gap: '0.75rem', position: 'relative' }}>
+    <div style={{ background: '#272B2E', border: '1px solid #1e1e1e', padding: '0.875rem', display: 'flex', gap: '0.75rem', position: 'relative' }}>
       {discount != null && (
-        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: '#c8f060', color: '#0a0a0a', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
+        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: '#8BAF7C', color: '#1F2124', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
           -{discount}%
         </div>
       )}
@@ -742,14 +742,14 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
           style={{ width: '56px', height: '56px', objectFit: 'contain', flexShrink: 0, background: '#fff', padding: '3px' }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
       ) : (
-        <div style={{ width: '56px', height: '56px', background: '#1a1a1a', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>🛒</div>
+        <div style={{ width: '56px', height: '56px', background: '#2E3237', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>🛒</div>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ margin: '0 0 0.4rem', fontSize: '0.78rem', color: '#e8e8e0', lineHeight: 1.3, paddingRight: discount != null ? '2.25rem' : '0' }}>
           {product?.description ?? 'Ukendt vare'}
         </p>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginBottom: '0.4rem' }}>
-          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#c8f060' }}>{fmt(newPrice)} kr</span>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#8BAF7C' }}>{fmt(newPrice)} kr</span>
           {offer?.originalPrice != null && offer.originalPrice > 0 && (
             <span style={{ fontSize: '0.7rem', color: '#555550', textDecoration: 'line-through' }}>{fmt(offer.originalPrice)} kr</span>
           )}
@@ -782,7 +782,7 @@ function PromoCard({ promo, compact = false }: { promo: Promotion; compact?: boo
   return (
     <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', padding: compact ? '0.6rem' : '0.75rem', display: 'flex', gap: '0.5rem', position: 'relative' }}>
       {disc != null && (
-        <div style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', background: '#2a2a2a', color: '#888880', fontSize: '0.55rem', fontWeight: 700, padding: '0.1rem 0.35rem' }}>
+        <div style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', background: '#363B40', color: '#888880', fontSize: '0.55rem', fontWeight: 700, padding: '0.1rem 0.35rem' }}>
           -{disc}%
         </div>
       )}
