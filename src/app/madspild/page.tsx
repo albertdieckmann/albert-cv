@@ -24,7 +24,7 @@ interface Product {
   description?: string
   ean?: string
   image?: string
-  categories?: Record<string, string[]> | string[]
+  categories?: Record<string, string[]> | string[] | string
 }
 
 interface Clearance {
@@ -260,6 +260,7 @@ const CATEGORY_KW: [string, string[]][] = [
 function productCategory(product?: Product): string {
   if (product?.categories) {
     const cats = product.categories
+    if (typeof cats === 'string') return cats
     if (Array.isArray(cats) && cats.length > 0) return cats[0]
     if (!Array.isArray(cats)) {
       const da = (cats as Record<string, string[]>).da
