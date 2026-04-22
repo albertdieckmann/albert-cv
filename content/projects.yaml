@@ -6,7 +6,7 @@ projects:
     live: true
     order: 1
   - title: Venneplanner
-    description: En lille app der kan hjælpe med at planlægge Roskilde Festival for en gruppe. Opdaterer Roskildes program 2 gange i døgnet og giver mulighed for at angive om man har tænkt sig at dukke op til en koncert eller om man absoulut kun skal opleve det, hvis der en fadøl i nærheden
+    description: En lille app der kan hjælpe med at planlægge Roskilde Festival for en gruppe. Opdaterer Roskildes program 2 gange i døgnet og giver mulighed for at angive om man har tænkt sig at dukke op til en koncert eller om man absolut kun skal opleve det, hvis der en fadøl i nærheden
     href: /roskilde
     tags: 'GitHub Actions · Claude '
     live: true
