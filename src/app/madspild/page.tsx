@@ -689,35 +689,26 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           {/* Kategorifilter */}
           {categories.length > 1 && (
             <div style={{ padding: '0.625rem 0.875rem 0', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => setActiveCategory(null)}
-                style={{
-                  fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
-                  borderColor: activeCategory === null ? '#B87B6E' : '#2a2a2a',
-                  background: activeCategory === null ? 'rgba(184,123,110,0.15)' : 'transparent',
-                  color: activeCategory === null ? '#B87B6E' : '#555550',
-                  cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
-                  borderRadius: '2px',
-                }}
-              >
-                Alle ({sorted.length})
-              </button>
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                  style={{
-                    fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
-                    borderColor: activeCategory === cat ? '#B87B6E' : '#2a2a2a',
-                    background: activeCategory === cat ? 'rgba(184,123,110,0.15)' : 'transparent',
-                    color: activeCategory === cat ? '#B87B6E' : '#555550',
-                    cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
-                    borderRadius: '2px',
-                  }}
-                >
-                  {cat} ({sorted.filter(c => productCategory(c.product) === cat).length})
-                </button>
-              ))}
+              {[null, ...categories].map(cat => {
+                const isActive = activeCategory === cat
+                const label = cat === null ? `Alle (${sorted.length})` : `${cat} (${sorted.filter(c => productCategory(c.product) === cat).length})`
+                return (
+                  <button
+                    key={cat ?? '__all__'}
+                    onClick={() => setActiveCategory(cat)}
+                    style={{
+                      fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
+                      borderColor: isActive ? 'var(--accent)' : 'var(--border)',
+                      background: isActive ? 'rgba(184,123,110,0.15)' : 'var(--bg2)',
+                      color: isActive ? 'var(--accent)' : 'var(--text)',
+                      cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
+                      borderRadius: '2px',
+                    }}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
             </div>
           )}
 
