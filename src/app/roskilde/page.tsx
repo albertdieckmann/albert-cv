@@ -45,9 +45,9 @@ type SessionData = {
 // ─── constants ────────────────────────────────────────────────────────────────
 
 const CATEGORY_META: Record<Category, { label: string; weight: number; cls: string }> = {
-  must:   { label: "Must see",                        weight: 3, cls: s.catMust },
-  should: { label: "Skal nok se",                     weight: 2, cls: s.catShould },
-  beer:   { label: "Fadøl-mode",                      weight: 1, cls: s.catBeer },
+  must:   { label: "Must see",     weight: 3, cls: s.catMust },
+  should: { label: "Skal nok se",  weight: 2, cls: s.catShould },
+  beer:   { label: "Fadøl-mode",   weight: 1, cls: s.catBeer },
 };
 
 const UI_KEY = "roskilde-friends-planner-ui-v1";
@@ -89,16 +89,16 @@ export default function RoskildePage() {
   const { isLoaded, isSignedIn } = useUser();
   const { openSignIn, signOut } = useClerk();
 
-  const [lineup,        setLineup]        = useState<Act[]>([]);
-  const [session,       setSession]       = useState<SessionData>({ user: null, groups: [], activeGroup: null });
-  const [search,        setSearch]        = useState("");
-  const [selectedOnly,  setSelectedOnly]  = useState(false);
-  const [expandedAct,   setExpandedAct]   = useState<string | null>(null);
-  const [groupName,     setGroupName]     = useState("");
-  const [inviteCode,    setInviteCode]    = useState("");
-  const [status,        setStatus]        = useState("");
-  const [busy,          setBusy]          = useState(false);
-  const [ready,         setReady]         = useState(false);
+  const [lineup,       setLineup]       = useState<Act[]>([]);
+  const [session,      setSession]      = useState<SessionData>({ user: null, groups: [], activeGroup: null });
+  const [search,       setSearch]       = useState("");
+  const [selectedOnly, setSelectedOnly] = useState(false);
+  const [groupName,    setGroupName]    = useState("");
+  const [inviteCode,   setInviteCode]   = useState("");
+  const [status,       setStatus]       = useState("");
+  const [busy,         setBusy]         = useState(false);
+  const [ready,        setReady]        = useState(false);
+  const [drawerOpen,   setDrawerOpen]   = useState(false);
 
   const activeGroupIdRef = useRef<number | null>(null);
   const statusTimer      = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -331,28 +331,133 @@ export default function RoskildePage() {
 
       {/* ── header ── */}
       <header className={s.header}>
-        <Link href="/" className={s.backLink}>← Hjem</Link>
+        <Link href="/" className={s.backLink}>←</Link>
         <div className={s.headerCenter}>
+          <span className={s.headerTitle}>Venneplanner</span>
           {status && <span className={s.statusMsg}>{status}</span>}
         </div>
-        <button
-          className={s.iconBtn}
-          onClick={() => run(fetchSession)}
-          aria-label="Opdatér oversigt"
-          title="Opdatér oversigt"
-        >
-          ↻
-        </button>
+        <div className={s.headerActions}>
+          <button className={s.iconBtn} onClick={() => run(fetchSession)} aria-label="Opdatér" title="Opdatér">↻</button>
+          <button
+            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""}`}
+            onClick={() => setDrawerOpen(v => !v)}
+            aria-label="Profil og gruppe"
+            title="Profil og gruppe"
+          >
+            {session.activeGroup ? "●" : "○"}
+          </button>
+        </div>
       </header>
 
-      {/* ── hero ── */}
-      <div className={s.hero}>
-        <p className={s.heroTag}>Roskilde 2026</p>
-        <h1 className={s.heroTitle}>Venneplanner</h1>
-        <p className={s.heroDesc}>
-          Byg jeres fælles tidsplan. Alle i gruppen markerer acts — appen samler det kronologisk.
-        </p>
-      </div>
+      {/* ── drawer overlay ── */}
+      {drawerOpen && (
+        <div className={s.drawerOverlay} onClick={() => setDrawerOpen(false)} />
+      )}
+
+      {/* ── drawer panel ── */}
+      <aside className={`${s.drawer} ${drawerOpen ? s.drawerOpen : ""}`}>
+        <div className={s.drawerHeader}>
+          <span className={s.drawerTitle}>Profil & Gruppe</span>
+          <button className={s.iconBtn} onClick={() => setDrawerOpen(false)} aria-label="Luk">✕</button>
+        </div>
+
+        {/* Profil */}
+        <div className={s.drawerSection}>
+          <p className={s.sectionTag}>Profil</p>
+          {!isSignedIn ? (
+            <div className={s.authCard}>
+              <p className={s.muted}>Log ind for at markere favoritter og dele med venner.</p>
+              <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/roskilde" }); }}>
+                Log ind eller opret profil
+              </button>
+            </div>
+          ) : (
+            <div className={s.identityCard}>
+              <div>
+                <p className={s.identityName}>{session.user?.name}</p>
+                <p className={s.identityEmail}>{session.user?.email}</p>
+              </div>
+              <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/roskilde" })}>Log ud</button>
+            </div>
+          )}
+        </div>
+
+        {/* Gruppe */}
+        {isSignedIn && (
+          <div className={s.drawerSection}>
+            <p className={s.sectionTag}>Gruppe</p>
+
+            {session.groups.length > 0 && (
+              <div className={s.groupSwitcher}>
+                {session.groups.map((g) => (
+                  <button
+                    key={g.id}
+                    className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
+                    onClick={() => handleSwitchGroup(g.id)}
+                  >
+                    {g.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {session.activeGroup && (
+              <>
+                <div className={s.memberList}>
+                  {session.activeGroup.members.map((m) => (
+                    <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
+                      <span>{m.name}</span>
+                      <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
+                    </div>
+                  ))}
+                </div>
+                <div className={s.inviteBar}>
+                  <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
+                    <button type="submit" className={s.ghostBtn}>Ny invite-kode</button>
+                  </form>
+                  {session.activeGroup.invites[0] && (
+                    <button className={s.ghostBtn} onClick={handleCopyInvite}>
+                      Kopiér kode ({session.activeGroup.invites[0].code})
+                    </button>
+                  )}
+                </div>
+                {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
+                  <button className={s.deleteBtn} onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                    Slet gruppe
+                  </button>
+                ) : (
+                  <button className={s.deleteBtn} onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                    Forlad gruppe
+                  </button>
+                )}
+              </>
+            )}
+
+            <details className={s.details}>
+              <summary className={s.detailsSummary}>
+                {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
+              </summary>
+              <div className={s.detailsBody}>
+                <form onSubmit={handleCreateGroup} className={s.stackForm}>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Gruppenavn</span>
+                    <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Roskilde-gæng 2026" maxLength={50} required />
+                  </label>
+                  <button type="submit" className={s.primaryBtn}>Opret gruppe</button>
+                </form>
+                <div className={s.orDivider}><span>eller</span></div>
+                <form onSubmit={handleJoinGroup} className={s.stackForm}>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Invite-kode</span>
+                    <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
+                  </label>
+                  <button type="submit" className={s.ghostBtn}>Join gruppe</button>
+                </form>
+              </div>
+            </details>
+          </div>
+        )}
+      </aside>
 
       {/* ── stats ── */}
       <div className={s.statsStrip}>
@@ -369,145 +474,14 @@ export default function RoskildePage() {
         ))}
       </div>
 
-      {/* ── auth ── */}
-      <section className={s.section}>
-        <p className={s.sectionTag}>Profil</p>
-        {!isSignedIn ? (
-          <div className={s.authCard}>
-            <h2 className={s.sectionTitle}>Log ind for at bruge appen</h2>
-            <p className={s.muted}>
-              Du kan se line-up uden at logge ind. Log ind for at markere favoritter og dele med venner i en gruppe.
-            </p>
-            <button
-              className={s.primaryBtn}
-              onClick={() => openSignIn({ fallbackRedirectUrl: "/roskilde" })}
-            >
-              Log ind eller opret profil
-            </button>
-          </div>
-        ) : (
-          <div className={s.identityCard}>
-            <div>
-              <p className={s.identityName}>{session.user?.name}</p>
-              <p className={s.identityEmail}>{session.user?.email}</p>
-            </div>
-            <button
-              className={s.ghostBtn}
-              onClick={() => signOut({ redirectUrl: "/roskilde" })}
-            >
-              Log ud
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* ── gruppe ── */}
-      {isSignedIn && (
-        <section className={s.section}>
-          <p className={s.sectionTag}>Gruppe</p>
-
-          {session.groups.length > 0 && (
-            <div className={s.groupSwitcher}>
-              {session.groups.map((g) => (
-                <button
-                  key={g.id}
-                  className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
-                  onClick={() => handleSwitchGroup(g.id)}
-                >
-                  {g.name}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {session.activeGroup && (
-            <>
-              <div className={s.memberList}>
-                {session.activeGroup.members.map((m) => (
-                  <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
-                    <span>{m.name}</span>
-                    <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
-                  </div>
-                ))}
-              </div>
-
-              <div className={s.inviteBar}>
-                <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
-                  <button type="submit" className={s.ghostBtn}>Ny invite-kode</button>
-                </form>
-                {session.activeGroup.invites[0] && (
-                  <button className={s.ghostBtn} onClick={handleCopyInvite}>
-                    Kopiér kode ({session.activeGroup.invites[0].code})
-                  </button>
-                )}
-              </div>
-
-              {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
-                <button
-                  className={s.deleteBtn}
-                  onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}
-                >
-                  Slet gruppe
-                </button>
-              ) : (
-                <button
-                  className={s.deleteBtn}
-                  onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}
-                >
-                  Forlad gruppe
-                </button>
-              )}
-            </>
-          )}
-
-          <details className={s.details}>
-            <summary className={s.detailsSummary}>
-              {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
-            </summary>
-            <div className={s.detailsBody}>
-              <form onSubmit={handleCreateGroup} className={s.stackForm}>
-                <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Gruppenavn</span>
-                  <input
-                    className={s.fieldInput}
-                    value={groupName}
-                    onChange={(e) => setGroupName(e.target.value)}
-                    placeholder="Fx Roskilde-gæng 2026"
-                    maxLength={50}
-                    required
-                  />
-                </label>
-                <button type="submit" className={s.primaryBtn}>Opret gruppe</button>
-              </form>
-
-              <div className={s.orDivider}><span>eller</span></div>
-
-              <form onSubmit={handleJoinGroup} className={s.stackForm}>
-                <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Invite-kode</span>
-                  <input
-                    className={s.fieldInput}
-                    value={inviteCode}
-                    onChange={(e) => setInviteCode(e.target.value)}
-                    placeholder="Fx A3X7K2"
-                    maxLength={10}
-                    required
-                  />
-                </label>
-                <button type="submit" className={s.ghostBtn}>Join gruppe</button>
-              </form>
-            </div>
-          </details>
-        </section>
-      )}
-
       {/* ── tidsplan ── */}
       <section className={s.section}>
         <p className={s.sectionTag}>Tidsplan</p>
-
         {tGroups.length === 0 ? (
           <div className={s.empty}>
-            Når gruppen vælger acts, samles de her som en kronologisk tidsplan.
+            {session.activeGroup
+              ? "Marker acts i line-up herunder — de samles her som en kronologisk tidsplan."
+              : "Log ind og opret en gruppe for at bygge jeres tidsplan."}
           </div>
         ) : (
           tGroups.map(([day, items]) => (
@@ -524,9 +498,7 @@ export default function RoskildePage() {
                       <div>
                         <h4 className={s.actName}>{item.name}</h4>
                         <p className={s.actMeta}>{item.type ?? "Act"}</p>
-                        <p className={s.actMeta}>
-                          {[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}
-                        </p>
+                        <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
                       </div>
                       <span className={s.scoreTag}>{item.score} pt</span>
                     </div>
@@ -547,7 +519,7 @@ export default function RoskildePage() {
 
       {/* ── line-up ── */}
       <section className={s.section}>
-        <p className={s.sectionTag}>Line-up</p>
+        <p className={s.sectionTag}>Line-up · {lineup.length} acts</p>
 
         <div className={s.filterBar}>
           <input
@@ -558,20 +530,17 @@ export default function RoskildePage() {
             onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
           />
           <label className={s.toggleRow}>
-            <input
-              type="checkbox"
-              checked={selectedOnly}
-              onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }}
-            />
+            <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
             <span>Vis kun valgte</span>
           </label>
         </div>
 
-        <p className={s.hint}>
-          {session.user
-            ? `Dine valg gemmes som ${session.user.name}`
-            : "Log ind for at markere favoritter"}
-        </p>
+        {!session.activeGroup && (
+          <p className={s.hint}>
+            {session.user ? "Opret eller join en gruppe for at markere favoritter →" : "Log ind for at markere favoritter →"}
+            <button className={s.hintBtn} onClick={() => setDrawerOpen(true)}>Åbn profil</button>
+          </p>
+        )}
 
         {acts.length === 0 ? (
           <div className={s.empty}>Ingen acts matcher dit søgeord.</div>
@@ -580,53 +549,37 @@ export default function RoskildePage() {
             {acts.map((act) => {
               const picks = picksFor(act.name);
               const mine  = myPick(act.name);
-              const note  = picks.length
-                ? picks.map((p) => `${p.user_name}: ${CATEGORY_META[p.category].label}`).join(" · ")
-                : null;
+              const canPick = !!(session.user && session.activeGroup);
 
-              const isExpanded = expandedAct === act.name;
               return (
                 <article key={act.name} className={s.actCard}>
-                  <div
-                    className={s.actTop}
-                    onClick={() => setExpandedAct(isExpanded ? null : act.name)}
-                    role="button"
-                    aria-expanded={isExpanded}
-                  >
-                    <div>
+                  <div className={s.actTop}>
+                    <div className={s.actInfo}>
                       <h3 className={s.actName}>{act.name}</h3>
                       <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
                     </div>
-                    <div className={s.actTopRight}>
-                      {mine ? (
-                        <span className={`${s.myPickBadge} ${CATEGORY_META[mine].cls}`}>
-                          ✓ {CATEGORY_META[mine].label}
-                        </span>
-                      ) : (
-                        <span className={`${s.tag} ${act.type === "Music" ? s.catMust : s.catBeer}`}>
-                          {act.type ?? "Act"}
-                        </span>
-                      )}
-                      <span className={s.chevron}>{isExpanded ? "▲" : "▼"}</span>
+                    <div className={s.catGrid}>
+                      {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
+                        <button
+                          key={key}
+                          className={`${s.catBtn} ${meta.cls} ${mine === key ? s.catBtnActive : ""}`}
+                          onClick={() => handlePick(act.name, key)}
+                          disabled={!canPick}
+                          title={meta.label}
+                        >
+                          {mine === key ? "✓" : key === "must" ? "★" : key === "should" ? "◎" : "⌀"}
+                        </button>
+                      ))}
                     </div>
                   </div>
-
-                  {isExpanded && (
-                    <>
-                      <div className={s.catGrid}>
-                        {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
-                          <button
-                            key={key}
-                            className={`${s.catBtn} ${meta.cls} ${mine === key ? s.catBtnActive : ""}`}
-                            onClick={() => handlePick(act.name, key)}
-                            disabled={!session.user || !session.activeGroup}
-                          >
-                            {mine === key ? "✓ " : ""}{meta.label}
-                          </button>
-                        ))}
-                      </div>
-                      {note && <p className={s.pickNote}>{note}</p>}
-                    </>
+                  {picks.length > 0 && (
+                    <div className={s.pickTags}>
+                      {picks.map((p) => (
+                        <span key={p.user_id} className={`${s.tag} ${CATEGORY_META[p.category].cls}`}>
+                          {p.user_name}: {CATEGORY_META[p.category].label}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </article>
               );
