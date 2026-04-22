@@ -24,6 +24,7 @@ interface Product {
   description?: string
   ean?: string
   image?: string
+  categories?: Record<string, string[]> | string[]
 }
 
 interface Clearance {
@@ -229,6 +230,51 @@ function nextOpening(hours?: StoreHours[]): string | null {
     return `${dayLabel} kl. ${extractHHMM(h.open)}`
   }
   return null
+}
+
+function mapsUrl(store: Store): string {
+  const c = store.coordinates
+  if (Array.isArray(c) && c.length === 2) {
+    return `https://maps.google.com/?q=${c[1]},${c[0]}`
+  }
+  if (c && typeof c === 'object' && !Array.isArray(c)) {
+    const co = c as Record<string, number>
+    const lat = co.latitude ?? co.lat
+    const lon = co.longitude ?? co.lng ?? co.lon
+    if (lat && lon) return `https://maps.google.com/?q=${lat},${lon}`
+  }
+  const q = [store.address?.street, store.address?.zip, store.address?.city].filter(Boolean).join(' ')
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
+}
+
+const CATEGORY_KW: [string, string[]][] = [
+  ['Mejeri & æg',   ['mælk', 'ost', 'yoghurt', 'fløde', 'smør', 'æg', 'kvark', 'cremefraiche', 'skyr', 'kefir']],
+  ['Kød & fisk',    ['kød', 'fisk', 'kylling', 'laks', 'svin', 'okse', 'hakket', 'filet', 'rejer', 'tun', 'pølse', 'bacon', 'skank']],
+  ['Frugt & grønt', ['frugt', 'grønt', 'salat', 'tomat', 'æble', 'banan', 'gulerod', 'løg', 'agurk', 'peber', 'spinat', 'broccoli']],
+  ['Brød & bageri', ['brød', 'bolle', 'rugbrød', 'toast', 'kage', 'croissant', 'wienerbrød', 'baguette', 'muffin', 'tærte']],
+  ['Drikkevarer',   ['juice', 'saft', 'smoothie', 'drik', 'lemonade']],
+  ['Pålæg',         ['pålæg', 'skinke', 'salami', 'leverpostej', 'spegepølse', 'paté']],
+  ['Færdigretter',  ['pizza', 'lasagne', 'suppe', 'sandwich', 'wrap', 'sushi', 'nuggets', 'frikadelle', 'falafel']],
+]
+
+function productCategory(product?: Product): string {
+  if (product?.categories) {
+    const cats = product.categories
+    if (Array.isArray(cats) && cats.length > 0) return cats[0]
+    if (!Array.isArray(cats)) {
+      const da = (cats as Record<string, string[]>).da
+      if (da?.length) return da[0]
+      const first = Object.values(cats as Record<string, string[]>)[0]
+      if (Array.isArray(first) && first.length) return first[0]
+    }
+  }
+  if (product?.description) {
+    const lower = product.description.toLowerCase()
+    for (const [cat, kws] of CATEGORY_KW) {
+      if (kws.some(k => lower.includes(k))) return cat
+    }
+  }
+  return 'Andet'
 }
 
 // Absolut besparelse i kr — kun når begge priser er kendte
@@ -588,12 +634,15 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
 }) {
   const [spotExpanded, setSpotExpanded] = useState(false)
   const [hoursExpanded, setHoursExpanded] = useState(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const clearances = entry.clearances ?? []
   const sorted = [...clearances].sort((a, b) => {
     const sa = sortScore(a), sb = sortScore(b)
-    if (sb.pct !== sa.pct) return sb.pct - sa.pct   // størst % rabat først
-    return sb.kr - sa.kr                              // tiebreaker: størst kr-besparelse
+    if (sb.pct !== sa.pct) return sb.pct - sa.pct
+    return sb.kr - sa.kr
   })
+  const categories = [...new Set(sorted.map(c => productCategory(c.product)))].sort()
+  const filtered = activeCategory ? sorted.filter(c => productCategory(c.product) === activeCategory) : sorted
   const hours = todayHours(entry.store.hours)
   const week = weekHours(entry.store.hours)
   const next = !hours?.isOpen ? nextOpening(entry.store.hours) : null
@@ -617,7 +666,12 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
             {entry.store.name ?? 'Ukendt butik'}
           </p>
           <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-            <span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
+            <span
+              onClick={e => { e.stopPropagation(); window.open(mapsUrl(entry.store), '_blank', 'noopener') }}
+              style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textDecorationColor: '#555550', cursor: 'pointer' }}
+            >
+              {[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}
+            </span>
             {dist && <span style={{ color: '#888880' }}>· {dist}</span>}
             {hours && <span style={{ color: hours.isOpen ? '#B87B6E' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
           </p>
@@ -632,9 +686,44 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
 
       {isExpanded && (
         <div style={{ border: '1px solid #2a2a2a', borderTop: 'none' }}>
+          {/* Kategorifilter */}
+          {categories.length > 1 && (
+            <div style={{ padding: '0.625rem 0.875rem 0', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setActiveCategory(null)}
+                style={{
+                  fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
+                  borderColor: activeCategory === null ? '#B87B6E' : '#2a2a2a',
+                  background: activeCategory === null ? 'rgba(184,123,110,0.15)' : 'transparent',
+                  color: activeCategory === null ? '#B87B6E' : '#555550',
+                  cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
+                  borderRadius: '2px',
+                }}
+              >
+                Alle ({sorted.length})
+              </button>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                  style={{
+                    fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
+                    borderColor: activeCategory === cat ? '#B87B6E' : '#2a2a2a',
+                    background: activeCategory === cat ? 'rgba(184,123,110,0.15)' : 'transparent',
+                    color: activeCategory === cat ? '#B87B6E' : '#555550',
+                    cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
+                    borderRadius: '2px',
+                  }}
+                >
+                  {cat} ({sorted.filter(c => productCategory(c.product) === cat).length})
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Madspildsvarer */}
           <div style={{ padding: '0.875rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
-            {sorted.map((clearance, idx) => (
+            {filtered.map((clearance, idx) => (
               <ProductCard key={clearance.offer?.ean ?? idx} clearance={clearance} />
             ))}
           </div>
