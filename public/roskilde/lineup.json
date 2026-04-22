@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-04-22T10:53:58.331844Z",
+  "generatedAt": "2026-04-22T21:41:45.013259Z",
   "itemCount": 171,
   "items": [
     {
@@ -4166,7 +4166,7 @@
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/david-byrne",
       "countryCode": "US",
-      "lineupSceneLabel": "",
+      "lineupSceneLabel": "Arena",
       "dayFilters": [
         "Friday"
       ],
