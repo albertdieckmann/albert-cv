@@ -674,14 +674,9 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)' }}>
             {entry.store.name ?? 'Ukendt butik'}
           </p>
-          <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: 'var(--muted)', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-            <span
-              onClick={e => { e.stopPropagation(); window.open(mapsUrl(entry.store), '_blank', 'noopener') }}
-              style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textDecorationColor: 'var(--muted)', cursor: 'pointer' }}
-            >
-              {[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}
-            </span>
-            {dist && <span style={{ color: 'var(--muted)' }}>· {dist}</span>}
+          <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
+            <span>{[entry.store.address?.street, entry.store.address?.zip, entry.store.address?.city].filter(Boolean).join(' · ')}</span>
+            {dist && <span style={{ color: '#888880' }}>· {dist}</span>}
             {hours && <span style={{ color: hours.isOpen ? '#B87B6E' : '#888880', fontWeight: hours.isOpen ? 600 : 400 }}>· {hours.label}</span>}
           </p>
         </div>
