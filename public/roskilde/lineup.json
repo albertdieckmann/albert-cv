@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-04-24T10:57:48.226391Z",
+  "generatedAt": "2026-04-24T21:36:48.039057Z",
   "itemCount": 171,
   "items": [
     {
@@ -4162,40 +4162,6 @@
       }
     },
     {
-      "name": "David Byrne",
-      "type": "Music",
-      "url": "https://www.roskilde-festival.dk/en/line-up/music/david-byrne",
-      "countryCode": "US",
-      "lineupSceneLabel": "Arena",
-      "dayFilters": [
-        "Friday"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "FRIDAY 3 JULY",
-          "dayId": "friday",
-          "date": "2026-07-03T20:30:00",
-          "startTime": "2026-04-17T20:30:00",
-          "timeLabel": "20.30",
-          "stage": "Arena",
-          "showTitle": null
-        }
-      ],
-      "dayId": "friday",
-      "dateLabel": "FRIDAY 3 JULY",
-      "date": "2026-07-03T20:30:00",
-      "timeLabel": "20.30",
-      "stage": "Arena",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-03T20:30:00",
-        "time": "20.30",
-        "name": "David Byrne"
-      }
-    },
-    {
       "name": "1111",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/1111",
@@ -5347,6 +5313,28 @@
         "date": null,
         "time": null,
         "name": "AROBAL & MIKKEL NIELSEN"
+      }
+    },
+    {
+      "name": "David Byrne",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/david-byrne",
+      "countryCode": "US",
+      "lineupSceneLabel": "",
+      "dayFilters": [],
+      "newInLineup": false,
+      "appearances": [],
+      "dayId": null,
+      "dateLabel": null,
+      "date": null,
+      "timeLabel": null,
+      "stage": "",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": null,
+        "time": null,
+        "name": "David Byrne"
       }
     },
     {
