@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-04-30T12:07:02.095835Z",
-  "itemCount": 269,
+  "generatedAt": "2026-04-30T22:14:07.295773Z",
+  "itemCount": 268,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -1294,40 +1294,6 @@
       }
     },
     {
-      "name": "SENTIMENTAL VALUE (2025)",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/sentimental-value-2025",
-      "countryCode": "",
-      "lineupSceneLabel": "Cinema",
-      "dayFilters": [
-        "first-days"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "SUNDAY 28 JUNE",
-          "dayId": null,
-          "date": "2026-06-28T15:00:00",
-          "startTime": "2026-04-29T15:00:00",
-          "timeLabel": "15.00",
-          "stage": "Cinema",
-          "showTitle": null
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "SUNDAY 28 JUNE",
-      "date": "2026-06-28T15:00:00",
-      "timeLabel": "15.00",
-      "stage": "Cinema",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-06-28T15:00:00",
-        "time": "15.00",
-        "name": "SENTIMENTAL VALUE (2025)"
-      }
-    },
-    {
       "name": "AROBAL",
       "type": "Art & Activism",
       "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/arobal",
@@ -2074,40 +2040,6 @@
       }
     },
     {
-      "name": "Kayak",
-      "type": "Music",
-      "url": "https://www.roskilde-festival.dk/en/line-up/music/kayak",
-      "countryCode": "DK",
-      "lineupSceneLabel": "Eos",
-      "dayFilters": [
-        "first-days"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "MONDAY 29 JUNE",
-          "dayId": null,
-          "date": "2026-06-29T00:00:00",
-          "startTime": "0001-01-01T00:00:00",
-          "timeLabel": "00.00",
-          "stage": "",
-          "showTitle": null
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "MONDAY 29 JUNE",
-      "date": "2026-06-29T00:00:00",
-      "timeLabel": "00.00",
-      "stage": "Eos",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-06-29T00:00:00",
-        "time": "00.00",
-        "name": "Kayak"
-      }
-    },
-    {
       "name": "BEACHVOLLEY",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/beachvolley",
@@ -2539,6 +2471,40 @@
         "date": "2026-06-29T14:15:00",
         "time": "14.15",
         "name": "JOHANNE ANASTASIA STOFFERSEN"
+      }
+    },
+    {
+      "name": "Kayak",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/kayak",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Eos",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T14:15:00",
+          "startTime": "2026-04-10T14:15:00",
+          "timeLabel": "14.15",
+          "stage": "Eos",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T14:15:00",
+      "timeLabel": "14.15",
+      "stage": "Eos",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T14:15:00",
+        "time": "14.15",
+        "name": "Kayak"
       }
     },
     {
@@ -8248,6 +8214,40 @@
       }
     },
     {
+      "name": "Lily Allen",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/lily-allen",
+      "countryCode": "UK",
+      "lineupSceneLabel": "Orange Scene",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T00:00:00",
+          "startTime": "0001-01-01T00:00:00",
+          "timeLabel": "00.00",
+          "stage": "Orange Scene",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T00:00:00",
+      "timeLabel": "00.00",
+      "stage": "Orange Scene",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T00:00:00",
+        "time": "00.00",
+        "name": "Lily Allen"
+      }
+    },
+    {
       "name": "Rochelle Jordan",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/rochelle-jordan",
@@ -9299,40 +9299,6 @@
         "date": "2026-07-04T20:30:00",
         "time": "20.30",
         "name": "1111"
-      }
-    },
-    {
-      "name": "Lily Allen",
-      "type": "Music",
-      "url": "https://www.roskilde-festival.dk/en/line-up/music/lily-allen",
-      "countryCode": "UK",
-      "lineupSceneLabel": "Orange Scene",
-      "dayFilters": [
-        "Saturday"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "SATURDAY 4 JULY",
-          "dayId": "saturday",
-          "date": "2026-07-04T20:45:00",
-          "startTime": "2026-04-15T20:45:00",
-          "timeLabel": "20.45",
-          "stage": "Orange Scene",
-          "showTitle": null
-        }
-      ],
-      "dayId": "saturday",
-      "dateLabel": "SATURDAY 4 JULY",
-      "date": "2026-07-04T20:45:00",
-      "timeLabel": "20.45",
-      "stage": "Orange Scene",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-04T20:45:00",
-        "time": "20.45",
-        "name": "Lily Allen"
       }
     },
     {
