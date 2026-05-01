@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-01T11:00:30.559163Z",
+  "generatedAt": "2026-05-01T21:41:46.833213Z",
   "itemCount": 268,
   "items": [
     {
@@ -8214,40 +8214,6 @@
       }
     },
     {
-      "name": "Ata Kak",
-      "type": "Music",
-      "url": "https://www.roskilde-festival.dk/en/line-up/music/ata-kak",
-      "countryCode": "GH",
-      "lineupSceneLabel": "Gloria",
-      "dayFilters": [
-        "Saturday"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "SATURDAY 4 JULY",
-          "dayId": "saturday",
-          "date": "2026-07-04T00:00:00",
-          "startTime": "0001-01-01T00:00:00",
-          "timeLabel": "00.00",
-          "stage": "",
-          "showTitle": null
-        }
-      ],
-      "dayId": "saturday",
-      "dateLabel": "SATURDAY 4 JULY",
-      "date": "2026-07-04T00:00:00",
-      "timeLabel": "00.00",
-      "stage": "Gloria",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-04T00:00:00",
-        "time": "00.00",
-        "name": "Ata Kak"
-      }
-    },
-    {
       "name": "Rochelle Jordan",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/rochelle-jordan",
@@ -9469,6 +9435,40 @@
         "date": "2026-07-04T22:00:00",
         "time": "22.00",
         "name": "PANDA BEAR & SONIC BOOM"
+      }
+    },
+    {
+      "name": "Ata Kak",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/ata-kak",
+      "countryCode": "GH",
+      "lineupSceneLabel": "Gloria",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T22:30:00",
+          "startTime": "2026-04-17T22:30:00",
+          "timeLabel": "22.30",
+          "stage": "Gloria",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T22:30:00",
+      "timeLabel": "22.30",
+      "stage": "Gloria",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T22:30:00",
+        "time": "22.30",
+        "name": "Ata Kak"
       }
     },
     {
