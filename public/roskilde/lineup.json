@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-03T21:28:43.108354Z",
+  "generatedAt": "2026-05-04T12:17:07.488645Z",
   "itemCount": 268,
   "items": [
     {
@@ -1313,7 +1313,7 @@
           "startTime": "2026-04-28T15:30:00",
           "timeLabel": "15.30",
           "stage": "Rehearsals of Belonging",
-          "showTitle": "Arobal: B.Y.O.B."
+          "showTitle": "B.Y.O.B."
         },
         {
           "dateLabel": "MONDAY 29 JUNE",
@@ -1331,7 +1331,7 @@
           "startTime": "2026-04-28T15:00:00",
           "timeLabel": "15.00",
           "stage": "Rehearsals of Belonging",
-          "showTitle": "Guided conversations"
+          "showTitle": "Whisper Whisper"
         }
       ],
       "dayId": null,
@@ -1339,7 +1339,7 @@
       "date": "2026-06-28T15:30:00",
       "timeLabel": "15.30",
       "stage": "Rehearsals of Belonging",
-      "showTitle": "Arobal: B.Y.O.B.",
+      "showTitle": "B.Y.O.B.",
       "hasMultipleShows": true,
       "sortKey": {
         "date": "2026-06-28T15:30:00",
