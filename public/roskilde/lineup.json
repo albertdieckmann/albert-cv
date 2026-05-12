@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-12T13:26:52.081940Z",
-  "itemCount": 268,
+  "generatedAt": "2026-05-12T22:46:39.342702Z",
+  "itemCount": 269,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -559,6 +559,60 @@
         "date": "2026-06-28T11:00:00",
         "time": "11.00",
         "name": "Aaiún Nin"
+      }
+    },
+    {
+      "name": "Actionaid Denmark",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/actionaid-denmark",
+      "countryCode": "DK",
+      "lineupSceneLabel": "Dancefloor",
+      "dayFilters": [
+        "first-days",
+        "first-days",
+        "Thursday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T11:00:00",
+          "startTime": "2026-05-12T11:00:00",
+          "timeLabel": "11.00",
+          "stage": "Dancefloor",
+          "showTitle": "Choir with Luna Ersahin (AySay)"
+        },
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T11:00:00",
+          "startTime": "2026-05-12T11:00:00",
+          "timeLabel": "11.00",
+          "stage": "Dancefloor",
+          "showTitle": "Choir with Luna Ersahin (AySay)"
+        },
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T11:15:00",
+          "startTime": "2026-05-12T11:15:00",
+          "timeLabel": "11.15",
+          "stage": "Fauna",
+          "showTitle": "Singalong for peace"
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T11:00:00",
+      "timeLabel": "11.00",
+      "stage": "Dancefloor",
+      "showTitle": "Choir with Luna Ersahin (AySay)",
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-06-28T11:00:00",
+        "time": "11.00",
+        "name": "Actionaid Denmark"
       }
     },
     {
