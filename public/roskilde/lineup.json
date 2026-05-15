@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-14T22:41:16.529343Z",
+  "generatedAt": "2026-05-15T13:17:08.494476Z",
   "itemCount": 269,
   "items": [
     {
@@ -4124,7 +4124,6 @@
       "countryCode": "",
       "lineupSceneLabel": "Cinema",
       "dayFilters": [
-        "first-days",
         "first-days"
       ],
       "newInLineup": true,
