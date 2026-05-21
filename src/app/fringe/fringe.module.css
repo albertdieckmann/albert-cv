@@ -595,38 +595,40 @@
 
 /* ── Mobile tab layout ────────────────────────────────────────────────────── */
 
-/* Desktop defaults: gruppePanel lives in drawer, tabBar hidden */
+/* Desktop: gruppePanel lives in drawer; tab bar hidden */
 .gruppePanel { display: none; }
 .tabBar      { display: none; }
 
 @media (max-width: 767px) {
-  /* Add bottom padding so content isn't hidden behind the fixed tab bar */
+  /* Reserve room at the bottom for the fixed tab bar */
   .page {
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Tab panels: hidden by default */
-  .tabPanel { display: none; }
+  /* All tab panels hidden by default */
+  .tabPanel { display: none !important; }
 
-  /* Active panel — declared after .gruppePanel { display: none } above, so it
-     correctly overrides when an element has both gruppePanel + tabPanelActive */
-  .tabPanelActive { display: block; }
+  /* Active tab panel always visible — !important beats the gruppePanel rule
+     AND beats the tabPanel rule; later source order breaks the !important tie */
+  .tabPanelActive { display: block !important; }
 
-  /* Tab bar: always visible, pinned to the bottom of the viewport */
+  /* Tab bar pinned to viewport bottom — !important ensures position:fixed
+     cannot be overridden by any other rule */
   .tabBar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    z-index: 50;
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 200 !important;
     border-top: 1px solid var(--border);
-    background: rgba(11, 11, 11, 0.95);
+    background: rgba(11, 11, 11, 0.97);
     backdrop-filter: blur(12px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Desktop-only elements (drawer, overlay, footer, header group btn) hidden */
+  /* Desktop-only elements hidden on mobile */
   .desktopOnly { display: none !important; }
 }
 
