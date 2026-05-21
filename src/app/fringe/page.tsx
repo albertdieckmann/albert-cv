@@ -445,6 +445,19 @@ export default function FringePage() {
 
   // ── Pick handlers ──────────────────────────────────────────────────────────
 
+  // Returns only performances within the active date range (or all if no range set)
+  function perfsInRange(show: Show): Performance[] {
+    const fromMs = dateFrom ? new Date(dateFrom).getTime() : null;
+    const toMs   = dateTo   ? new Date(dateTo + "T23:59:59").getTime() : null;
+    if (fromMs === null && toMs === null) return show.performances;
+    return show.performances.filter((p) => {
+      const t = new Date(p.start).getTime();
+      if (fromMs !== null && t < fromMs) return false;
+      if (toMs   !== null && t > toMs)   return false;
+      return true;
+    });
+  }
+
   function handleStatusClick(show: Show, status: PickStatus) {
     if (!session.activeGroup || !session.user) return;
 
@@ -480,11 +493,11 @@ export default function FringePage() {
       return;
     }
 
-    // going / has_ticket → open perf picker (or go direct if single perf)
-    if (show.performances.length === 1) {
-      const perf = show.performances[0];
+    // going / has_ticket → only offer performances within the active date range
+    const rangePerfs = perfsInRange(show);
+    if (rangePerfs.length === 1) {
+      const perf = rangePerfs[0];
       if (status === "has_ticket") {
-        // Feature 2: open ticket buyer dialog
         openTicketDialog(show, perf);
       } else {
         run(async () => {
@@ -1250,24 +1263,15 @@ export default function FringePage() {
 
       {/* ── Timeline ── */}
       <section className={s.section}>
-        <div className={s.timelineHeader}>
-          <p className={s.sectionTag} style={{ margin: 0 }}>Jeres plan</p>
-          {/* Feature 4: toggle to hide Vil gerne */}
-          <label className={s.toggleRow} style={{ marginLeft: "auto" }}>
-            <input
-              type="checkbox"
-              checked={hideInterested}
-              onChange={(e) => setHideInterested(e.target.checked)}
-            />
-            <span>Vis kun besluttet</span>
-          </label>
-        </div>
+        <p className={s.sectionTag}>Jeres plan</p>
 
         {tGroups.length === 0 ? (
           <div className={s.empty}>
-            {session.activeGroup
-              ? "Marker shows som 'Skal med' eller 'Har billet' og vælg forestilling — de dukker op her."
-              : "Log ind og opret en gruppe for at bygge jeres plan."}
+            {!session.activeGroup
+              ? "Log ind og opret en gruppe for at bygge jeres plan."
+              : (dateFrom || dateTo)
+              ? "Ingen forestillinger i det valgte datointerval — justér datofilteret for at se resten af planen."
+              : "Marker shows som 'Skal med' eller 'Har billet' og vælg en forestilling — de dukker op her."}
           </div>
         ) : (
           tGroups.map(([day, items]) => (
@@ -1343,7 +1347,7 @@ export default function FringePage() {
                       )}
                     </div>
 
-                    {/* Bottom: conflict badges + pick tags with inline Tag med */}
+                    {/* Bottom: conflict badges + pick tags + single Tag med */}
                     <div className={s.showBottom}>
                       {pickConflicts.map(({ pick, entries }) =>
                         entries.length > 0 ? (
@@ -1364,31 +1368,35 @@ export default function FringePage() {
                         ) : null
                       )}
                       <div className={s.pickTags}>
-                        {picks.map((p) => {
-                          const isFriendCommitted =
-                            p.user_id !== session.user?.id &&
-                            (p.status === "going" || p.status === "has_ticket");
-                          const notAlreadyCommittedHere =
-                            myPickInCard?.status !== "going" &&
-                            myPickInCard?.status !== "has_ticket";
-                          return (
-                            <span key={p.user_id} className={s.pickTagRow}>
-                              <span className={`${s.tag} ${STATUS_META[p.status].cls}`}>
-                                {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
-                              </span>
-                              {isFriendCommitted && notAlreadyCommittedHere && canPick && (
-                                <button
-                                  className={s.quickJoinBtn}
-                                  onClick={() => handleQuickJoin(show, cardPerf)}
-                                  title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
-                                >
-                                  + Tag med
-                                </button>
-                              )}
+                        {/* Own pick first, then friends */}
+                        {[...picks]
+                          .sort((a, b) =>
+                            a.user_id === session.user?.id ? -1 :
+                            b.user_id === session.user?.id ?  1 : 0
+                          )
+                          .map((p) => (
+                            <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.status].cls}`}>
+                              {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
                             </span>
-                          );
-                        })}
+                          ))}
                       </div>
+                      {/* Single Tag med per card — all picks share the same performance */}
+                      {canPick &&
+                        picks.some((p) =>
+                          p.user_id !== session.user?.id &&
+                          (p.status === "going" || p.status === "has_ticket")
+                        ) &&
+                        myPickInCard?.status !== "going" &&
+                        myPickInCard?.status !== "has_ticket" && (
+                          <button
+                            className={s.quickJoinBtn}
+                            style={{ marginTop: "0.35rem" }}
+                            onClick={() => handleQuickJoin(show, cardPerf)}
+                            title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                          >
+                            + Tag med
+                          </button>
+                        )}
                     </div>
                   </article>
                 );
@@ -1503,6 +1511,10 @@ export default function FringePage() {
             <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
             <span>Kun mine</span>
           </label>
+          <label className={s.toggleRow}>
+            <input type="checkbox" checked={hideInterested} onChange={(e) => setHideInterested(e.target.checked)} />
+            <span>Kun besluttet</span>
+          </label>
         </div>
 
         {!session.activeGroup && (
@@ -1517,10 +1529,11 @@ export default function FringePage() {
         ) : (
           <div className={s.showsList}>
             {visible.map((show) => {
-              const picks      = picksFor(show.id);
-              const mine       = myPick(show.id);
-              const isPickerOpen = perfPicker?.showId === show.id;
-              const firstPerf  = show.performances[0];
+              const picks         = picksFor(show.id);
+              const mine          = myPick(show.id);
+              const isPickerOpen  = perfPicker?.showId === show.id;
+              const rangePerfs    = perfsInRange(show);
+              const firstPerf     = rangePerfs[0] ?? show.performances[0];
               const metaParts  = [
                 show.genre,
                 AREA_LABELS[show.venue.area] !== "Andet" ? AREA_LABELS[show.venue.area] : null,
@@ -1563,12 +1576,12 @@ export default function FringePage() {
                     </div>
                   </div>
 
-                  {/* Performance picker */}
+                  {/* Performance picker — only in-range performances */}
                   {isPickerOpen && (
                     <div className={s.perfPicker}>
                       <p className={s.perfPickerLabel}>Hvilken dag?</p>
                       <div className={s.perfList}>
-                        {show.performances.map((perf) => {
+                        {rangePerfs.map((perf) => {
                           const { dateStr, timeStr, meta } = formatPerf(perf);
                           const friends = perfPicksFor(show.id, perf.start);
                           return (
