@@ -375,6 +375,12 @@
 .conflictHard { background: rgba(239,68,68,0.15); color: #ef4444; }
 .conflictSoft { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .pickTags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+.timelineActions {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
 .tag {
   display: inline-flex; align-items: center; gap: 0.25rem;
   padding: 0.2rem 0.5rem;

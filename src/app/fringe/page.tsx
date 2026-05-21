@@ -508,6 +508,78 @@ export default function FringePage() {
     }
   }
 
+  // Like handleStatusClick but with a specific performance already chosen — used from timeline cards
+  function handleStatusClickForPerf(show: Show, perf: Performance, status: PickStatus) {
+    if (!session.activeGroup || !session.user) return;
+    const current = myPick(show.id);
+
+    // Toggle off if the user is already on this status for this exact perf
+    const isActiveHere =
+      current?.status === status &&
+      (status === "interested" ||
+        (current?.performance_start &&
+          new Date(current.performance_start).toISOString() ===
+            new Date(perf.start).toISOString()));
+
+    if (isActiveHere) {
+      run(async () => {
+        await api("/api/fringe/picks", {
+          method: "POST",
+          body: JSON.stringify({
+            groupId: session.activeGroup!.id,
+            showId: show.id,
+            showTitle: show.title,
+            status: null,
+          }),
+        });
+        await fetchSession();
+      });
+      return;
+    }
+
+    if (status === "interested") {
+      // Downgrade to interested — clears the specific performance
+      run(async () => {
+        await api("/api/fringe/picks", {
+          method: "POST",
+          body: JSON.stringify({
+            groupId: session.activeGroup!.id,
+            showId: show.id,
+            showTitle: show.title,
+            status,
+            performanceId: null,
+            performanceStart: null,
+            performanceEnd: null,
+          }),
+        });
+        await fetchSession();
+      });
+      return;
+    }
+
+    if (status === "has_ticket") {
+      openTicketDialog(show, perf);
+      return;
+    }
+
+    // going: commit directly to this performance
+    run(async () => {
+      await api("/api/fringe/picks", {
+        method: "POST",
+        body: JSON.stringify({
+          groupId: session.activeGroup!.id,
+          showId: show.id,
+          showTitle: show.title,
+          status,
+          performanceId: perf.start,
+          performanceStart: perf.start,
+          performanceEnd: perf.end,
+        }),
+      });
+      await fetchSession();
+    });
+  }
+
   function openTicketDialog(show: Show, perf: Performance) {
     const members = session.activeGroup?.members ?? [];
     setTicketDialog({
@@ -828,6 +900,7 @@ export default function FringePage() {
     );
   }
 
+  const canPick     = !!(session.user && session.activeGroup);
   const visible     = visibleShows();
   const tGroups     = timelineGroups();
   const conflicts   = computeConflicts(session.activeGroup?.picks ?? []);
@@ -1210,6 +1283,24 @@ export default function FringePage() {
                 const hasHard = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "hard"));
                 const hasSoft = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "soft"));
 
+                // Timeline actions: build a Performance from pick data + find my pick in this card
+                const cardPerf: Performance = {
+                  start: repPick.performance_start!,
+                  end: repPick.performance_end ?? repPick.performance_start!,
+                };
+                const myPickInCard = session.user
+                  ? picks.find((p) => p.user_id === session.user!.id)
+                  : undefined;
+                const showTagMed =
+                  canPick &&
+                  picks.some(
+                    (p) =>
+                      p.user_id !== session.user?.id &&
+                      (p.status === "going" || p.status === "has_ticket")
+                  ) &&
+                  myPickInCard?.status !== "going" &&
+                  myPickInCard?.status !== "has_ticket";
+
                 return (
                   <article
                     key={`${show.id}::${repPick.performance_start}`}
@@ -1260,6 +1351,37 @@ export default function FringePage() {
                           </span>
                         ))}
                       </div>
+
+                      {/* Attendance buttons + quick-join directly from timeline */}
+                      {canPick && (
+                        <div className={s.timelineActions}>
+                          <div className={s.statusGrid}>
+                            {STATUSES.map((status) => {
+                              const meta = STATUS_META[status];
+                              const isActive = myPickInCard?.status === status;
+                              return (
+                                <button
+                                  key={status}
+                                  className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
+                                  onClick={() => handleStatusClickForPerf(show, cardPerf, status)}
+                                  title={meta.label}
+                                >
+                                  {isActive ? "✓" : meta.emoji}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {showTagMed && (
+                            <button
+                              className={s.quickJoinBtn}
+                              onClick={() => handleQuickJoin(show, cardPerf)}
+                              title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                            >
+                              + Tag med
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </article>
                 );
@@ -1390,7 +1512,6 @@ export default function FringePage() {
             {visible.map((show) => {
               const picks      = picksFor(show.id);
               const mine       = myPick(show.id);
-              const canPick    = !!(session.user && session.activeGroup);
               const isPickerOpen = perfPicker?.showId === show.id;
               const firstPerf  = show.performances[0];
               const metaParts  = [
