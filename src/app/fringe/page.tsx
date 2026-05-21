@@ -261,6 +261,11 @@ export default function FringePage() {
     currentPerfStart: string | null;
   } | null>(null);
 
+  // Group settings (drawer edit form)
+  const [editGroupName,  setEditGroupName]  = useState("");
+  const [editStartDate,  setEditStartDate]  = useState("");
+  const [editEndDate,    setEditEndDate]    = useState("");
+
   // Purchase form
   const [purchaseForm, setPurchaseForm] = useState<{
     showId: string;
@@ -317,6 +322,13 @@ export default function FringePage() {
     const ui = loadUi();
     fetchSession(ui.activeGroupId).finally(() => setReady(true));
   }, [isLoaded, isSignedIn, fetchSession]);
+
+  // Sync group edit fields when active group changes
+  useEffect(() => {
+    setEditGroupName(session.activeGroup?.name ?? "");
+    setEditStartDate(session.activeGroup?.startDate?.slice(0, 10) ?? "");
+    setEditEndDate(session.activeGroup?.endDate?.slice(0, 10) ?? "");
+  }, [session.activeGroup?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Default date range to group travel dates when they change
   useEffect(() => {
@@ -433,6 +445,24 @@ export default function FringePage() {
     setDateTo("");
     saveUi({ dateFrom: "", dateTo: "" });
     await run(() => fetchSession(id));
+  }
+
+  async function handleSaveGroupSettings(e: React.FormEvent) {
+    e.preventDefault();
+    if (!session.activeGroup) return;
+    const isOwner = session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner";
+    await run(async () => {
+      await api(`/api/fringe/groups/${session.activeGroup!.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          ...(isOwner && editGroupName ? { name: editGroupName } : {}),
+          startDate: editStartDate || null,
+          endDate:   editEndDate   || null,
+        }),
+      });
+      await fetchSession();
+      flash("Gruppeindstillinger gemt.");
+    });
   }
 
   async function handleSeed() {
@@ -923,7 +953,13 @@ export default function FringePage() {
     );
   }
 
-  const canPick     = !!(session.user && session.activeGroup);
+  const canPick         = !!(session.user && session.activeGroup);
+  const isGroupOwner    = session.activeGroup?.members.find((m) => m.id === session.user?.id)?.role === "owner";
+  const groupSettingsChanged = session.activeGroup != null && (
+    editGroupName !== session.activeGroup.name ||
+    (editStartDate || "") !== (session.activeGroup.startDate?.slice(0, 10) ?? "") ||
+    (editEndDate   || "") !== (session.activeGroup.endDate?.slice(0, 10)   ?? "")
+  );
   const visible     = visibleShows();
   const tGroups     = timelineGroups();
   const conflicts   = computeConflicts(session.activeGroup?.picks ?? []);
@@ -1007,17 +1043,45 @@ export default function FringePage() {
 
             {session.activeGroup && (
               <>
-                {(session.activeGroup.startDate || session.activeGroup.endDate) && (
-                  <p className={s.groupDates}>
-                    {session.activeGroup.startDate
-                      ? new Date(session.activeGroup.startDate).toLocaleDateString("da-DK", { day: "numeric", month: "short" })
-                      : "?"}{" "}
-                    –{" "}
-                    {session.activeGroup.endDate
-                      ? new Date(session.activeGroup.endDate).toLocaleDateString("da-DK", { day: "numeric", month: "short" })
-                      : "?"}
-                  </p>
-                )}
+                {/* ── Group settings form ── */}
+                <form onSubmit={handleSaveGroupSettings} className={s.groupSettingsForm}>
+                  {isGroupOwner && (
+                    <label className={s.fieldWrap}>
+                      <span className={s.fieldLabel}>Gruppenavn</span>
+                      <input
+                        className={s.fieldInput}
+                        value={editGroupName}
+                        onChange={(e) => setEditGroupName(e.target.value)}
+                        maxLength={50}
+                        required
+                      />
+                    </label>
+                  )}
+                  <div className={s.dateRow}>
+                    <label className={s.fieldWrap}>
+                      <span className={s.fieldLabel}>Rejse fra</span>
+                      <input
+                        type="date"
+                        className={s.fieldInput}
+                        value={editStartDate}
+                        onChange={(e) => setEditStartDate(e.target.value)}
+                      />
+                    </label>
+                    <label className={s.fieldWrap}>
+                      <span className={s.fieldLabel}>Til</span>
+                      <input
+                        type="date"
+                        className={s.fieldInput}
+                        value={editEndDate}
+                        onChange={(e) => setEditEndDate(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  {groupSettingsChanged && (
+                    <button type="submit" className={s.primaryBtn}>Gem ændringer</button>
+                  )}
+                </form>
+
                 <div className={s.memberList}>
                   {session.activeGroup.members.map((m) => (
                     <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>

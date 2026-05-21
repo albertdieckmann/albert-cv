@@ -385,10 +385,16 @@
 .tagGoing      { background: var(--s-going-dim);      color: var(--s-going);      }
 .tagTicket     { background: var(--s-ticket-dim);     color: var(--s-ticket);     }
 
-/* ── Group dates ──────────────────────────────────────────────────────────── */
+/* ── Group settings form ──────────────────────────────────────────────────── */
 .groupDates {
   font-size: 12px; color: var(--accent); margin: 0 0 0.6rem;
   font-family: var(--mono);
+}
+.groupSettingsForm {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
 }
 .dateRow { display: flex; gap: 0.5rem; }
 .dateRow .fieldWrap { flex: 1; }
