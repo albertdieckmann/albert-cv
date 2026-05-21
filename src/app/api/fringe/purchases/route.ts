@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
 
   const {
     groupId, showId, showTitle,
-    performanceId, performanceStart,
+    performanceId, performanceStart, performanceEnd,
     quantity, totalCost, notes, coveredUserIds,
   } = await req.json();
 
@@ -51,10 +51,29 @@ export async function POST(req: NextRequest) {
     for (const coveredId of coveredUserIds) {
       const coveredName = memberMap.get(coveredId);
       if (!coveredName) continue;
+
       await sql`
         INSERT INTO fringe_purchase_covers (purchase_id, covered_user_id, covered_user_name)
         VALUES (${purchaseId}, ${coveredId}, ${coveredName})
         ON CONFLICT DO NOTHING
+      `;
+
+      // Auto-upgrade the covered user's pick to has_ticket on this performance
+      await sql`
+        INSERT INTO fringe_picks
+          (group_id, user_id, user_name, show_id, show_title, status,
+           performance_id, performance_start, performance_end, updated_at)
+        VALUES
+          (${groupId}, ${coveredId}, ${coveredName}, ${showId}, ${showTitle ?? ""},
+           'has_ticket', ${perfId}, ${performanceStart ?? null},
+           ${performanceEnd ?? null}, NOW())
+        ON CONFLICT (group_id, user_id, show_id) DO UPDATE
+          SET status            = 'has_ticket',
+              show_title        = EXCLUDED.show_title,
+              performance_id    = EXCLUDED.performance_id,
+              performance_start = EXCLUDED.performance_start,
+              performance_end   = EXCLUDED.performance_end,
+              updated_at        = NOW()
       `;
     }
   }

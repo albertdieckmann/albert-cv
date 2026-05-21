@@ -325,6 +325,10 @@
 }
 
 /* ── Timeline ─────────────────────────────────────────────────────────────── */
+.timelineHeader {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
 .dayBlock { margin-bottom: 1.5rem; }
 .dayHeader { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.75rem; }
 .dayTag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -336,7 +340,14 @@
   margin-bottom: 0.5rem;
   position: relative;
 }
-.timelineCard.hasConflict { border-color: #f97316; }
+/* Feature 4: Vil gerne shown at reduced opacity with dashed border */
+.timelineCardInterested {
+  opacity: 0.55;
+  border-style: dashed;
+}
+/* Feature 3: hard vs soft conflict border colours */
+.hasConflictHard { border-color: #ef4444 !important; }
+.hasConflictSoft { border-color: #f59e0b !important; }
 .timeSlot {
   font-size: 12px; font-weight: 700; color: var(--accent);
   font-family: var(--mono);
@@ -352,15 +363,17 @@
   font-size: 11px; font-weight: 700; font-family: var(--mono);
   color: var(--accent); white-space: nowrap; flex-shrink: 0;
 }
+/* Feature 3: per-person conflict badges */
 .conflictBadge {
   display: inline-flex; align-items: center; gap: 0.3rem;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  background: rgba(249,115,22,0.15);
-  color: #f97316;
   font-size: 11px; font-weight: 700;
   margin-top: 0.4rem;
+  cursor: default;
 }
+.conflictHard { background: rgba(239,68,68,0.15); color: #ef4444; }
+.conflictSoft { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .pickTags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
 .tag {
   display: inline-flex; align-items: center; gap: 0.25rem;
@@ -446,6 +459,30 @@
 .dateInput:focus { border-color: var(--accent); }
 .dateSep { font-size: 12px; color: var(--muted); }
 
+/* ── Modal dialogs (ticket buyer + join confirm) ──────────────────────────── */
+.modalOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 90;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+.modalHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.modalTitle { font-size: 15px; font-weight: 700; margin: 0; }
+.modalActions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.modalActions .primaryBtn { flex: 1; }
+
 /* ── Show cards ───────────────────────────────────────────────────────────── */
 .showsList { display: flex; flex-direction: column; gap: 0.5rem; }
 .showCard {
@@ -462,11 +499,12 @@
 .showTitle { font-size: 14px; font-weight: 700; margin: 0 0 0.25rem; }
 .showMeta { font-size: 11px; color: var(--muted); margin: 0; }
 .statusGrid { display: flex; gap: 0.4rem; flex-shrink: 0; }
+/* Feature 1: slightly larger emoji font in status buttons */
 .statusBtn {
-  width: 34px; height: 34px;
+  width: 36px; height: 36px;
   border: 1px solid var(--border); border-radius: 8px;
   background: transparent; color: var(--muted);
-  font-size: 14px; cursor: pointer;
+  font-size: 16px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
@@ -479,6 +517,21 @@
 .statusBtnGoing:hover:not(:disabled)      { border-color: var(--s-going);      color: var(--s-going);      }
 .statusBtnTicket:hover:not(:disabled)     { border-color: var(--s-ticket);     color: var(--s-ticket);     }
 .showBottom { padding: 0 0.75rem 0.75rem; }
+
+/* Feature 5: pick tag row with optional quick-join button */
+.pickTagRow {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.quickJoinBtn {
+  display: inline-flex; align-items: center;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--accent); border-radius: 20px;
+  background: transparent; color: var(--accent);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.quickJoinBtn:hover { background: var(--accent-dim); }
 .ticketLink {
   display: inline-block;
   margin-top: 0.25rem;
