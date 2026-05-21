@@ -734,6 +734,13 @@ export default function FringePage() {
 
     return shows.filter((show) => {
       if (selectedOnly && !picked.has(show.id)) return false;
+      // "Vis kun besluttet": only shows where I have going or has_ticket
+      if (hideInterested && session.user) {
+        const myP = session.activeGroup?.picks.find(
+          (p) => p.show_id === show.id && p.user_id === session.user!.id
+        );
+        if (!myP || myP.status === "interested") return false;
+      }
       if (genreFilter.length > 0 && (!show.genre || !genreFilter.includes(show.genre))) return false;
       if (areaFilter.length > 0 && !areaFilter.includes(show.venue.area)) return false;
 
@@ -765,10 +772,15 @@ export default function FringePage() {
         (p.status === "interested" && !hideInterested)
       ))
       .map((p) => {
-        const show = showMap.get(p.show_id);
-        return show ? { show, pick: p } : null;
-      })
-      .filter(Boolean) as { show: Show; pick: FringePick }[];
+        // Fallback: if the show isn't in the API results, build a minimal Show from pick data
+        const show: Show = showMap.get(p.show_id) ?? {
+          id: p.show_id,
+          title: p.show_title,
+          venue: { name: "", area: "other" as Area },
+          performances: [],
+        };
+        return { show, pick: p };
+      });
 
     // Group by show+day, collecting all users' picks per show
     const byDate = new Map<string, { show: Show; picks: FringePick[] }[]>();
@@ -1477,11 +1489,9 @@ export default function FringePage() {
                             new Date(myCurrentPick.performance_start).toISOString() === new Date(p.performance_start).toISOString() &&
                             (myCurrentPick.status === "going" || myCurrentPick.status === "has_ticket");
 
-                          // Find the matching Performance object for quick join
-                          const targetPerf = isFriendCommitted
-                            ? show.performances.find(
-                                (perf) => new Date(perf.start).toISOString() === new Date(p.performance_start!).toISOString()
-                              )
+                          // Build a minimal Performance directly from the pick — no API-lookup needed
+                          const targetPerf: Performance | null = isFriendCommitted
+                            ? { start: p.performance_start!, end: p.performance_end ?? p.performance_start! }
                             : null;
 
                           return (
