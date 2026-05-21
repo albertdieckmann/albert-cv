@@ -4,7 +4,7 @@ import { join } from "path";
 
 export async function GET() {
   try {
-    const filePath = join(process.cwd(), "public", "roskilde", "lineup.json");
+    const filePath = join(process.cwd(), "public", "roskilde", "lineup.json" /* turbopackIgnore: true */);
     const raw = readFileSync(filePath, "utf-8");
     const data = JSON.parse(raw);
     return NextResponse.json(data);

@@ -9,7 +9,7 @@ import ContactForm from "@/components/ContactForm";
 import GalleryCarousel from "@/components/GalleryCarousel";
 
 function readYaml<T>(file: string): T {
-  return yaml.load(readFileSync(join(process.cwd(), file), 'utf8')) as T
+  return yaml.load(readFileSync(join(process.cwd(), 'content', file), 'utf8')) as T
 }
 
 interface StatItem {
@@ -76,18 +76,18 @@ interface ProjectItem {
 interface ProjectsData { projects: ProjectItem[] }
 
 export default async function Home() {
-  const hero = readYaml<HeroData>('content/hero.yaml')
-  const about = readYaml<AboutData>('content/about.yaml')
-  const skills = readYaml<SkillsData>('content/skills.yaml')
-  const contact = readYaml<ContactData>('content/contact.yaml')
-  const gallery = readYaml<GalleryData>('content/gallery.yaml')
-  const projectsData = readYaml<ProjectsData>('content/projects.yaml')
+  const hero = readYaml<HeroData>('hero.yaml')
+  const about = readYaml<AboutData>('about.yaml')
+  const skills = readYaml<SkillsData>('skills.yaml')
+  const contact = readYaml<ContactData>('contact.yaml')
+  const gallery = readYaml<GalleryData>('gallery.yaml')
+  const projectsData = readYaml<ProjectsData>('projects.yaml')
   const projects = (projectsData?.projects ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 
-  const expFiles = readdirSync(join(process.cwd(), 'content/experience'))
+  const expFiles = readdirSync(join(process.cwd(), 'content', 'experience'))
   const experiences = expFiles
     .map(f => {
-      const entry = readYaml<ExpEntry>('content/experience/' + f)
+      const entry = readYaml<ExpEntry>('experience/' + f)
       return { ...entry, slug: f.replace('.yaml', '') }
     })
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))

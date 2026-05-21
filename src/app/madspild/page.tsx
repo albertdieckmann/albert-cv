@@ -24,6 +24,7 @@ interface Product {
   description?: string
   ean?: string
   image?: string
+  categories?: Record<string, string[]> | string[] | string
 }
 
 interface Clearance {
@@ -229,6 +230,60 @@ function nextOpening(hours?: StoreHours[]): string | null {
     return `${dayLabel} kl. ${extractHHMM(h.open)}`
   }
   return null
+}
+
+function mapsUrl(store: Store): string {
+  const c = store.coordinates
+  if (Array.isArray(c) && c.length === 2) {
+    return `https://maps.google.com/?q=${c[1]},${c[0]}`
+  }
+  if (c && typeof c === 'object' && !Array.isArray(c)) {
+    const co = c as Record<string, number>
+    const lat = co.latitude ?? co.lat
+    const lon = co.longitude ?? co.lng ?? co.lon
+    if (lat && lon) return `https://maps.google.com/?q=${lat},${lon}`
+  }
+  const q = [store.address?.street, store.address?.zip, store.address?.city].filter(Boolean).join(' ')
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
+}
+
+const CATEGORY_KW: [string, string[]][] = [
+  ['Mejeri & æg',   ['mælk', 'ost', 'yoghurt', 'fløde', 'smør', 'æg', 'kvark', 'cremefraiche', 'skyr', 'kefir']],
+  ['Kød & fisk',    ['kød', 'fisk', 'kylling', 'laks', 'svin', 'okse', 'hakket', 'filet', 'rejer', 'tun', 'pølse', 'bacon', 'skank']],
+  ['Frugt & grønt', ['frugt', 'grønt', 'salat', 'tomat', 'æble', 'banan', 'gulerod', 'løg', 'agurk', 'peber', 'spinat', 'broccoli']],
+  ['Brød & bageri', ['brød', 'bolle', 'rugbrød', 'toast', 'kage', 'croissant', 'wienerbrød', 'baguette', 'muffin', 'tærte']],
+  ['Drikkevarer',   ['juice', 'saft', 'smoothie', 'drik', 'lemonade']],
+  ['Pålæg',         ['pålæg', 'skinke', 'salami', 'leverpostej', 'spegepølse', 'paté']],
+  ['Færdigretter',  ['pizza', 'lasagne', 'suppe', 'sandwich', 'wrap', 'sushi', 'nuggets', 'frikadelle', 'falafel']],
+]
+
+function topCategory(val: unknown): string | null {
+  if (typeof val === 'string' && val.length > 1) return val.split('>')[0].trim()
+  if (Array.isArray(val) && val.length > 0) return String(val[0]).split('>')[0].trim()
+  return null
+}
+
+function productCategory(product?: Product): string {
+  if (product?.categories) {
+    const cats = product.categories
+    // String directly
+    const direct = topCategory(cats)
+    if (direct) return direct
+    // Object with locale keys e.g. { da: "..." } or { da: ["..."] }
+    if (typeof cats === 'object' && !Array.isArray(cats)) {
+      for (const val of Object.values(cats)) {
+        const s = topCategory(val)
+        if (s) return s
+      }
+    }
+  }
+  if (product?.description) {
+    const lower = product.description.toLowerCase()
+    for (const [cat, kws] of CATEGORY_KW) {
+      if (kws.some(k => lower.includes(k))) return cat
+    }
+  }
+  return 'Andet'
 }
 
 // Absolut besparelse i kr — kun når begge priser er kendte
@@ -588,12 +643,15 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
 }) {
   const [spotExpanded, setSpotExpanded] = useState(false)
   const [hoursExpanded, setHoursExpanded] = useState(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const clearances = entry.clearances ?? []
   const sorted = [...clearances].sort((a, b) => {
     const sa = sortScore(a), sb = sortScore(b)
-    if (sb.pct !== sa.pct) return sb.pct - sa.pct   // størst % rabat først
-    return sb.kr - sa.kr                              // tiebreaker: størst kr-besparelse
+    if (sb.pct !== sa.pct) return sb.pct - sa.pct
+    return sb.kr - sa.kr
   })
+  const categories = [...new Set(sorted.map(c => productCategory(c.product)))].sort()
+  const filtered = activeCategory ? sorted.filter(c => productCategory(c.product) === activeCategory) : sorted
   const hours = todayHours(entry.store.hours)
   const week = weekHours(entry.store.hours)
   const next = !hours?.isOpen ? nextOpening(entry.store.hours) : null
@@ -613,7 +671,7 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           {brandLabel(entry.store.brand)}
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: '#e8e8e0' }}>
+          <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)' }}>
             {entry.store.name ?? 'Ukendt butik'}
           </p>
           <p style={{ margin: '0.1rem 0 0', fontSize: '0.68rem', color: '#555550', display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
@@ -626,51 +684,77 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
           <span style={{ color: '#B87B6E', fontSize: '0.8rem', fontWeight: 700 }}>
             {clearances.length} vare{clearances.length !== 1 ? 'r' : ''}
           </span>
-          <span style={{ color: '#555550', fontSize: '0.75rem', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
+          <span style={{ color: 'var(--muted)', fontSize: '0.75rem', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
         </div>
       </button>
 
       {isExpanded && (
-        <div style={{ border: '1px solid #2a2a2a', borderTop: 'none' }}>
+        <div style={{ border: '1px solid var(--border)', borderTop: 'none' }}>
+          {/* Kategorifilter */}
+          {categories.length > 1 && (
+            <div style={{ padding: '0.625rem 0.875rem 0', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {[null, ...categories].map(cat => {
+                const isActive = activeCategory === cat
+                const label = cat === null ? `Alle (${sorted.length})` : `${cat} (${sorted.filter(c => productCategory(c.product) === cat).length})`
+                return (
+                  <button
+                    key={cat ?? '__all__'}
+                    onClick={() => setActiveCategory(cat)}
+                    style={{
+                      fontSize: '0.62rem', padding: '0.2rem 0.6rem', border: '1px solid',
+                      borderColor: isActive ? 'var(--accent)' : 'var(--border)',
+                      background: isActive ? 'rgba(184,123,110,0.15)' : 'var(--bg2)',
+                      color: isActive ? 'var(--accent)' : 'var(--text)',
+                      cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.04em',
+                      borderRadius: '2px',
+                    }}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
           {/* Madspildsvarer */}
           <div style={{ padding: '0.875rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
-            {sorted.map((clearance, idx) => (
+            {filtered.map((clearance, idx) => (
               <ProductCard key={clearance.offer?.ean ?? idx} clearance={clearance} />
             ))}
           </div>
 
           {/* Åbningstider — collapsible */}
           {week.length > 0 && (
-            <div style={{ borderTop: '1px solid #1e1e1e', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
+            <div style={{ borderTop: '1px solid var(--border)', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
               <button
                 onClick={() => setHoursExpanded(v => !v)}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '0.5rem 0.75rem', background: 'transparent',
-                  border: '1px solid #1e1e1e', cursor: 'pointer',
-                  fontFamily: 'inherit', color: '#555550',
+                  border: '1px solid var(--border)', cursor: 'pointer',
+                  fontFamily: 'inherit', color: 'var(--muted)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <span style={{ fontSize: '0.62rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Åbningstider</span>
                   {next && !hoursExpanded && (
-                    <span style={{ fontSize: '0.62rem', color: '#888880' }}>· Åbner {next}</span>
+                    <span style={{ fontSize: '0.62rem', color: 'var(--muted)' }}>· Åbner {next}</span>
                   )}
                 </div>
                 <span style={{ fontSize: '0.65rem', transform: hoursExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
               </button>
 
               {hoursExpanded && (
-                <div style={{ border: '1px solid #1e1e1e', borderTop: 'none', padding: '0.6rem 0.75rem' }}>
+                <div style={{ border: '1px solid var(--border)', borderTop: 'none', padding: '0.6rem 0.75rem' }}>
                   {week.map(h => (
                     <div key={h.date} style={{
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                       padding: '0.25rem 0',
-                      borderBottom: '1px solid #141414',
+                      borderBottom: '1px solid var(--border)',
                     }}>
                       <span style={{
                         fontSize: '0.7rem', fontWeight: h.isToday ? 700 : 400,
-                        color: h.isToday ? '#e8e8e0' : '#555550',
+                        color: h.isToday ? 'var(--text)' : 'var(--muted)',
                         minWidth: '2rem',
                       }}>
                         {h.dayLabel}
@@ -678,7 +762,7 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
                       </span>
                       <span style={{
                         fontSize: '0.7rem',
-                        color: h.closed ? '#444440' : h.isToday ? (hours?.isOpen ? '#B87B6E' : '#888880') : '#666660',
+                        color: h.closed ? 'var(--muted)' : h.isToday ? (hours?.isOpen ? '#B87B6E' : 'var(--muted)') : 'var(--muted)',
                         fontWeight: h.isToday && hours?.isOpen ? 600 : 400,
                       }}>
                         {h.closed ? 'Lukket' : `${h.open}–${h.close}`}
@@ -692,14 +776,14 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
 
           {/* Spotvarer for butikken — collapsible, mindre prominent */}
           {storePromos.length > 0 && (
-            <div style={{ borderTop: '1px solid #1e1e1e', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
+            <div style={{ borderTop: '1px solid var(--border)', margin: '0 0.875rem 0.875rem', paddingTop: '0.75rem' }}>
               <button
                 onClick={() => setSpotExpanded(v => !v)}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '0.5rem 0.75rem', background: 'transparent',
-                  border: '1px solid #1e1e1e', cursor: 'pointer',
-                  fontFamily: 'inherit', color: '#555550',
+                  border: '1px solid var(--border)', cursor: 'pointer',
+                  fontFamily: 'inherit', color: 'var(--muted)',
                 }}
               >
                 <span style={{ fontSize: '0.62rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
@@ -709,7 +793,7 @@ function StoreSection({ entry, isExpanded, onToggle, storePromos }: {
               </button>
 
               {spotExpanded && (
-                <div style={{ padding: '0.75rem', border: '1px solid #1e1e1e', borderTop: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
+                <div style={{ padding: '0.75rem', border: '1px solid var(--border)', borderTop: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
                   {storePromos.map((p, i) => (
                     <PromoCard key={p.id ?? i} promo={p} compact />
                   ))}
@@ -732,7 +816,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
   const stockLabel = (offer?.stockUnit === 'each' || offer?.stockUnit === 'stk') ? 'stk' : (offer?.stockUnit ?? 'stk')
 
   return (
-    <div style={{ background: '#272B2E', border: '1px solid #1e1e1e', padding: '0.875rem', display: 'flex', gap: '0.75rem', position: 'relative' }}>
+    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', padding: '0.875rem', display: 'flex', gap: '0.75rem', position: 'relative' }}>
       {discount != null && (
         <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: '#B87B6E', color: '#1F2124', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.4rem' }}>
           -{discount}%
@@ -747,16 +831,16 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
         <div style={{ width: '56px', height: '56px', background: '#2E3237', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>🛒</div>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: '0 0 0.4rem', fontSize: '0.78rem', color: '#e8e8e0', lineHeight: 1.3, paddingRight: discount != null ? '2.25rem' : '0' }}>
+        <p style={{ margin: '0 0 0.4rem', fontSize: '0.78rem', color: 'var(--text)', lineHeight: 1.3, paddingRight: discount != null ? '2.25rem' : '0' }}>
           {product?.description ?? 'Ukendt vare'}
         </p>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginBottom: '0.4rem' }}>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#B87B6E' }}>{fmt(newPrice)} kr</span>
           {offer?.originalPrice != null && offer.originalPrice > 0 && (
-            <span style={{ fontSize: '0.7rem', color: '#555550', textDecoration: 'line-through' }}>{fmt(offer.originalPrice)} kr</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--muted)', textDecoration: 'line-through' }}>{fmt(offer.originalPrice)} kr</span>
           )}
           {savings > 0 && (
-            <span style={{ fontSize: '0.62rem', color: '#888880', marginLeft: 'auto' }}>spar {fmt(savings)} kr</span>
+            <span style={{ fontSize: '0.62rem', color: 'var(--muted)', marginLeft: 'auto' }}>spar {fmt(savings)} kr</span>
           )}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
@@ -766,7 +850,7 @@ function ProductCard({ clearance }: { clearance: Clearance }) {
             </span>
           )}
           {offer?.stock != null && (
-            <span style={{ fontSize: '0.62rem', color: '#666660', border: '1px solid #1e1e1e', padding: '0.1rem 0.35rem' }}>
+            <span style={{ fontSize: '0.62rem', color: 'var(--muted)', border: '1px solid var(--border)', padding: '0.1rem 0.35rem' }}>
               {offer.stock} {stockLabel} tilbage
             </span>
           )}
@@ -782,9 +866,9 @@ function PromoCard({ promo, compact = false }: { promo: Promotion; compact?: boo
   const disc = promoDiscount(promo)
 
   return (
-    <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', padding: compact ? '0.6rem' : '0.75rem', display: 'flex', gap: '0.5rem', position: 'relative' }}>
+    <div style={{ background: 'var(--bg3)', border: '1px solid #1a1a1a', padding: compact ? '0.6rem' : '0.75rem', display: 'flex', gap: '0.5rem', position: 'relative' }}>
       {disc != null && (
-        <div style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', background: '#363B40', color: '#888880', fontSize: '0.55rem', fontWeight: 700, padding: '0.1rem 0.35rem' }}>
+        <div style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', background: 'var(--bg3)', color: 'var(--muted)', fontSize: '0.55rem', fontWeight: 700, padding: '0.1rem 0.35rem' }}>
           -{disc}%
         </div>
       )}
@@ -795,19 +879,19 @@ function PromoCard({ promo, compact = false }: { promo: Promotion; compact?: boo
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: '0 0 0.3rem', fontSize: compact ? '0.7rem' : '0.75rem', color: '#aaa8a0', lineHeight: 1.3, paddingRight: disc != null ? '2rem' : '0' }}>
+        <p style={{ margin: '0 0 0.3rem', fontSize: compact ? '0.7rem' : '0.75rem', color: 'var(--text)', lineHeight: 1.3, paddingRight: disc != null ? '2rem' : '0' }}>
           {label}
         </p>
         {np != null && (
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#888880' }}>{fmt(np)} kr</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--muted)' }}>{fmt(np)} kr</span>
             {promo.originalPrice != null && promo.originalPrice > 0 && (
-              <span style={{ fontSize: '0.65rem', color: '#444440', textDecoration: 'line-through' }}>{fmt(promo.originalPrice)} kr</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--muted)', textDecoration: 'line-through' }}>{fmt(promo.originalPrice)} kr</span>
             )}
           </div>
         )}
         {promo.validTo && (
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.6rem', color: '#444440' }}>
+          <p style={{ margin: '0.25rem 0 0', fontSize: '0.6rem', color: 'var(--muted)' }}>
             Gælder til {new Date(promo.validTo).toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}
           </p>
         )}
