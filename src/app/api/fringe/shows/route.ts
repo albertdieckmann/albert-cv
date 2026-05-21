@@ -72,17 +72,17 @@ function buildSignedUrl(path: string, params: Record<string, string>): string {
   const key = process.env.FRINGE_API_KEY!;
   const secret = process.env.FRINGE_API_SECRET!;
 
+  // Content params first, then key — signature excluded from the signed string
   const allParams = { ...params, key };
-  // Params sorted alphabetically — required by the API signing spec
   const qs = Object.entries(allParams)
-    .sort(([a], [b]) => a.localeCompare(b))
     .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
     .join("&");
 
   const toSign = `${path}?${qs}`;
-  const sig = createHmac("sha1", secret).update(toSign).digest("base64");
+  // API requires plain ASCII hex — not base64
+  const sig = createHmac("sha1", secret).update(toSign).digest("hex");
 
-  return `${API_BASE}${toSign}&signature=${encodeURIComponent(sig)}`;
+  return `${API_BASE}${toSign}&signature=${sig}`;
 }
 
 // ─── Mapping ───────────────────────────────────────────────────────────────────
