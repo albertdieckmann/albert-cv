@@ -139,7 +139,7 @@ export async function GET() {
 
   try {
     const festival = process.env.FRINGE_FESTIVAL_ID ?? "demofringe";
-    const url = buildSignedUrl("/events", { festival, size: "500" });
+    const url = buildSignedUrl("/events", { festival, size: "100" });
 
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) {
