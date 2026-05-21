@@ -600,46 +600,33 @@
 .tabBar      { display: none; }
 
 @media (max-width: 767px) {
-  /* Page becomes a full-screen flex column */
+  /* Add bottom padding so content isn't hidden behind the fixed tab bar */
   .page {
-    height: 100dvh;
-    min-height: unset;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 0; /* tab bar handles safe area */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Header stays fixed-height at top */
-  .header { flex-shrink: 0; }
+  /* Tab panels: hidden by default */
+  .tabPanel { display: none; }
 
-  /* Tab panels: hidden by default, active one fills remaining space */
-  .tabPanel {
-    display: none;
-  }
-  .tabPanelActive {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    min-height: 0; /* allow flex shrink */
-  }
+  /* Active panel — declared after .gruppePanel { display: none } above, so it
+     correctly overrides when an element has both gruppePanel + tabPanelActive */
+  .tabPanelActive { display: block; }
 
-  /* gruppePanel: override desktop display:none so tabPanelActive can show it */
-  .gruppePanel { display: none; }
-
-  /* Tab bar at the bottom */
+  /* Tab bar: always visible, pinned to the bottom of the viewport */
   .tabBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
-    flex-shrink: 0;
+    z-index: 50;
     border-top: 1px solid var(--border);
     background: rgba(11, 11, 11, 0.95);
     backdrop-filter: blur(12px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Drawer, overlay, footer, desktop-only elements hidden on mobile */
+  /* Desktop-only elements (drawer, overlay, footer, header group btn) hidden */
   .desktopOnly { display: none !important; }
 }
 

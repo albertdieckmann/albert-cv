@@ -370,20 +370,18 @@ export default function FringePage() {
   // ── Tab navigation ─────────────────────────────────────────────────────────
 
   function switchTab(tab: TabId) {
-    const refMap = { shows: tabRefShows, plan: tabRefPlan, gruppe: tabRefGruppe };
-    savedScrolls.current[activeTab] = refMap[activeTab].current?.scrollTop ?? 0;
+    savedScrolls.current[activeTab] = window.scrollY;
     const url = new URL(window.location.href);
     url.searchParams.set("tab", tab);
     window.history.replaceState(null, "", url.toString());
     setActiveTab(tab);
   }
 
-  // Restore scroll position after tab switch
+  // Restore window scroll position after tab switch
   useEffect(() => {
-    const ref = { shows: tabRefShows, plan: tabRefPlan, gruppe: tabRefGruppe }[activeTab];
     const saved = savedScrolls.current[activeTab];
     requestAnimationFrame(() => {
-      if (ref.current) ref.current.scrollTop = saved;
+      window.scrollTo(0, saved);
     });
   }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
