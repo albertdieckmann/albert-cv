@@ -1,7 +1,10 @@
+import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
 export async function POST() {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "Ikke logget ind" }, { status: 401 });
 
   await sql`
     CREATE TABLE IF NOT EXISTS fringe_groups (
