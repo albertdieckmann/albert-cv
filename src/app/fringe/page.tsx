@@ -838,11 +838,21 @@ export default function FringePage() {
   function timelineGroups(): [string, { show: Show; picks: FringePick[] }[]][] {
     const showMap = new Map(shows.map((s) => [s.id, s]));
 
+    const fromMs = dateFrom ? new Date(dateFrom).getTime() : null;
+    const toMs   = dateTo   ? new Date(dateTo + "T23:59:59").getTime() : null;
+
     const allPicks = (session.activeGroup?.picks ?? [])
-      .filter((p) => p.performance_start && (
-        p.status === "going" || p.status === "has_ticket" ||
-        (p.status === "interested" && !hideInterested)
-      ))
+      .filter((p) => {
+        if (!p.performance_start) return false;
+        if (!(p.status === "going" || p.status === "has_ticket" || (p.status === "interested" && !hideInterested))) return false;
+        // Apply the same date range filter as the show list
+        if (fromMs !== null || toMs !== null) {
+          const t = new Date(p.performance_start).getTime();
+          if (fromMs !== null && t < fromMs) return false;
+          if (toMs   !== null && t > toMs)   return false;
+        }
+        return true;
+      })
       .map((p) => {
         // Fallback: if the show isn't in the API results, build a minimal Show from pick data
         const show: Show = showMap.get(p.show_id) ?? {
@@ -1291,40 +1301,50 @@ export default function FringePage() {
                 const myPickInCard = session.user
                   ? picks.find((p) => p.user_id === session.user!.id)
                   : undefined;
-                const showTagMed =
-                  canPick &&
-                  picks.some(
-                    (p) =>
-                      p.user_id !== session.user?.id &&
-                      (p.status === "going" || p.status === "has_ticket")
-                  ) &&
-                  myPickInCard?.status !== "going" &&
-                  myPickInCard?.status !== "has_ticket";
-
                 return (
                   <article
                     key={`${show.id}::${repPick.performance_start}`}
                     className={[
-                      s.timelineCard,
+                      s.showCard,
                       isInterested ? s.timelineCardInterested : "",
                       hasHard ? s.hasConflictHard : hasSoft ? s.hasConflictSoft : "",
                     ].join(" ")}
                   >
-                    <div className={s.timeSlot}>{timeStr}</div>
-                    <div className={s.timelineBody}>
-                      <div className={s.timelineTop}>
-                        <div>
-                          <h4 className={s.actName}>{show.title}</h4>
-                          <p className={s.actMeta}>{[show.genre, show.venue.name].filter(Boolean).join(" · ")}</p>
-                          {show.website && (
-                            <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
-                              Billetter ↗
-                            </a>
-                          )}
-                        </div>
+                    {/* Top row: identical to show cards — info left, status buttons right */}
+                    <div className={s.showTop}>
+                      <div className={s.showInfo}>
+                        <h3 className={s.showTitle}>{show.title}</h3>
+                        <p className={s.showMeta}>
+                          {[timeStr, show.genre, show.venue.name].filter(Boolean).join(" · ")}
+                        </p>
+                        {show.website && (
+                          <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
+                            Billetter ↗
+                          </a>
+                        )}
                       </div>
+                      {canPick && (
+                        <div className={s.statusGrid}>
+                          {STATUSES.map((status) => {
+                            const meta = STATUS_META[status];
+                            const isActive = myPickInCard?.status === status;
+                            return (
+                              <button
+                                key={status}
+                                className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
+                                onClick={() => handleStatusClickForPerf(show, cardPerf, status)}
+                                title={meta.label}
+                              >
+                                {isActive ? "✓" : meta.emoji}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
 
-                      {/* Feature 3: per-person conflict badges */}
+                    {/* Bottom: conflict badges + pick tags with inline Tag med */}
+                    <div className={s.showBottom}>
                       {pickConflicts.map(({ pick, entries }) =>
                         entries.length > 0 ? (
                           <div
@@ -1343,45 +1363,32 @@ export default function FringePage() {
                           </div>
                         ) : null
                       )}
-
                       <div className={s.pickTags}>
-                        {picks.map((p) => (
-                          <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.status].cls}`}>
-                            {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Attendance buttons + quick-join directly from timeline */}
-                      {canPick && (
-                        <div className={s.timelineActions}>
-                          <div className={s.statusGrid}>
-                            {STATUSES.map((status) => {
-                              const meta = STATUS_META[status];
-                              const isActive = myPickInCard?.status === status;
-                              return (
+                        {picks.map((p) => {
+                          const isFriendCommitted =
+                            p.user_id !== session.user?.id &&
+                            (p.status === "going" || p.status === "has_ticket");
+                          const notAlreadyCommittedHere =
+                            myPickInCard?.status !== "going" &&
+                            myPickInCard?.status !== "has_ticket";
+                          return (
+                            <span key={p.user_id} className={s.pickTagRow}>
+                              <span className={`${s.tag} ${STATUS_META[p.status].cls}`}>
+                                {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
+                              </span>
+                              {isFriendCommitted && notAlreadyCommittedHere && canPick && (
                                 <button
-                                  key={status}
-                                  className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
-                                  onClick={() => handleStatusClickForPerf(show, cardPerf, status)}
-                                  title={meta.label}
+                                  className={s.quickJoinBtn}
+                                  onClick={() => handleQuickJoin(show, cardPerf)}
+                                  title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
                                 >
-                                  {isActive ? "✓" : meta.emoji}
+                                  + Tag med
                                 </button>
-                              );
-                            })}
-                          </div>
-                          {showTagMed && (
-                            <button
-                              className={s.quickJoinBtn}
-                              onClick={() => handleQuickJoin(show, cardPerf)}
-                              title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
-                            >
-                              + Tag med
-                            </button>
-                          )}
-                        </div>
-                      )}
+                              )}
+                            </span>
+                          );
+                        })}
+                      </div>
                     </div>
                   </article>
                 );
