@@ -301,6 +301,14 @@ export default function FringePage() {
     });
   }
 
+  async function handleSeed() {
+    await run(async () => {
+      const pay = await api("/api/fringe/seed", { method: "POST" });
+      await fetchSession(pay.groupId);
+      flash(`"${pay.groupName}" oprettet med demodata.`);
+    });
+  }
+
   async function handleLeaveGroup(id: number, name: string) {
     if (!confirm(`Forlad gruppen "${name}"?`)) return;
     await run(async () => {
@@ -671,6 +679,11 @@ export default function FringePage() {
                   </label>
                   <button type="submit" className={s.ghostBtn}>Join gruppe</button>
                 </form>
+                <div className={s.orDivider}><span>eller</span></div>
+                <div>
+                  <p className={s.muted} style={{ marginBottom: "0.5rem" }}>Test alle funktioner med færdiglavet demodata — to fiktive gruppemedlemmer, picks og konflikter.</p>
+                  <button type="button" className={s.ghostBtn} onClick={handleSeed}>Opret testgruppe med demodata</button>
+                </div>
               </div>
             </details>
           </div>
@@ -885,6 +898,11 @@ export default function FringePage() {
                         <div>
                           <h4 className={s.actName}>{show.title}</h4>
                           <p className={s.actMeta}>{[show.genre, show.venue.name].filter(Boolean).join(" · ")}</p>
+                          {show.website && (
+                            <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
+                              Billetter ↗
+                            </a>
+                          )}
                         </div>
                       </div>
                       {conflicts.length > 0 && (
@@ -974,6 +992,11 @@ export default function FringePage() {
                     <div className={s.showInfo}>
                       <h3 className={s.showTitle}>{show.title}</h3>
                       <p className={s.showMeta}>{metaParts.join(" · ") || "Info mangler"}</p>
+                      {show.website && (
+                        <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
+                          Billetter ↗
+                        </a>
+                      )}
                     </div>
                     <div className={s.statusGrid}>
                       {STATUSES.map((status) => {

@@ -429,6 +429,15 @@
 .statusBtnGoing:hover:not(:disabled)      { border-color: var(--s-going);      color: var(--s-going);      }
 .statusBtnTicket:hover:not(:disabled)     { border-color: var(--s-ticket);     color: var(--s-ticket);     }
 .showBottom { padding: 0 0.75rem 0.75rem; }
+.ticketLink {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.8;
+}
+.ticketLink:hover { opacity: 1; text-decoration: underline; }
 
 /* ── Performance picker ───────────────────────────────────────────────────── */
 .perfPicker {
