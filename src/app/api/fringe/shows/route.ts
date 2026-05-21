@@ -145,7 +145,7 @@ export async function GET() {
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       console.error(`Fringe API ${res.status}:`, body);
-      return NextResponse.json({ items: [], error: `API error: ${res.status}`, detail: body });
+      return NextResponse.json({ items: [], error: `API error: ${res.status}` });
     }
 
     const data = await res.json();
