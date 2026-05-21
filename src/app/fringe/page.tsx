@@ -70,6 +70,7 @@ type Purchase = {
   covers: PurchaseCover[];
 };
 
+type TabId  = "shows" | "plan" | "gruppe";
 type Member = { id: string; name: string; role: string };
 type Group  = { id: number; name: string; start_date?: string | null; end_date?: string | null };
 type ActiveGroup = {
@@ -266,6 +267,17 @@ export default function FringePage() {
   const [editStartDate,  setEditStartDate]  = useState("");
   const [editEndDate,    setEditEndDate]    = useState("");
 
+  // Mobile tab navigation
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    if (typeof window === "undefined") return "shows";
+    const p = new URLSearchParams(window.location.search).get("tab") as TabId | null;
+    return (p === "shows" || p === "plan" || p === "gruppe") ? p : "shows";
+  });
+  const tabRefShows  = useRef<HTMLDivElement>(null);
+  const tabRefPlan   = useRef<HTMLDivElement>(null);
+  const tabRefGruppe = useRef<HTMLDivElement>(null);
+  const savedScrolls = useRef<Record<TabId, number>>({ shows: 0, plan: 0, gruppe: 0 });
+
   // Purchase form
   const [purchaseForm, setPurchaseForm] = useState<{
     showId: string;
@@ -354,6 +366,26 @@ export default function FringePage() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [genreOpen]);
+
+  // ── Tab navigation ─────────────────────────────────────────────────────────
+
+  function switchTab(tab: TabId) {
+    const refMap = { shows: tabRefShows, plan: tabRefPlan, gruppe: tabRefGruppe };
+    savedScrolls.current[activeTab] = refMap[activeTab].current?.scrollTop ?? 0;
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", tab);
+    window.history.replaceState(null, "", url.toString());
+    setActiveTab(tab);
+  }
+
+  // Restore scroll position after tab switch
+  useEffect(() => {
+    const ref = { shows: tabRefShows, plan: tabRefPlan, gruppe: tabRefGruppe }[activeTab];
+    const saved = savedScrolls.current[activeTab];
+    requestAnimationFrame(() => {
+      if (ref.current) ref.current.scrollTop = saved;
+    });
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Busy wrapper ───────────────────────────────────────────────────────────
 
@@ -967,6 +999,320 @@ export default function FringePage() {
   const genres      = allGenres();
   const areas       = allAreas();
 
+  // ── Shared drawer / Gruppe-tab content ────────────────────────────────────
+
+  const gruppeContent = (
+    <>
+      {/* Profil */}
+      <div className={s.drawerSection}>
+        <p className={s.sectionTag}>Profil</p>
+        {!isSignedIn ? (
+          <div className={s.authCard}>
+            <p className={s.muted}>Log ind for at markere shows og planlægge med venner.</p>
+            <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/fringe" }); }}>
+              Log ind eller opret profil
+            </button>
+          </div>
+        ) : (
+          <div className={s.identityCard}>
+            <div>
+              <p className={s.identityName}>{session.user?.name}</p>
+              <p className={s.identityEmail}>{session.user?.email}</p>
+            </div>
+            <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/fringe" })}>Log ud</button>
+          </div>
+        )}
+      </div>
+
+      {/* Gruppe */}
+      {isSignedIn && (
+        <div className={s.drawerSection}>
+          <p className={s.sectionTag}>Gruppe</p>
+
+          {session.groups.length > 0 && (
+            <div className={s.groupSwitcher}>
+              {session.groups.map((g) => (
+                <button
+                  key={g.id}
+                  className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
+                  onClick={() => handleSwitchGroup(g.id)}
+                >
+                  {g.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {session.activeGroup && (
+            <>
+              {/* ── Group settings form ── */}
+              <form onSubmit={handleSaveGroupSettings} className={s.groupSettingsForm}>
+                {isGroupOwner && (
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Gruppenavn</span>
+                    <input
+                      className={s.fieldInput}
+                      value={editGroupName}
+                      onChange={(e) => setEditGroupName(e.target.value)}
+                      maxLength={50}
+                      required
+                    />
+                  </label>
+                )}
+                <div className={s.dateRow}>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Rejse fra</span>
+                    <input
+                      type="date"
+                      className={s.fieldInput}
+                      value={editStartDate}
+                      onChange={(e) => setEditStartDate(e.target.value)}
+                    />
+                  </label>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Til</span>
+                    <input
+                      type="date"
+                      className={s.fieldInput}
+                      value={editEndDate}
+                      onChange={(e) => setEditEndDate(e.target.value)}
+                    />
+                  </label>
+                </div>
+                {groupSettingsChanged && (
+                  <button type="submit" className={s.primaryBtn}>Gem ændringer</button>
+                )}
+              </form>
+
+              <div className={s.memberList}>
+                {session.activeGroup.members.map((m) => (
+                  <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
+                    <span>{m.name}</span>
+                    <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
+                  </div>
+                ))}
+              </div>
+              <div className={s.inviteBar}>
+                <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
+                  <button type="submit" className={s.ghostBtn}>Ny invite</button>
+                </form>
+                {session.activeGroup.invites[0] && (
+                  <button className={s.ghostBtn} onClick={handleCopyInvite}>
+                    Kopiér ({session.activeGroup.invites[0].code})
+                  </button>
+                )}
+              </div>
+              {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
+                <button className={s.deleteBtn} onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                  Slet gruppe
+                </button>
+              ) : (
+                <button className={s.deleteBtn} onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                  Forlad gruppe
+                </button>
+              )}
+            </>
+          )}
+
+          <details className={s.details}>
+            <summary className={s.detailsSummary}>
+              {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
+            </summary>
+            <div className={s.detailsBody}>
+              <form onSubmit={handleCreateGroup} className={s.stackForm}>
+                <label className={s.fieldWrap}>
+                  <span className={s.fieldLabel}>Navn</span>
+                  <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Edinburgh-gæng" maxLength={50} required />
+                </label>
+                <div className={s.dateRow}>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Rejse fra</span>
+                    <input type="date" className={s.fieldInput} value={groupStartDate} onChange={(e) => setGroupStartDate(e.target.value)} />
+                  </label>
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Til</span>
+                    <input type="date" className={s.fieldInput} value={groupEndDate} onChange={(e) => setGroupEndDate(e.target.value)} />
+                  </label>
+                </div>
+                <button type="submit" className={s.primaryBtn}>Opret</button>
+              </form>
+
+              <div className={s.orDivider}><span>eller</span></div>
+
+              <form onSubmit={handleJoinGroup} className={s.stackForm}>
+                <label className={s.fieldWrap}>
+                  <span className={s.fieldLabel}>Invite-kode</span>
+                  <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
+                </label>
+                <button type="submit" className={s.ghostBtn}>Join gruppe</button>
+              </form>
+
+              <div className={s.orDivider}><span>eller</span></div>
+
+              <div>
+                <p className={s.muted} style={{ marginBottom: "0.5rem" }}>Test alle funktioner med færdiglavet demodata — to fiktive gruppemedlemmer, picks og konflikter.</p>
+                <button type="button" className={s.ghostBtn} onClick={handleSeed}>Opret testgruppe med demodata</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      )}
+
+      {/* Køb */}
+      {isSignedIn && session.activeGroup && (
+        <div className={s.drawerSection}>
+          <p className={s.sectionTag}>Køb</p>
+
+          {session.activeGroup.purchases.length > 0 && (
+            <div className={s.purchaseList}>
+              {session.activeGroup.purchases.map((purchase) => {
+                const perfDate = purchase.performance_start
+                  ? new Date(purchase.performance_start).toLocaleDateString("da-DK", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+                  : null;
+                return (
+                  <div key={purchase.id} className={s.purchaseCard}>
+                    <div className={s.purchaseTop}>
+                      <div>
+                        <p className={s.purchaseTitle}>{purchase.show_title}</p>
+                        <p className={s.purchaseMeta}>
+                          {purchase.buyer_user_name}{perfDate ? ` · ${perfDate}` : ""}
+                        </p>
+                        {purchase.notes && <p className={s.purchaseMeta}>{purchase.notes}</p>}
+                      </div>
+                      {purchase.total_cost && (
+                        <span className={s.purchaseCost}>£{parseFloat(purchase.total_cost).toFixed(2)}</span>
+                      )}
+                    </div>
+                    {purchase.covers.length > 0 && (
+                      <div className={s.coverList}>
+                        {purchase.covers.map((cover) => (
+                          <span
+                            key={cover.covered_user_id}
+                            className={`${s.coverChip} ${cover.settled ? s.coverChipSettled : ""}`}
+                          >
+                            <span className={cover.covered_user_id === session.user?.id ? s.coverIsSelf : ""}>
+                              {cover.covered_user_name}
+                            </span>
+                            {cover.settled ? (
+                              <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, false)} title="Fortryd">✓</button>
+                            ) : (
+                              <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, true)} title="Marker som betalt">○</button>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {purchaseForm ? (
+            <form onSubmit={handleLogPurchase} className={`${s.stackForm} ${s.purchaseFormWrap}`}>
+              <label className={s.fieldWrap}>
+                <span className={s.fieldLabel}>Show</span>
+                <select
+                  className={s.fieldSelect}
+                  value={purchaseForm.showId}
+                  onChange={(e) => {
+                    const show = shows.find((sh) => sh.id === e.target.value);
+                    const firstPerf = show?.performances[0];
+                    setPurchaseForm((f) => f && ({
+                      ...f,
+                      showId: e.target.value,
+                      perfStart: firstPerf?.start ?? "",
+                      perfId: firstPerf?.start ?? "",
+                    }));
+                  }}
+                  required
+                >
+                  <option value="">Vælg show…</option>
+                  {shows
+                    .filter((sh) => session.activeGroup!.picks.some((p) => p.show_id === sh.id))
+                    .map((sh) => (
+                      <option key={sh.id} value={sh.id}>{sh.title}</option>
+                    ))}
+                </select>
+              </label>
+
+              {purchaseForm.showId && (() => {
+                const show = shows.find((sh) => sh.id === purchaseForm.showId);
+                return show && show.performances.length > 0 ? (
+                  <label className={s.fieldWrap}>
+                    <span className={s.fieldLabel}>Forestilling</span>
+                    <select
+                      className={s.fieldSelect}
+                      value={purchaseForm.perfStart}
+                      onChange={(e) => {
+                        setPurchaseForm((f) => f && ({ ...f, perfStart: e.target.value, perfId: e.target.value }));
+                      }}
+                      required
+                    >
+                      <option value="">Vælg…</option>
+                      {show.performances.map((p) => {
+                        const { dateStr, timeStr, meta } = formatPerf(p);
+                        return (
+                          <option key={p.start} value={p.start}>
+                            {dateStr} {timeStr}{meta ? ` · ${meta}` : ""}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                ) : null;
+              })()}
+
+              <label className={s.fieldWrap}>
+                <span className={s.fieldLabel}>Pris (£)</span>
+                <input type="number" step="0.01" min="0" className={s.fieldInput} value={purchaseForm.cost} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, cost: e.target.value }))} placeholder="Fx 47.50" />
+              </label>
+
+              <div className={s.fieldWrap}>
+                <span className={s.fieldLabel}>Betalte for</span>
+                <div className={s.checkList}>
+                  {session.activeGroup.members.map((m) => (
+                    <label key={m.id} className={s.checkRow}>
+                      <input
+                        type="checkbox"
+                        checked={purchaseForm.covered.includes(m.id)}
+                        onChange={(e) => setPurchaseForm((f) => f && ({
+                          ...f,
+                          covered: e.target.checked
+                            ? [...f.covered, m.id]
+                            : f.covered.filter((id) => id !== m.id),
+                        }))}
+                      />
+                      {m.name}{m.id === session.user?.id ? " (dig)" : ""}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <label className={s.fieldWrap}>
+                <span className={s.fieldLabel}>Note</span>
+                <input className={s.fieldInput} value={purchaseForm.notes} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, notes: e.target.value }))} placeholder="Fx booking-gebyr" maxLength={200} />
+              </label>
+
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <button type="submit" className={s.primaryBtn}>Gem</button>
+                <button type="button" className={s.ghostBtn} onClick={() => setPurchaseForm(null)}>Annuller</button>
+              </div>
+            </form>
+          ) : (
+            <button
+              className={s.ghostBtn}
+              style={{ marginTop: session.activeGroup.purchases.length > 0 ? "0.75rem" : "0" }}
+              onClick={() => setPurchaseForm({ showId: "", perfStart: "", perfId: "", cost: "", notes: "", covered: [session.user!.id] })}
+            >
+              + Registrér køb
+            </button>
+          )}
+        </div>
+      )}
+    </>
+  );
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -982,7 +1328,7 @@ export default function FringePage() {
         <div className={s.headerActions}>
           <button className={s.iconBtn} onClick={() => run(fetchSession)} aria-label="Opdatér" title="Opdatér">↻</button>
           <button
-            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""}`}
+            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""} ${s.desktopOnly}`}
             onClick={() => setDrawerOpen((v) => !v)}
             aria-label="Profil og gruppe"
           >
@@ -991,339 +1337,37 @@ export default function FringePage() {
         </div>
       </header>
 
-      {/* ── Drawer overlay ── */}
-      {drawerOpen && <div className={s.drawerOverlay} onClick={() => setDrawerOpen(false)} />}
+      {/* ── Drawer overlay (desktop only) ── */}
+      {drawerOpen && <div className={`${s.drawerOverlay} ${s.desktopOnly}`} onClick={() => setDrawerOpen(false)} />}
 
-      {/* ── Drawer ── */}
-      <aside className={`${s.drawer} ${drawerOpen ? s.drawerOpen : ""}`}>
+      {/* ── Drawer (desktop only) ── */}
+      <aside className={`${s.drawer} ${drawerOpen ? s.drawerOpen : ""} ${s.desktopOnly}`}>
         <div className={s.drawerHeader}>
           <span className={s.drawerTitle}>Profil & Gruppe</span>
           <button className={s.iconBtn} onClick={() => setDrawerOpen(false)} aria-label="Luk">✕</button>
         </div>
-
-        {/* Profil */}
-        <div className={s.drawerSection}>
-          <p className={s.sectionTag}>Profil</p>
-          {!isSignedIn ? (
-            <div className={s.authCard}>
-              <p className={s.muted}>Log ind for at markere shows og planlægge med venner.</p>
-              <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/fringe" }); }}>
-                Log ind eller opret profil
-              </button>
-            </div>
-          ) : (
-            <div className={s.identityCard}>
-              <div>
-                <p className={s.identityName}>{session.user?.name}</p>
-                <p className={s.identityEmail}>{session.user?.email}</p>
-              </div>
-              <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/fringe" })}>Log ud</button>
-            </div>
-          )}
-        </div>
-
-        {/* Gruppe */}
-        {isSignedIn && (
-          <div className={s.drawerSection}>
-            <p className={s.sectionTag}>Gruppe</p>
-
-            {session.groups.length > 0 && (
-              <div className={s.groupSwitcher}>
-                {session.groups.map((g) => (
-                  <button
-                    key={g.id}
-                    className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
-                    onClick={() => handleSwitchGroup(g.id)}
-                  >
-                    {g.name}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {session.activeGroup && (
-              <>
-                {/* ── Group settings form ── */}
-                <form onSubmit={handleSaveGroupSettings} className={s.groupSettingsForm}>
-                  {isGroupOwner && (
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Gruppenavn</span>
-                      <input
-                        className={s.fieldInput}
-                        value={editGroupName}
-                        onChange={(e) => setEditGroupName(e.target.value)}
-                        maxLength={50}
-                        required
-                      />
-                    </label>
-                  )}
-                  <div className={s.dateRow}>
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Rejse fra</span>
-                      <input
-                        type="date"
-                        className={s.fieldInput}
-                        value={editStartDate}
-                        onChange={(e) => setEditStartDate(e.target.value)}
-                      />
-                    </label>
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Til</span>
-                      <input
-                        type="date"
-                        className={s.fieldInput}
-                        value={editEndDate}
-                        onChange={(e) => setEditEndDate(e.target.value)}
-                      />
-                    </label>
-                  </div>
-                  {groupSettingsChanged && (
-                    <button type="submit" className={s.primaryBtn}>Gem ændringer</button>
-                  )}
-                </form>
-
-                <div className={s.memberList}>
-                  {session.activeGroup.members.map((m) => (
-                    <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
-                      <span>{m.name}</span>
-                      <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
-                    </div>
-                  ))}
-                </div>
-                <div className={s.inviteBar}>
-                  <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
-                    <button type="submit" className={s.ghostBtn}>Ny invite</button>
-                  </form>
-                  {session.activeGroup.invites[0] && (
-                    <button className={s.ghostBtn} onClick={handleCopyInvite}>
-                      Kopiér ({session.activeGroup.invites[0].code})
-                    </button>
-                  )}
-                </div>
-                {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
-                  <button className={s.deleteBtn} onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}>
-                    Slet gruppe
-                  </button>
-                ) : (
-                  <button className={s.deleteBtn} onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}>
-                    Forlad gruppe
-                  </button>
-                )}
-              </>
-            )}
-
-            <details className={s.details}>
-              <summary className={s.detailsSummary}>
-                {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
-              </summary>
-              <div className={s.detailsBody}>
-                <form onSubmit={handleCreateGroup} className={s.stackForm}>
-                  <label className={s.fieldWrap}>
-                    <span className={s.fieldLabel}>Navn</span>
-                    <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Edinburgh-gæng" maxLength={50} required />
-                  </label>
-                  <div className={s.dateRow}>
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Rejse fra</span>
-                      <input type="date" className={s.fieldInput} value={groupStartDate} onChange={(e) => setGroupStartDate(e.target.value)} />
-                    </label>
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Til</span>
-                      <input type="date" className={s.fieldInput} value={groupEndDate} onChange={(e) => setGroupEndDate(e.target.value)} />
-                    </label>
-                  </div>
-                  <button type="submit" className={s.primaryBtn}>Opret</button>
-                </form>
-
-                <div className={s.orDivider}><span>eller</span></div>
-
-                <form onSubmit={handleJoinGroup} className={s.stackForm}>
-                  <label className={s.fieldWrap}>
-                    <span className={s.fieldLabel}>Invite-kode</span>
-                    <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
-                  </label>
-                  <button type="submit" className={s.ghostBtn}>Join gruppe</button>
-                </form>
-
-                <div className={s.orDivider}><span>eller</span></div>
-
-                <div>
-                  <p className={s.muted} style={{ marginBottom: "0.5rem" }}>Test alle funktioner med færdiglavet demodata — to fiktive gruppemedlemmer, picks og konflikter.</p>
-                  <button type="button" className={s.ghostBtn} onClick={handleSeed}>Opret testgruppe med demodata</button>
-                </div>
-              </div>
-            </details>
-          </div>
-        )}
-
-        {/* Køb */}
-        {isSignedIn && session.activeGroup && (
-          <div className={s.drawerSection}>
-            <p className={s.sectionTag}>Køb</p>
-
-            {session.activeGroup.purchases.length > 0 && (
-              <div className={s.purchaseList}>
-                {session.activeGroup.purchases.map((purchase) => {
-                  const perfDate = purchase.performance_start
-                    ? new Date(purchase.performance_start).toLocaleDateString("da-DK", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
-                    : null;
-                  return (
-                    <div key={purchase.id} className={s.purchaseCard}>
-                      <div className={s.purchaseTop}>
-                        <div>
-                          <p className={s.purchaseTitle}>{purchase.show_title}</p>
-                          <p className={s.purchaseMeta}>
-                            {purchase.buyer_user_name}{perfDate ? ` · ${perfDate}` : ""}
-                          </p>
-                          {purchase.notes && <p className={s.purchaseMeta}>{purchase.notes}</p>}
-                        </div>
-                        {purchase.total_cost && (
-                          <span className={s.purchaseCost}>£{parseFloat(purchase.total_cost).toFixed(2)}</span>
-                        )}
-                      </div>
-                      {purchase.covers.length > 0 && (
-                        <div className={s.coverList}>
-                          {purchase.covers.map((cover) => (
-                            <span
-                              key={cover.covered_user_id}
-                              className={`${s.coverChip} ${cover.settled ? s.coverChipSettled : ""}`}
-                            >
-                              <span className={cover.covered_user_id === session.user?.id ? s.coverIsSelf : ""}>
-                                {cover.covered_user_name}
-                              </span>
-                              {cover.settled ? (
-                                <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, false)} title="Fortryd">✓</button>
-                              ) : (
-                                <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, true)} title="Marker som betalt">○</button>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {purchaseForm ? (
-              <form onSubmit={handleLogPurchase} className={`${s.stackForm} ${s.purchaseFormWrap}`}>
-                <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Show</span>
-                  <select
-                    className={s.fieldSelect}
-                    value={purchaseForm.showId}
-                    onChange={(e) => {
-                      const show = shows.find((sh) => sh.id === e.target.value);
-                      const firstPerf = show?.performances[0];
-                      setPurchaseForm((f) => f && ({
-                        ...f,
-                        showId: e.target.value,
-                        perfStart: firstPerf?.start ?? "",
-                        perfId: firstPerf?.start ?? "",
-                      }));
-                    }}
-                    required
-                  >
-                    <option value="">Vælg show…</option>
-                    {shows
-                      .filter((sh) => session.activeGroup!.picks.some((p) => p.show_id === sh.id))
-                      .map((sh) => (
-                        <option key={sh.id} value={sh.id}>{sh.title}</option>
-                      ))}
-                  </select>
-                </label>
-
-                {purchaseForm.showId && (() => {
-                  const show = shows.find((sh) => sh.id === purchaseForm.showId);
-                  return show && show.performances.length > 0 ? (
-                    <label className={s.fieldWrap}>
-                      <span className={s.fieldLabel}>Forestilling</span>
-                      <select
-                        className={s.fieldSelect}
-                        value={purchaseForm.perfStart}
-                        onChange={(e) => {
-                          setPurchaseForm((f) => f && ({ ...f, perfStart: e.target.value, perfId: e.target.value }));
-                        }}
-                        required
-                      >
-                        <option value="">Vælg…</option>
-                        {show.performances.map((p) => {
-                          const { dateStr, timeStr, meta } = formatPerf(p);
-                          return (
-                            <option key={p.start} value={p.start}>
-                              {dateStr} {timeStr}{meta ? ` · ${meta}` : ""}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </label>
-                  ) : null;
-                })()}
-
-                <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Pris (£)</span>
-                  <input type="number" step="0.01" min="0" className={s.fieldInput} value={purchaseForm.cost} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, cost: e.target.value }))} placeholder="Fx 47.50" />
-                </label>
-
-                <div className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Betalte for</span>
-                  <div className={s.checkList}>
-                    {session.activeGroup.members.map((m) => (
-                      <label key={m.id} className={s.checkRow}>
-                        <input
-                          type="checkbox"
-                          checked={purchaseForm.covered.includes(m.id)}
-                          onChange={(e) => setPurchaseForm((f) => f && ({
-                            ...f,
-                            covered: e.target.checked
-                              ? [...f.covered, m.id]
-                              : f.covered.filter((id) => id !== m.id),
-                          }))}
-                        />
-                        {m.name}{m.id === session.user?.id ? " (dig)" : ""}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Note</span>
-                  <input className={s.fieldInput} value={purchaseForm.notes} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, notes: e.target.value }))} placeholder="Fx booking-gebyr" maxLength={200} />
-                </label>
-
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button type="submit" className={s.primaryBtn}>Gem</button>
-                  <button type="button" className={s.ghostBtn} onClick={() => setPurchaseForm(null)}>Annuller</button>
-                </div>
-              </form>
-            ) : (
-              <button
-                className={s.ghostBtn}
-                style={{ marginTop: session.activeGroup.purchases.length > 0 ? "0.75rem" : "0" }}
-                onClick={() => setPurchaseForm({ showId: "", perfStart: "", perfId: "", cost: "", notes: "", covered: [session.user!.id] })}
-              >
-                + Registrér køb
-              </button>
-            )}
-          </div>
-        )}
+        {gruppeContent}
       </aside>
 
-      {/* ── Stats ── */}
-      <div className={s.statsStrip}>
-        {[
-          { label: "Du",      value: session.user?.name ?? "Gæst" },
-          { label: "Gruppe",  value: session.activeGroup?.name ?? "—"  },
-          { label: "I planen",value: tCount },
-          { label: "Programme",value: shows.length },
-        ].map(({ label, value }) => (
-          <div key={label} className={s.statCard}>
-            <span className={s.statLabel}>{label}</span>
-            <span className={s.statValue}>{String(value)}</span>
-          </div>
-        ))}
-      </div>
+      {/* ══════════════════ TAB PANEL: PLAN ══════════════════ */}
+      <div
+        ref={tabRefPlan}
+        className={`${s.tabPanel} ${activeTab === "plan" ? s.tabPanelActive : ""}`}
+      >
+        {/* ── Stats ── */}
+        <div className={s.statsStrip}>
+          {[
+            { label: "Du",        value: session.user?.name ?? "Gæst" },
+            { label: "Gruppe",    value: session.activeGroup?.name ?? "—" },
+            { label: "I planen",  value: tCount },
+            { label: "Programme", value: shows.length },
+          ].map(({ label, value }) => (
+            <div key={label} className={s.statCard}>
+              <span className={s.statLabel}>{label}</span>
+              <span className={s.statValue}>{String(value)}</span>
+            </div>
+          ))}
+        </div>
 
       {/* ── Timeline ── */}
       <section className={s.section}>
@@ -1469,7 +1513,13 @@ export default function FringePage() {
           ))
         )}
       </section>
+      </div>{/* end Plan tab panel */}
 
+      {/* ══════════════════ TAB PANEL: SHOWS ══════════════════ */}
+      <div
+        ref={tabRefShows}
+        className={`${s.tabPanel} ${activeTab === "shows" ? s.tabPanelActive : ""}`}
+      >
       {/* ── Shows list ── */}
       <section className={s.section}>
         <div className={s.sectionHeader}>
@@ -1584,7 +1634,16 @@ export default function FringePage() {
         {!session.activeGroup && (
           <p className={s.hint}>
             {session.user ? "Opret eller join en gruppe for at markere shows →" : "Log ind for at markere shows →"}
-            <button className={s.hintBtn} onClick={() => setDrawerOpen(true)}>Åbn profil</button>
+            <button
+              className={s.hintBtn}
+              onClick={() => {
+                if (typeof window !== "undefined" && window.innerWidth < 768) {
+                  switchTab("gruppe");
+                } else {
+                  setDrawerOpen(true);
+                }
+              }}
+            >Åbn profil</button>
           </p>
         )}
 
@@ -1725,8 +1784,56 @@ export default function FringePage() {
           </div>
         )}
       </section>
+      </div>{/* end Shows tab panel */}
 
-      <footer className={s.footer}>
+      {/* ══════════════════ TAB PANEL: GRUPPE (mobile only) ══════════════════ */}
+      <div
+        ref={tabRefGruppe}
+        className={`${s.tabPanel} ${s.gruppePanel} ${activeTab === "gruppe" ? s.tabPanelActive : ""}`}
+      >
+        {gruppeContent}
+      </div>
+
+      {/* ══════════════════ MOBILE TAB BAR ══════════════════ */}
+      <nav className={s.tabBar} aria-label="Navigation">
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "shows" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("shows")}
+          aria-label="Shows"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          <span className={s.tabBarLabel}>Shows</span>
+        </button>
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "plan" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("plan")}
+          aria-label="Plan"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span className={s.tabBarLabel}>Plan</span>
+        </button>
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "gruppe" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("gruppe")}
+          aria-label="Gruppe"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span className={s.tabBarLabel}>Gruppe</span>
+        </button>
+      </nav>
+
+      <footer className={`${s.footer} ${s.desktopOnly}`}>
         <span>Edinburgh Fringe Venneplanner · albertdieckmann.dk</span>
         <Link href="/" className={s.footerLink}>← Tilbage</Link>
       </footer>
