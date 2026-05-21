@@ -1,11 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Ikke logget ind" }, { status: 401 });
+export async function GET() { return runMigrate(); }
+export async function POST() { return runMigrate(); }
 
+async function runMigrate() {
   const steps: string[] = [];
 
   // ── fringe_picks: performance_id ────────────────────────────────────────────

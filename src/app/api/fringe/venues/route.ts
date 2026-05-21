@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 import { assignArea, type Area } from "@/lib/fringe-area";
@@ -13,9 +12,10 @@ async function fetchRawEvents() {
   return Array.isArray(data) ? data : (data.results ?? data.items ?? data.events ?? []);
 }
 
-export async function POST() {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Ikke logget ind" }, { status: 401 });
+export async function GET() { return runVenueSync(); }
+export async function POST() { return runVenueSync(); }
+
+async function runVenueSync() {
 
   const raw = await fetchRawEvents();
 
