@@ -416,40 +416,53 @@
   background: transparent; color: var(--muted);
   font-size: 11px; cursor: pointer;
   transition: all 0.15s; white-space: nowrap;
+  flex-shrink: 0;
 }
 .filterChip:hover { border-color: var(--text); color: var(--text); }
 .filterChip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.filterChipClear {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: transparent; color: var(--muted);
+  font-size: 11px; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
+  transition: color 0.15s, border-color 0.15s;
+  text-decoration: underline;
+}
+.filterChipClear:hover { color: var(--text); border-color: var(--text); }
 .toggleRow { display: flex; align-items: center; gap: 0.4rem; font-size: 12px; color: var(--muted); cursor: pointer; }
 .toggleRow input { accent-color: var(--accent); }
 
-/* Genre dropdown */
-.genreDropdownWrap { position: relative; }
-.genreDropdown {
-  position: absolute;
-  top: calc(100% + 4px); left: 0;
-  z-index: 50;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 0.5rem;
-  display: flex; flex-direction: column; gap: 0.1rem;
-  min-width: 160px;
-  max-height: 260px; overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+/* Scrollable chip dimension rows (genre + area) */
+.filterDimension {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
-.genreOption {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  font-size: 12px; cursor: pointer; border-radius: 6px;
-  transition: background 0.1s;
+.filterDimLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.genreOption:hover { background: var(--surface2); }
-.genreOption input { accent-color: var(--accent); }
-.clearFilter {
-  margin-top: 0.35rem;
-  border: none; background: transparent;
-  color: var(--muted); font-size: 11px; cursor: pointer; padding: 0.25rem 0.5rem;
-  text-decoration: underline; text-align: left;
+.filterChipScroll {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scroll-padding-inline: 0.5rem;
+  /* hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.clearFilter:hover { color: var(--text); }
+.filterChipScroll::-webkit-scrollbar { display: none; }
+
+@media (min-width: 768px) {
+  .filterChipScroll { flex-wrap: wrap; overflow-x: visible; }
+}
 
 /* Date filter */
 .dateFilterRow {
@@ -503,6 +516,21 @@
 }
 .showInfo { flex: 1; min-width: 0; }
 .showTitle { font-size: 14px; font-weight: 700; margin: 0 0 0.25rem; }
+/* Clickable title button — visually identical to .showTitle but as <button> */
+.showTitleBtn {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem;
+  width: 100%;
+  border: none; background: transparent; padding: 0; margin: 0 0 0.25rem;
+  color: var(--text); font-size: 14px; font-weight: 700;
+  text-align: left; cursor: pointer;
+  line-height: inherit;
+}
+.showTitleBtn:hover { color: var(--accent); }
+.expandArrow { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+.showDescription {
+  font-size: 12px; color: var(--muted); margin: 0.4rem 0 0;
+  line-height: 1.5;
+}
 .showMeta { font-size: 11px; color: var(--muted); margin: 0; }
 .statusGrid { display: flex; gap: 0.4rem; flex-shrink: 0; }
 /* Feature 1: slightly larger emoji font in status buttons */
@@ -516,17 +544,38 @@
 }
 .statusBtn:hover { border-color: var(--text); color: var(--text); }
 .statusBtn:disabled { opacity: 0.3; cursor: not-allowed; }
-.statusBtnInterested.statusBtnActive { border-color: var(--s-interested); background: var(--s-interested-dim); color: var(--s-interested); }
-.statusBtnGoing.statusBtnActive     { border-color: var(--s-going);      background: var(--s-going-dim);      color: var(--s-going);      }
-.statusBtnTicket.statusBtnActive    { border-color: var(--s-ticket);     background: var(--s-ticket-dim);     color: var(--s-ticket);     }
+.statusBtnInterested.statusBtnActive {
+  outline: 2px solid var(--s-interested);
+  outline-offset: 1px;
+  border-color: var(--s-interested);
+  color: var(--s-interested);
+  background: var(--s-interested-dim);
+}
+.statusBtnGoing.statusBtnActive {
+  outline: 2px solid var(--s-going);
+  outline-offset: 1px;
+  border-color: var(--s-going);
+  color: var(--s-going);
+  background: var(--s-going-dim);
+}
+.statusBtnTicket.statusBtnActive {
+  outline: 2px solid var(--s-ticket);
+  outline-offset: 1px;
+  border-color: var(--s-ticket);
+  color: var(--s-ticket);
+  background: var(--s-ticket-dim);
+}
 .statusBtnInterested:hover:not(:disabled) { border-color: var(--s-interested); color: var(--s-interested); }
 .statusBtnGoing:hover:not(:disabled)      { border-color: var(--s-going);      color: var(--s-going);      }
 .statusBtnTicket:hover:not(:disabled)     { border-color: var(--s-ticket);     color: var(--s-ticket);     }
 .showBottom { padding: 0 0.75rem 0.75rem; }
 
-/* Feature 5: pick tag row with optional quick-join button */
+/* Feature 5: pick tag row + quick-join row */
 .pickTagRow {
   display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.quickJoinRow {
+  display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.35rem;
 }
 .quickJoinBtn {
   display: inline-flex; align-items: center;

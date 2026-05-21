@@ -93,8 +93,8 @@ type SessionData = {
 
 // Feature 1: distinct, readable emoji icons for each status
 const STATUS_META: Record<PickStatus, { label: string; emoji: string; cls: string; btnCls: string }> = {
-  interested: { label: "Vil gerne", emoji: "⭐", cls: s.tagInterested, btnCls: s.statusBtnInterested },
-  going:      { label: "Skal med",  emoji: "✋", cls: s.tagGoing,      btnCls: s.statusBtnGoing      },
+  interested: { label: "Vil gerne", emoji: "🤷", cls: s.tagInterested, btnCls: s.statusBtnInterested },
+  going:      { label: "Skal med",  emoji: "👍", cls: s.tagGoing,      btnCls: s.statusBtnGoing      },
   has_ticket: { label: "Har billet",emoji: "🎫", cls: s.tagTicket,     btnCls: s.statusBtnTicket     },
 };
 
@@ -239,7 +239,6 @@ export default function FringePage() {
   const [busy,         setBusy]         = useState(false);
   const [ready,        setReady]        = useState(false);
   const [drawerOpen,   setDrawerOpen]   = useState(false);
-  const [genreOpen,    setGenreOpen]    = useState(false);
 
   // Performance picker
   const [perfPicker, setPerfPicker] = useState<{ showId: string; status: "going" | "has_ticket" } | null>(null);
@@ -261,6 +260,9 @@ export default function FringePage() {
     perf: Performance;
     currentPerfStart: string | null;
   } | null>(null);
+
+  // Expanded show descriptions (shows tab only)
+  const [expandedShows, setExpandedShows] = useState<Set<string>>(new Set());
 
   // Group settings (drawer edit form)
   const [editGroupName,  setEditGroupName]  = useState("");
@@ -363,17 +365,6 @@ export default function FringePage() {
     if (p === "shows" || p === "plan" || p === "gruppe") setActiveTab(p);
     return () => mq.removeEventListener("change", update);
   }, []);
-
-  // Close genre dropdown when clicking outside
-  useEffect(() => {
-    if (!genreOpen) return;
-    const handler = (e: MouseEvent) => {
-      const el = document.getElementById("genre-dropdown");
-      if (el && !el.contains(e.target as Node)) setGenreOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [genreOpen]);
 
   // ── Tab navigation ─────────────────────────────────────────────────────────
 
@@ -1453,7 +1444,7 @@ export default function FringePage() {
                                 onClick={() => handleStatusClickForPerf(show, cardPerf, status)}
                                 title={meta.label}
                               >
-                                {isActive ? "✓" : meta.emoji}
+                                {meta.emoji}
                               </button>
                             );
                           })}
@@ -1542,64 +1533,69 @@ export default function FringePage() {
             onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
           />
 
-          <div className={s.filterRow}>
-            {/* Genre multi-select dropdown */}
-            {genres.length > 0 && (
-              <div id="genre-dropdown" className={s.genreDropdownWrap}>
-                <button
-                  className={`${s.filterChip} ${genreFilter.length > 0 ? s.active : ""}`}
-                  onClick={() => setGenreOpen((v) => !v)}
-                >
-                  Genre{genreFilter.length > 0 ? ` · ${genreFilter.length}` : ""}
-                </button>
-                {genreOpen && (
-                  <div className={s.genreDropdown}>
-                    {genres.map((g) => (
-                      <label key={g} className={s.genreOption}>
-                        <input
-                          type="checkbox"
-                          checked={genreFilter.includes(g)}
-                          onChange={(e) => {
-                            const next = e.target.checked
-                              ? [...genreFilter, g]
-                              : genreFilter.filter((x) => x !== g);
-                            setGenreFilter(next);
-                            saveUi({ genreFilter: next });
-                          }}
-                        />
-                        {g}
-                      </label>
-                    ))}
-                    {genreFilter.length > 0 && (
-                      <button
-                        className={s.clearFilter}
-                        onClick={() => { setGenreFilter([]); saveUi({ genreFilter: [] }); }}
-                      >
-                        Ryd
-                      </button>
-                    )}
-                  </div>
+          {/* Genre chips row */}
+          {genres.length > 0 && (
+            <div className={s.filterDimension}>
+              <span className={s.filterDimLabel}>Genre</span>
+              <div className={s.filterChipScroll}>
+                {genres.map((g) => (
+                  <button
+                    key={g}
+                    className={`${s.filterChip} ${genreFilter.includes(g) ? s.active : ""}`}
+                    onClick={() => {
+                      const next = genreFilter.includes(g)
+                        ? genreFilter.filter((x) => x !== g)
+                        : [...genreFilter, g];
+                      setGenreFilter(next);
+                      saveUi({ genreFilter: next });
+                    }}
+                  >
+                    {g}
+                  </button>
+                ))}
+                {genreFilter.length > 0 && (
+                  <button
+                    className={s.filterChipClear}
+                    onClick={() => { setGenreFilter([]); saveUi({ genreFilter: [] }); }}
+                  >
+                    Ryd
+                  </button>
                 )}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Area chips */}
-            {areas.length > 1 && areas.map((area) => (
-              <button
-                key={area}
-                className={`${s.filterChip} ${areaFilter.includes(area) ? s.active : ""}`}
-                onClick={() => {
-                  const next = areaFilter.includes(area)
-                    ? areaFilter.filter((a) => a !== area)
-                    : [...areaFilter, area];
-                  setAreaFilter(next);
-                  saveUi({ areaFilter: next });
-                }}
-              >
-                {AREA_LABELS[area]}
-              </button>
-            ))}
-          </div>
+          {/* Area chips row */}
+          {areas.length > 1 && (
+            <div className={s.filterDimension}>
+              <span className={s.filterDimLabel}>Område</span>
+              <div className={s.filterChipScroll}>
+                {areas.map((area) => (
+                  <button
+                    key={area}
+                    className={`${s.filterChip} ${areaFilter.includes(area) ? s.active : ""}`}
+                    onClick={() => {
+                      const next = areaFilter.includes(area)
+                        ? areaFilter.filter((a) => a !== area)
+                        : [...areaFilter, area];
+                      setAreaFilter(next);
+                      saveUi({ areaFilter: next });
+                    }}
+                  >
+                    {AREA_LABELS[area]}
+                  </button>
+                ))}
+                {areaFilter.length > 0 && (
+                  <button
+                    className={s.filterChipClear}
+                    onClick={() => { setAreaFilter([]); saveUi({ areaFilter: [] }); }}
+                  >
+                    Ryd
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Date range */}
           <div className={s.dateFilterRow}>
@@ -1678,12 +1674,34 @@ export default function FringePage() {
                 <article key={show.id} className={s.showCard}>
                   <div className={s.showTop}>
                     <div className={s.showInfo}>
-                      <h3 className={s.showTitle}>{show.title}</h3>
+                      {show.descriptionTeaser ? (
+                        <button
+                          className={s.showTitleBtn}
+                          onClick={() =>
+                            setExpandedShows((prev) => {
+                              const next = new Set(prev);
+                              next.has(show.id) ? next.delete(show.id) : next.add(show.id);
+                              return next;
+                            })
+                          }
+                          aria-expanded={expandedShows.has(show.id)}
+                        >
+                          <span>{show.title}</span>
+                          <span className={s.expandArrow} aria-hidden="true">
+                            {expandedShows.has(show.id) ? "▴" : "▾"}
+                          </span>
+                        </button>
+                      ) : (
+                        <h3 className={s.showTitle}>{show.title}</h3>
+                      )}
                       <p className={s.showMeta}>{metaParts.join(" · ") || "Info mangler"}</p>
                       {show.website && (
                         <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
                           Billetter ↗
                         </a>
+                      )}
+                      {show.descriptionTeaser && expandedShows.has(show.id) && (
+                        <p className={s.showDescription}>{show.descriptionTeaser}</p>
                       )}
                     </div>
                     <div className={s.statusGrid}>
@@ -1698,7 +1716,7 @@ export default function FringePage() {
                             disabled={!canPick}
                             title={meta.label}
                           >
-                            {isActive ? "✓" : meta.emoji}
+                            {meta.emoji}
                           </button>
                         );
                       })}
@@ -1745,45 +1763,66 @@ export default function FringePage() {
                     </div>
                   )}
 
-                  {/* Picks from group — with Feature 5 quick-join buttons */}
-                  {picks.length > 0 && (
-                    <div className={s.showBottom}>
-                      <div className={s.pickTags}>
-                        {picks.map((p) => {
-                          // Feature 5: show "Tag med" for friends with a committed pick + known performance
-                          const isMe = p.user_id === session.user?.id;
-                          const isFriendCommitted = !isMe && (p.status === "going" || p.status === "has_ticket") && p.performance_start;
-                          const myCurrentPick = myPick(show.id);
-                          const alreadyOnSamePerf = myCurrentPick?.performance_start &&
-                            p.performance_start &&
-                            new Date(myCurrentPick.performance_start).toISOString() === new Date(p.performance_start).toISOString() &&
-                            (myCurrentPick.status === "going" || myCurrentPick.status === "has_ticket");
+                  {/* Picks from group — badge list + one "Tag med" per unique performance */}
+                  {picks.length > 0 && (() => {
+                    const myCurrentPick = myPick(show.id);
+                    const myIsoCommitted =
+                      myCurrentPick?.performance_start &&
+                      (myCurrentPick.status === "going" || myCurrentPick.status === "has_ticket")
+                        ? new Date(myCurrentPick.performance_start).toISOString()
+                        : null;
 
-                          // Build a minimal Performance directly from the pick — no API-lookup needed
-                          const targetPerf: Performance | null = isFriendCommitted
-                            ? { start: p.performance_start!, end: p.performance_end ?? p.performance_start! }
-                            : null;
+                    // Collect unique committed friend performances I haven't joined yet
+                    const joinablePerfs = new Map<string, Performance>();
+                    for (const p of picks) {
+                      if (
+                        p.user_id === session.user?.id ||
+                        !(p.status === "going" || p.status === "has_ticket") ||
+                        !p.performance_start
+                      ) continue;
+                      const iso = new Date(p.performance_start).toISOString();
+                      if (iso === myIsoCommitted) continue;     // already on this perf
+                      if (!joinablePerfs.has(iso)) {
+                        joinablePerfs.set(iso, {
+                          start: p.performance_start!,
+                          end: p.performance_end ?? p.performance_start!,
+                        });
+                      }
+                    }
+                    const joinableList = [...joinablePerfs.values()];
+                    const multiPerf = joinableList.length > 1;
 
-                          return (
-                            <span key={p.user_id} className={s.pickTagRow}>
-                              <span className={`${s.tag} ${STATUS_META[p.status].cls}`}>
-                                {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
-                              </span>
-                              {isFriendCommitted && targetPerf && !alreadyOnSamePerf && canPick && (
-                                <button
-                                  className={s.quickJoinBtn}
-                                  onClick={() => handleQuickJoin(show, targetPerf)}
-                                  title={`Tag med til ${new Date(targetPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
-                                >
-                                  + Tag med
-                                </button>
-                              )}
+                    return (
+                      <div className={s.showBottom}>
+                        <div className={s.pickTags}>
+                          {picks.map((p) => (
+                            <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.status].cls}`}>
+                              {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
                             </span>
-                          );
-                        })}
+                          ))}
+                        </div>
+                        {canPick && joinableList.length > 0 && (
+                          <div className={s.quickJoinRow}>
+                            {joinableList.map((perf) => {
+                              const label = multiPerf
+                                ? `+ Tag med · ${new Date(perf.start).toLocaleString("da-DK", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`
+                                : "+ Tag med";
+                              return (
+                                <button
+                                  key={perf.start}
+                                  className={s.quickJoinBtn}
+                                  onClick={() => handleQuickJoin(show, perf)}
+                                  title={`Tag med til ${new Date(perf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                                >
+                                  {label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </article>
               );
             })}
