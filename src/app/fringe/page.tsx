@@ -1802,7 +1802,7 @@ export default function FringePage() {
       </div>
 
       {/* ══════════════════ MOBILE TAB BAR ══════════════════ */}
-      <nav className={s.tabBar} aria-label="Navigation">
+      <div className={s.tabBar} role="navigation" aria-label="Navigation">
         <button
           className={`${s.tabBarBtn} ${activeTab === "shows" ? s.tabBarBtnActive : ""}`}
           onClick={() => switchTab("shows")}
@@ -1838,7 +1838,7 @@ export default function FringePage() {
           </svg>
           <span className={s.tabBarLabel}>Gruppe</span>
         </button>
-      </nav>
+      </div>
 
       <footer className={`${s.footer} ${s.desktopOnly}`}>
         <span>Edinburgh Fringe Venneplanner · albertdieckmann.dk</span>
