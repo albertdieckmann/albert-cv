@@ -6,11 +6,17 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Ikke logget ind" }, { status: 401 });
 
-  const { groupId, showId, showTitle, performanceStart, quantity, totalCost, notes, coveredUserIds } =
-    await req.json();
+  const {
+    groupId, showId, showTitle,
+    performanceId, performanceStart,
+    quantity, totalCost, notes, coveredUserIds,
+  } = await req.json();
 
   if (!groupId || !showId) {
     return NextResponse.json({ error: "Manglende felter" }, { status: 400 });
+  }
+  if (!performanceId && !performanceStart) {
+    return NextResponse.json({ error: "Vælg en forestilling." }, { status: 400 });
   }
 
   const memberCheck = await sql`
@@ -22,14 +28,15 @@ export async function POST(req: NextRequest) {
   }
 
   const buyerName = memberCheck.rows[0].user_name;
+  const perfId = performanceId ?? performanceStart;
 
   const purchaseResult = await sql`
     INSERT INTO fringe_purchases
       (group_id, buyer_user_id, buyer_user_name, show_id, show_title,
-       performance_start, quantity, total_cost, notes)
+       performance_id, performance_start, quantity, total_cost, notes)
     VALUES
       (${groupId}, ${userId}, ${buyerName}, ${showId}, ${showTitle ?? ""},
-       ${performanceStart ?? null}, ${quantity ?? 1},
+       ${perfId}, ${performanceStart ?? null}, ${quantity ?? 1},
        ${totalCost ? parseFloat(totalCost) : null}, ${notes ?? null})
     RETURNING id
   `;

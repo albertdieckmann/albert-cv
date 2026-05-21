@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   };
 
   const groupsResult = await sql`
-    SELECT g.id, g.name
+    SELECT g.id, g.name, g.start_date, g.end_date
     FROM fringe_groups g
     JOIN fringe_group_members m ON g.id = m.group_id
     WHERE m.user_id = ${userId}
@@ -57,14 +57,14 @@ export async function GET(req: NextRequest) {
         `,
         sql`
           SELECT user_id, user_name, show_id, show_title, status,
-                 performance_start, performance_end
+                 performance_id, performance_start, performance_end
           FROM fringe_picks
           WHERE group_id = ${activeGroupId}
           ORDER BY updated_at DESC
         `,
         sql`
           SELECT id, buyer_user_id, buyer_user_name, show_id, show_title,
-                 performance_start, quantity, total_cost, notes, purchased_at
+                 performance_id, performance_start, quantity, total_cost, notes, purchased_at
           FROM fringe_purchases
           WHERE group_id = ${activeGroupId}
           ORDER BY purchased_at DESC
@@ -90,9 +90,12 @@ export async function GET(req: NextRequest) {
       covers: coversByPurchase.get(p.id) ?? [],
     }));
 
+    const activeGroupMeta = groups.find((g) => g.id === activeGroupId)!;
     activeGroup = {
       id: activeGroupId,
-      name: groups.find((g) => g.id === activeGroupId)?.name ?? "",
+      name: activeGroupMeta.name,
+      startDate: activeGroupMeta.start_date ?? null,
+      endDate: activeGroupMeta.end_date ?? null,
       members: membersResult.rows,
       invites: invitesResult.rows,
       picks: picksResult.rows,

@@ -4,6 +4,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import s from "./fringe.module.css";
+import { AREA_LABELS, AREA_ORDER, type Area } from "@/lib/fringe-area";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,7 +33,7 @@ type Show = {
   descriptionTeaser?: string;
   website?: string;
   status?: string;
-  venue: { name: string; address?: string; lat?: number; lon?: number };
+  venue: { name: string; address?: string; lat?: number; lon?: number; area: Area };
   performances: Performance[];
   imageUrl?: string;
 };
@@ -43,6 +44,7 @@ type FringePick = {
   show_id: string;
   show_title: string;
   status: PickStatus;
+  performance_id: string | null;
   performance_start: string | null;
   performance_end: string | null;
 };
@@ -60,6 +62,7 @@ type Purchase = {
   buyer_user_name: string;
   show_id: string;
   show_title: string;
+  performance_id: string | null;
   performance_start: string | null;
   total_cost: string | null;
   notes: string | null;
@@ -68,10 +71,12 @@ type Purchase = {
 };
 
 type Member = { id: string; name: string; role: string };
-type Group  = { id: number; name: string };
+type Group  = { id: number; name: string; start_date?: string | null; end_date?: string | null };
 type ActiveGroup = {
   id: number;
   name: string;
+  startDate: string | null;
+  endDate: string | null;
   members: Member[];
   invites: { code: string }[];
   picks: FringePick[];
@@ -86,31 +91,39 @@ type SessionData = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const STATUS_META: Record<PickStatus, { label: string; emoji: string; cls: string; btnCls: string }> = {
-  interested: { label: "Interesseret", emoji: "◎", cls: s.tagInterested, btnCls: s.statusBtnInterested },
-  going:      { label: "Går",          emoji: "★", cls: s.tagGoing,      btnCls: s.statusBtnGoing      },
-  has_ticket: { label: "Har billet",   emoji: "✓", cls: s.tagTicket,     btnCls: s.statusBtnTicket     },
+  interested: { label: "Vil gerne", emoji: "◎", cls: s.tagInterested, btnCls: s.statusBtnInterested },
+  going:      { label: "Skal med",  emoji: "★", cls: s.tagGoing,      btnCls: s.statusBtnGoing      },
+  has_ticket: { label: "Har billet",emoji: "✓", cls: s.tagTicket,     btnCls: s.statusBtnTicket     },
 };
 
 const STATUSES: PickStatus[] = ["interested", "going", "has_ticket"];
 
-const UI_KEY = "fringe-planner-ui-v1";
+const UI_KEY = "fringe-planner-ui-v2";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function loadUi() {
   if (typeof window === "undefined") {
-    return { search: "", selectedOnly: false, genreFilter: null as string | null, activeGroupId: null as number | null };
+    return {
+      search: "", selectedOnly: false,
+      genreFilter: [] as string[], areaFilter: [] as Area[],
+      dateFrom: "", dateTo: "",
+      activeGroupId: null as number | null,
+    };
   }
   try {
     const raw = JSON.parse(localStorage.getItem(UI_KEY) ?? "{}");
     return {
       search:        typeof raw.search === "string" ? raw.search : "",
       selectedOnly:  Boolean(raw.selectedOnly),
-      genreFilter:   typeof raw.genreFilter === "string" ? raw.genreFilter : null,
+      genreFilter:   Array.isArray(raw.genreFilter) ? raw.genreFilter : [],
+      areaFilter:    Array.isArray(raw.areaFilter) ? raw.areaFilter : [],
+      dateFrom:      typeof raw.dateFrom === "string" ? raw.dateFrom : "",
+      dateTo:        typeof raw.dateTo === "string" ? raw.dateTo : "",
       activeGroupId: Number.isInteger(raw.activeGroupId) ? (raw.activeGroupId as number) : null,
     };
   } catch {
-    return { search: "", selectedOnly: false, genreFilter: null as string | null, activeGroupId: null as number | null };
+    return { search: "", selectedOnly: false, genreFilter: [] as string[], areaFilter: [] as Area[], dateFrom: "", dateTo: "", activeGroupId: null as number | null };
   }
 }
 
@@ -177,26 +190,32 @@ export default function FringePage() {
   const { isLoaded, isSignedIn } = useUser();
   const { openSignIn, signOut } = useClerk();
 
-  const [shows,       setShows]       = useState<Show[]>([]);
-  const [session,     setSession]     = useState<SessionData>({ user: null, groups: [], activeGroup: null });
-  const [search,      setSearch]      = useState("");
-  const [selectedOnly,setSelectedOnly]= useState(false);
-  const [genreFilter, setGenreFilter] = useState<string | null>(null);
-  const [groupName,   setGroupName]   = useState("");
-  const [inviteCode,  setInviteCode]  = useState("");
-  const [statusMsg,   setStatusMsg]   = useState("");
-  const [busy,        setBusy]        = useState(false);
-  const [ready,       setReady]       = useState(false);
-  const [drawerOpen,  setDrawerOpen]  = useState(false);
+  const [shows,        setShows]        = useState<Show[]>([]);
+  const [session,      setSession]      = useState<SessionData>({ user: null, groups: [], activeGroup: null });
+  const [search,       setSearch]       = useState("");
+  const [selectedOnly, setSelectedOnly] = useState(false);
+  const [genreFilter,  setGenreFilter]  = useState<string[]>([]);
+  const [areaFilter,   setAreaFilter]   = useState<Area[]>([]);
+  const [dateFrom,     setDateFrom]     = useState("");
+  const [dateTo,       setDateTo]       = useState("");
+  const [groupName,    setGroupName]    = useState("");
+  const [groupStartDate, setGroupStartDate] = useState("");
+  const [groupEndDate,   setGroupEndDate]   = useState("");
+  const [inviteCode,   setInviteCode]   = useState("");
+  const [statusMsg,    setStatusMsg]    = useState("");
+  const [busy,         setBusy]         = useState(false);
+  const [ready,        setReady]        = useState(false);
+  const [drawerOpen,   setDrawerOpen]   = useState(false);
+  const [genreOpen,    setGenreOpen]    = useState(false);
 
-  // Performance picker: which show + which status are we selecting a performance for
+  // Performance picker
   const [perfPicker, setPerfPicker] = useState<{ showId: string; status: "going" | "has_ticket" } | null>(null);
 
-  // Purchase form state
+  // Purchase form
   const [purchaseForm, setPurchaseForm] = useState<{
     showId: string;
     perfStart: string;
-    perfEnd: string;
+    perfId: string;
     cost: string;
     notes: string;
     covered: string[];
@@ -237,6 +256,9 @@ export default function FringePage() {
     setSearch(ui.search);
     setSelectedOnly(ui.selectedOnly);
     setGenreFilter(ui.genreFilter);
+    setAreaFilter(ui.areaFilter);
+    setDateFrom(ui.dateFrom);
+    setDateTo(ui.dateTo);
     activeGroupIdRef.current = ui.activeGroupId;
   }, []);
 
@@ -245,6 +267,31 @@ export default function FringePage() {
     const ui = loadUi();
     fetchSession(ui.activeGroupId).finally(() => setReady(true));
   }, [isLoaded, isSignedIn, fetchSession]);
+
+  // Default date range to group travel dates when they change
+  useEffect(() => {
+    const g = session.activeGroup;
+    if (!g) return;
+    setDateFrom((prev) => {
+      if (prev) return prev;
+      return g.startDate ? g.startDate.slice(0, 10) : "";
+    });
+    setDateTo((prev) => {
+      if (prev) return prev;
+      return g.endDate ? g.endDate.slice(0, 10) : "";
+    });
+  }, [session.activeGroup?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close genre dropdown when clicking outside
+  useEffect(() => {
+    if (!genreOpen) return;
+    const handler = (e: MouseEvent) => {
+      const el = document.getElementById("genre-dropdown");
+      if (el && !el.contains(e.target as Node)) setGenreOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [genreOpen]);
 
   // ── Busy wrapper ───────────────────────────────────────────────────────────
 
@@ -260,10 +307,15 @@ export default function FringePage() {
   async function handleCreateGroup(e: React.FormEvent) {
     e.preventDefault();
     await run(async () => {
-      const pay = await api("/api/fringe/groups", { method: "POST", body: JSON.stringify({ name: groupName }) });
+      const pay = await api("/api/fringe/groups", {
+        method: "POST",
+        body: JSON.stringify({ name: groupName, startDate: groupStartDate || null, endDate: groupEndDate || null }),
+      });
       setGroupName("");
+      setGroupStartDate("");
+      setGroupEndDate("");
       await fetchSession(pay.groupId);
-      flash("Gruppen er oprettet.");
+      flash("Gruppe oprettet.");
     });
   }
 
@@ -276,18 +328,18 @@ export default function FringePage() {
         body: JSON.stringify({ groupId: session.activeGroup!.id }),
       });
       await fetchSession();
-      flash(`Invite-kode oprettet: ${pay.code}`);
+      flash(`Invite-kode: ${pay.code}`);
     });
   }
 
   async function handleCopyInvite() {
     const code = session.activeGroup?.invites?.[0]?.code;
-    if (!code) { flash("Ingen aktiv invite-kode endnu."); return; }
+    if (!code) { flash("Opret en invite-kode først."); return; }
     try {
       await navigator.clipboard.writeText(code);
-      flash(`Koden ${code} er kopieret.`);
+      flash(`${code} kopieret.`);
     } catch {
-      flash(`Koden er: ${code}`);
+      flash(`Kode: ${code}`);
     }
   }
 
@@ -297,20 +349,12 @@ export default function FringePage() {
       await api("/api/fringe/invites/accept", { method: "POST", body: JSON.stringify({ code: inviteCode }) });
       setInviteCode("");
       await fetchSession();
-      flash("Du er tilføjet til gruppen.");
-    });
-  }
-
-  async function handleSeed() {
-    await run(async () => {
-      const pay = await api("/api/fringe/seed", { method: "POST" });
-      await fetchSession(pay.groupId);
-      flash(`"${pay.groupName}" oprettet med demodata.`);
+      flash("Du er med i gruppen.");
     });
   }
 
   async function handleLeaveGroup(id: number, name: string) {
-    if (!confirm(`Forlad gruppen "${name}"?`)) return;
+    if (!confirm(`Forlad "${name}"?`)) return;
     await run(async () => {
       await api(`/api/fringe/groups/${id}/leave`, { method: "DELETE" });
       activeGroupIdRef.current = null;
@@ -321,20 +365,32 @@ export default function FringePage() {
   }
 
   async function handleDeleteGroup(id: number, name: string) {
-    if (!confirm(`Slet gruppen "${name}"? Dette fjerner alle picks og køb i gruppen.`)) return;
+    if (!confirm(`Slet gruppen "${name}"? Alle picks og køb slettes.`)) return;
     await run(async () => {
       await api(`/api/fringe/groups/${id}`, { method: "DELETE" });
       activeGroupIdRef.current = null;
       saveUi({ activeGroupId: null });
       await fetchSession(null);
-      flash("Gruppen er slettet.");
+      flash("Gruppe slettet.");
     });
   }
 
   async function handleSwitchGroup(id: number) {
     activeGroupIdRef.current = id;
     saveUi({ activeGroupId: id });
+    // Reset date filters so they pick up the new group's travel dates
+    setDateFrom("");
+    setDateTo("");
+    saveUi({ dateFrom: "", dateTo: "" });
     await run(() => fetchSession(id));
+  }
+
+  async function handleSeed() {
+    await run(async () => {
+      const pay = await api("/api/fringe/seed", { method: "POST" });
+      await fetchSession(pay.groupId);
+      flash(`"${pay.groupName}" oprettet med demodata.`);
+    });
   }
 
   // ── Pick handlers ──────────────────────────────────────────────────────────
@@ -344,7 +400,6 @@ export default function FringePage() {
 
     const current = myPick(show.id);
 
-    // Toggle off if same status clicked
     if (current?.status === status) {
       run(async () => {
         await api("/api/fringe/picks", {
@@ -356,7 +411,6 @@ export default function FringePage() {
       return;
     }
 
-    // "interested" needs no performance selection
     if (status === "interested") {
       run(async () => {
         await api("/api/fringe/picks", {
@@ -366,6 +420,7 @@ export default function FringePage() {
             showId: show.id,
             showTitle: show.title,
             status,
+            performanceId: null,
             performanceStart: null,
             performanceEnd: null,
           }),
@@ -375,7 +430,7 @@ export default function FringePage() {
       return;
     }
 
-    // going / has_ticket: if single performance, save immediately; otherwise open picker
+    // going / has_ticket: always open picker (even if single perf, for consistency)
     if (show.performances.length === 1) {
       const perf = show.performances[0];
       run(async () => {
@@ -386,6 +441,7 @@ export default function FringePage() {
             showId: show.id,
             showTitle: show.title,
             status,
+            performanceId: perf.start,
             performanceStart: perf.start,
             performanceEnd: perf.end,
           }),
@@ -409,6 +465,7 @@ export default function FringePage() {
           showId: show.id,
           showTitle: show.title,
           status,
+          performanceId: perf.start,
           performanceStart: perf.start,
           performanceEnd: perf.end,
         }),
@@ -432,6 +489,7 @@ export default function FringePage() {
           groupId: session.activeGroup!.id,
           showId: form.showId,
           showTitle: show?.title ?? form.showId,
+          performanceId: form.perfId || null,
           performanceStart: form.perfStart || null,
           totalCost: form.cost || null,
           notes: form.notes || null,
@@ -466,6 +524,18 @@ export default function FringePage() {
     return (session.activeGroup?.picks ?? []).filter((p) => p.show_id === showId);
   }
 
+  // Who in the group has picked a specific performance (by start timestamp)
+  function perfPicksFor(showId: string, perfStart: string): { name: string; status: PickStatus }[] {
+    return (session.activeGroup?.picks ?? [])
+      .filter((p) =>
+        p.show_id === showId &&
+        (p.status === "going" || p.status === "has_ticket") &&
+        p.performance_start &&
+        new Date(p.performance_start).toISOString() === new Date(perfStart).toISOString()
+      )
+      .map((p) => ({ name: p.user_name, status: p.status }));
+  }
+
   function allGenres(): string[] {
     const seen = new Set<string>();
     for (const show of shows) {
@@ -474,12 +544,34 @@ export default function FringePage() {
     return [...seen].sort();
   }
 
+  function allAreas(): Area[] {
+    const seen = new Set<Area>();
+    for (const show of shows) seen.add(show.venue.area);
+    return AREA_ORDER.filter((a) => seen.has(a));
+  }
+
   function visibleShows(): Show[] {
     const q = search.trim().toLowerCase();
     const picked = new Set((session.activeGroup?.picks ?? []).map((p) => p.show_id));
+    const fromMs = dateFrom ? new Date(dateFrom).getTime() : null;
+    const toMs   = dateTo   ? new Date(dateTo + "T23:59:59").getTime() : null;
+
     return shows.filter((show) => {
       if (selectedOnly && !picked.has(show.id)) return false;
-      if (genreFilter && show.genre !== genreFilter) return false;
+      if (genreFilter.length > 0 && (!show.genre || !genreFilter.includes(show.genre))) return false;
+      if (areaFilter.length > 0 && !areaFilter.includes(show.venue.area)) return false;
+
+      // Date filter: show is included if any performance falls within the range
+      if (fromMs != null || toMs != null) {
+        const hasPerf = show.performances.some((p) => {
+          const t = new Date(p.start).getTime();
+          if (fromMs != null && t < fromMs) return false;
+          if (toMs   != null && t > toMs)   return false;
+          return true;
+        });
+        if (!hasPerf && show.performances.length > 0) return false;
+      }
+
       if (!q) return true;
       const hay = [show.title, show.artist ?? "", show.genre ?? "", show.venue.name, show.subTitle ?? ""]
         .join(" ").toLowerCase();
@@ -499,7 +591,6 @@ export default function FringePage() {
       })
       .filter(Boolean) as { show: Show; pick: FringePick }[];
 
-    // Group by date, then by show (deduplicate same show from multiple picks)
     const seenShows = new Set<string>();
     const byDate = new Map<string, { show: Show; picks: FringePick[]; conflicts: string[] }[]>();
 
@@ -511,7 +602,6 @@ export default function FringePage() {
       const entryKey = `${dayKey}::${show.id}`;
 
       if (seenShows.has(entryKey)) {
-        // Merge picks for same show on same day
         const group = byDate.get(dayKey)!;
         const entry = group.find((e) => e.show.id === show.id);
         if (entry && !entry.picks.some((p) => p.user_id === pick.user_id)) {
@@ -521,14 +611,8 @@ export default function FringePage() {
       }
 
       seenShows.add(entryKey);
-      const entry = {
-        show,
-        picks: [pick],
-        conflicts: conflicts.get(show.id) ?? [],
-      };
-
       const group = byDate.get(dayKey) ?? [];
-      group.push(entry);
+      group.push({ show, picks: [pick], conflicts: conflicts.get(show.id) ?? [] });
       byDate.set(dayKey, group);
     }
 
@@ -552,6 +636,7 @@ export default function FringePage() {
   const tGroups  = timelineGroups();
   const tCount   = new Set(tGroups.flatMap(([, items]) => items.map((i) => i.show.id))).size;
   const genres   = allGenres();
+  const areas    = allAreas();
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -592,7 +677,7 @@ export default function FringePage() {
           <p className={s.sectionTag}>Profil</p>
           {!isSignedIn ? (
             <div className={s.authCard}>
-              <p className={s.muted}>Log ind for at markere shows og dele med venner.</p>
+              <p className={s.muted}>Log ind for at markere shows og planlægge med venner.</p>
               <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/fringe" }); }}>
                 Log ind eller opret profil
               </button>
@@ -629,6 +714,17 @@ export default function FringePage() {
 
             {session.activeGroup && (
               <>
+                {(session.activeGroup.startDate || session.activeGroup.endDate) && (
+                  <p className={s.groupDates}>
+                    {session.activeGroup.startDate
+                      ? new Date(session.activeGroup.startDate).toLocaleDateString("da-DK", { day: "numeric", month: "short" })
+                      : "?"}{" "}
+                    –{" "}
+                    {session.activeGroup.endDate
+                      ? new Date(session.activeGroup.endDate).toLocaleDateString("da-DK", { day: "numeric", month: "short" })
+                      : "?"}
+                  </p>
+                )}
                 <div className={s.memberList}>
                   {session.activeGroup.members.map((m) => (
                     <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
@@ -639,11 +735,11 @@ export default function FringePage() {
                 </div>
                 <div className={s.inviteBar}>
                   <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
-                    <button type="submit" className={s.ghostBtn}>Ny invite-kode</button>
+                    <button type="submit" className={s.ghostBtn}>Ny invite</button>
                   </form>
                   {session.activeGroup.invites[0] && (
                     <button className={s.ghostBtn} onClick={handleCopyInvite}>
-                      Kopiér kode ({session.activeGroup.invites[0].code})
+                      Kopiér ({session.activeGroup.invites[0].code})
                     </button>
                   )}
                 </div>
@@ -666,12 +762,24 @@ export default function FringePage() {
               <div className={s.detailsBody}>
                 <form onSubmit={handleCreateGroup} className={s.stackForm}>
                   <label className={s.fieldWrap}>
-                    <span className={s.fieldLabel}>Gruppenavn</span>
-                    <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Fringe 2025-gæng" maxLength={50} required />
+                    <span className={s.fieldLabel}>Navn</span>
+                    <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Edinburgh-gæng" maxLength={50} required />
                   </label>
-                  <button type="submit" className={s.primaryBtn}>Opret gruppe</button>
+                  <div className={s.dateRow}>
+                    <label className={s.fieldWrap}>
+                      <span className={s.fieldLabel}>Rejse fra</span>
+                      <input type="date" className={s.fieldInput} value={groupStartDate} onChange={(e) => setGroupStartDate(e.target.value)} />
+                    </label>
+                    <label className={s.fieldWrap}>
+                      <span className={s.fieldLabel}>Til</span>
+                      <input type="date" className={s.fieldInput} value={groupEndDate} onChange={(e) => setGroupEndDate(e.target.value)} />
+                    </label>
+                  </div>
+                  <button type="submit" className={s.primaryBtn}>Opret</button>
                 </form>
+
                 <div className={s.orDivider}><span>eller</span></div>
+
                 <form onSubmit={handleJoinGroup} className={s.stackForm}>
                   <label className={s.fieldWrap}>
                     <span className={s.fieldLabel}>Invite-kode</span>
@@ -679,7 +787,9 @@ export default function FringePage() {
                   </label>
                   <button type="submit" className={s.ghostBtn}>Join gruppe</button>
                 </form>
+
                 <div className={s.orDivider}><span>eller</span></div>
+
                 <div>
                   <p className={s.muted} style={{ marginBottom: "0.5rem" }}>Test alle funktioner med færdiglavet demodata — to fiktive gruppemedlemmer, picks og konflikter.</p>
                   <button type="button" className={s.ghostBtn} onClick={handleSeed}>Opret testgruppe med demodata</button>
@@ -694,7 +804,6 @@ export default function FringePage() {
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Køb</p>
 
-            {/* Existing purchases */}
             {session.activeGroup.purchases.length > 0 && (
               <div className={s.purchaseList}>
                 {session.activeGroup.purchases.map((purchase) => {
@@ -707,7 +816,7 @@ export default function FringePage() {
                         <div>
                           <p className={s.purchaseTitle}>{purchase.show_title}</p>
                           <p className={s.purchaseMeta}>
-                            Købt af {purchase.buyer_user_name}{perfDate ? ` · ${perfDate}` : ""}
+                            {purchase.buyer_user_name}{perfDate ? ` · ${perfDate}` : ""}
                           </p>
                           {purchase.notes && <p className={s.purchaseMeta}>{purchase.notes}</p>}
                         </div>
@@ -726,17 +835,9 @@ export default function FringePage() {
                                 {cover.covered_user_name}
                               </span>
                               {cover.settled ? (
-                                <button
-                                  className={s.settleBtn}
-                                  onClick={() => handleSettle(purchase.id, cover.covered_user_id, false)}
-                                  title="Fortryd"
-                                >✓</button>
+                                <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, false)} title="Fortryd">✓</button>
                               ) : (
-                                <button
-                                  className={s.settleBtn}
-                                  onClick={() => handleSettle(purchase.id, cover.covered_user_id, true)}
-                                  title="Marker som betalt"
-                                >○</button>
+                                <button className={s.settleBtn} onClick={() => handleSettle(purchase.id, cover.covered_user_id, true)} title="Marker som betalt">○</button>
                               )}
                             </span>
                           ))}
@@ -748,7 +849,6 @@ export default function FringePage() {
               </div>
             )}
 
-            {/* Log new purchase */}
             {purchaseForm ? (
               <form onSubmit={handleLogPurchase} className={`${s.stackForm} ${s.purchaseFormWrap}`}>
                 <label className={s.fieldWrap}>
@@ -758,11 +858,12 @@ export default function FringePage() {
                     value={purchaseForm.showId}
                     onChange={(e) => {
                       const show = shows.find((sh) => sh.id === e.target.value);
+                      const firstPerf = show?.performances[0];
                       setPurchaseForm((f) => f && ({
                         ...f,
                         showId: e.target.value,
-                        perfStart: show?.performances[0]?.start ?? "",
-                        perfEnd: show?.performances[0]?.end ?? "",
+                        perfStart: firstPerf?.start ?? "",
+                        perfId: firstPerf?.start ?? "",
                       }));
                     }}
                     required
@@ -778,19 +879,18 @@ export default function FringePage() {
 
                 {purchaseForm.showId && (() => {
                   const show = shows.find((sh) => sh.id === purchaseForm.showId);
-                  return show && show.performances.length > 1 ? (
+                  return show && show.performances.length > 0 ? (
                     <label className={s.fieldWrap}>
                       <span className={s.fieldLabel}>Forestilling</span>
                       <select
                         className={s.fieldSelect}
                         value={purchaseForm.perfStart}
                         onChange={(e) => {
-                          const perf = show.performances.find((p) => p.start === e.target.value);
-                          setPurchaseForm((f) => f && ({ ...f, perfStart: e.target.value, perfEnd: perf?.end ?? "" }));
+                          setPurchaseForm((f) => f && ({ ...f, perfStart: e.target.value, perfId: e.target.value }));
                         }}
                         required
                       >
-                        <option value="">Vælg forestilling…</option>
+                        <option value="">Vælg…</option>
                         {show.performances.map((p) => {
                           const { dateStr, timeStr, meta } = formatPerf(p);
                           return (
@@ -805,12 +905,12 @@ export default function FringePage() {
                 })()}
 
                 <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Samlet pris (£, valgfrit)</span>
+                  <span className={s.fieldLabel}>Pris (£)</span>
                   <input type="number" step="0.01" min="0" className={s.fieldInput} value={purchaseForm.cost} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, cost: e.target.value }))} placeholder="Fx 47.50" />
                 </label>
 
                 <div className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Dækker</span>
+                  <span className={s.fieldLabel}>Betalte for</span>
                   <div className={s.checkList}>
                     {session.activeGroup.members.map((m) => (
                       <label key={m.id} className={s.checkRow}>
@@ -831,12 +931,12 @@ export default function FringePage() {
                 </div>
 
                 <label className={s.fieldWrap}>
-                  <span className={s.fieldLabel}>Note (valgfrit)</span>
-                  <input className={s.fieldInput} value={purchaseForm.notes} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, notes: e.target.value }))} placeholder="Fx 'online booking gebyr'" maxLength={200} />
+                  <span className={s.fieldLabel}>Note</span>
+                  <input className={s.fieldInput} value={purchaseForm.notes} onChange={(e) => setPurchaseForm((f) => f && ({ ...f, notes: e.target.value }))} placeholder="Fx booking-gebyr" maxLength={200} />
                 </label>
 
                 <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button type="submit" className={s.primaryBtn}>Gem køb</button>
+                  <button type="submit" className={s.primaryBtn}>Gem</button>
                   <button type="button" className={s.ghostBtn} onClick={() => setPurchaseForm(null)}>Annuller</button>
                 </div>
               </form>
@@ -844,9 +944,9 @@ export default function FringePage() {
               <button
                 className={s.ghostBtn}
                 style={{ marginTop: session.activeGroup.purchases.length > 0 ? "0.75rem" : "0" }}
-                onClick={() => setPurchaseForm({ showId: "", perfStart: "", perfEnd: "", cost: "", notes: "", covered: [session.user!.id] })}
+                onClick={() => setPurchaseForm({ showId: "", perfStart: "", perfId: "", cost: "", notes: "", covered: [session.user!.id] })}
               >
-                + Log køb
+                + Registrér køb
               </button>
             )}
           </div>
@@ -856,10 +956,10 @@ export default function FringePage() {
       {/* ── Stats ── */}
       <div className={s.statsStrip}>
         {[
-          { label: "Logget ind som", value: session.user?.name ?? "Gæst" },
-          { label: "Aktiv gruppe",   value: session.activeGroup?.name ?? "—"  },
-          { label: "I tidsplan",     value: tCount },
-          { label: "I programme",    value: shows.length },
+          { label: "Du",      value: session.user?.name ?? "Gæst" },
+          { label: "Gruppe",  value: session.activeGroup?.name ?? "—"  },
+          { label: "I planen",value: tCount },
+          { label: "Programme",value: shows.length },
         ].map(({ label, value }) => (
           <div key={label} className={s.statCard}>
             <span className={s.statLabel}>{label}</span>
@@ -870,13 +970,13 @@ export default function FringePage() {
 
       {/* ── Timeline ── */}
       <section className={s.section}>
-        <p className={s.sectionTag}>Tidsplan</p>
+        <p className={s.sectionTag}>Jeres plan</p>
 
         {tGroups.length === 0 ? (
           <div className={s.empty}>
             {session.activeGroup
-              ? "Marker shows som 'Går' eller 'Har billet' og vælg forestilling — de samles her."
-              : "Log ind og opret en gruppe for at bygge jeres tidsplan."}
+              ? "Marker shows som 'Skal med' eller 'Har billet' og vælg forestilling — de dukker op her."
+              : "Log ind og opret en gruppe for at bygge jeres plan."}
           </div>
         ) : (
           tGroups.map(([day, items]) => (
@@ -906,7 +1006,7 @@ export default function FringePage() {
                         </div>
                       </div>
                       {conflicts.length > 0 && (
-                        <div className={s.conflictBadge}>⚠ Konflikt: {conflicts.join(", ")}</div>
+                        <div className={s.conflictBadge}>⚠ {conflicts.join(", ")} overlapper</div>
                       )}
                       <div className={s.pickTags}>
                         {picks.map((p) => (
@@ -931,31 +1031,103 @@ export default function FringePage() {
         </div>
 
         <div className={s.filterBar}>
+          {/* Search */}
           <input
             type="search"
             className={s.searchInput}
-            placeholder="Søg i programme…"
+            placeholder="Søg…"
             value={search}
             onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
           />
-          {genres.length > 0 && (
-            <div className={s.filterRow}>
-              <div className={s.filterChips}>
-                {genres.map((g) => (
-                  <button
-                    key={g}
-                    className={`${s.filterChip} ${genreFilter === g ? s.active : ""}`}
-                    onClick={() => { const next = genreFilter === g ? null : g; setGenreFilter(next); saveUi({ genreFilter: next }); }}
-                  >
-                    {g}
-                  </button>
-                ))}
+
+          <div className={s.filterRow}>
+            {/* Genre multi-select dropdown */}
+            {genres.length > 0 && (
+              <div id="genre-dropdown" className={s.genreDropdownWrap}>
+                <button
+                  className={`${s.filterChip} ${genreFilter.length > 0 ? s.active : ""}`}
+                  onClick={() => setGenreOpen((v) => !v)}
+                >
+                  Genre{genreFilter.length > 0 ? ` · ${genreFilter.length}` : ""}
+                </button>
+                {genreOpen && (
+                  <div className={s.genreDropdown}>
+                    {genres.map((g) => (
+                      <label key={g} className={s.genreOption}>
+                        <input
+                          type="checkbox"
+                          checked={genreFilter.includes(g)}
+                          onChange={(e) => {
+                            const next = e.target.checked
+                              ? [...genreFilter, g]
+                              : genreFilter.filter((x) => x !== g);
+                            setGenreFilter(next);
+                            saveUi({ genreFilter: next });
+                          }}
+                        />
+                        {g}
+                      </label>
+                    ))}
+                    {genreFilter.length > 0 && (
+                      <button
+                        className={s.clearFilter}
+                        onClick={() => { setGenreFilter([]); saveUi({ genreFilter: [] }); }}
+                      >
+                        Ryd
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Area chips */}
+            {areas.length > 1 && areas.map((area) => (
+              <button
+                key={area}
+                className={`${s.filterChip} ${areaFilter.includes(area) ? s.active : ""}`}
+                onClick={() => {
+                  const next = areaFilter.includes(area)
+                    ? areaFilter.filter((a) => a !== area)
+                    : [...areaFilter, area];
+                  setAreaFilter(next);
+                  saveUi({ areaFilter: next });
+                }}
+              >
+                {AREA_LABELS[area]}
+              </button>
+            ))}
+          </div>
+
+          {/* Date range */}
+          <div className={s.dateFilterRow}>
+            <span className={s.fieldLabel}>Dato</span>
+            <input
+              type="date"
+              className={s.dateInput}
+              value={dateFrom}
+              onChange={(e) => { setDateFrom(e.target.value); saveUi({ dateFrom: e.target.value }); }}
+            />
+            <span className={s.dateSep}>–</span>
+            <input
+              type="date"
+              className={s.dateInput}
+              value={dateTo}
+              onChange={(e) => { setDateTo(e.target.value); saveUi({ dateTo: e.target.value }); }}
+            />
+            {(dateFrom || dateTo) && (
+              <button
+                className={s.clearFilter}
+                onClick={() => { setDateFrom(""); setDateTo(""); saveUi({ dateFrom: "", dateTo: "" }); }}
+              >
+                Ryd
+              </button>
+            )}
+          </div>
+
           <label className={s.toggleRow}>
             <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
-            <span>Vis kun valgte</span>
+            <span>Kun mine</span>
           </label>
         </div>
 
@@ -967,17 +1139,18 @@ export default function FringePage() {
         )}
 
         {visible.length === 0 ? (
-          <div className={s.empty}>Ingen shows matcher dit søgeord.</div>
+          <div className={s.empty}>Ingen shows matcher filteret.</div>
         ) : (
           <div className={s.showsList}>
             {visible.map((show) => {
-              const picks  = picksFor(show.id);
-              const mine   = myPick(show.id);
-              const canPick = !!(session.user && session.activeGroup);
+              const picks      = picksFor(show.id);
+              const mine       = myPick(show.id);
+              const canPick    = !!(session.user && session.activeGroup);
               const isPickerOpen = perfPicker?.showId === show.id;
-              const firstPerf = show.performances[0];
-              const metaParts = [
+              const firstPerf  = show.performances[0];
+              const metaParts  = [
                 show.genre,
+                AREA_LABELS[show.venue.area] !== "Andet" ? AREA_LABELS[show.venue.area] : null,
                 show.venue.name,
                 firstPerf
                   ? new Date(firstPerf.start).toLocaleDateString("da-DK", { day: "numeric", month: "short" }) +
@@ -1020,21 +1193,33 @@ export default function FringePage() {
                   {/* Performance picker */}
                   {isPickerOpen && (
                     <div className={s.perfPicker}>
-                      <p className={s.perfPickerLabel}>Vælg forestilling</p>
+                      <p className={s.perfPickerLabel}>Hvilken dag?</p>
                       <div className={s.perfList}>
                         {show.performances.map((perf) => {
                           const { dateStr, timeStr, meta } = formatPerf(perf);
+                          const friends = perfPicksFor(show.id, perf.start);
                           return (
                             <button
                               key={perf.start}
                               className={s.perfItem}
                               onClick={() => handleSelectPerformance(show, perf)}
                             >
-                              <span>
-                                <span className={s.perfItemTime}>{timeStr}</span>
-                                {" · "}{dateStr}
-                              </span>
-                              {meta && <span className={s.perfItemMeta}>{meta}</span>}
+                              <div className={s.perfItemMain}>
+                                <span>
+                                  <span className={s.perfItemTime}>{timeStr}</span>
+                                  {" · "}{dateStr}
+                                </span>
+                                {meta && <span className={s.perfItemMeta}>{meta}</span>}
+                              </div>
+                              {friends.length > 0 && (
+                                <div className={s.perfFriends}>
+                                  {friends.map((f) => (
+                                    <span key={f.name} className={`${s.perfFriendTag} ${STATUS_META[f.status].cls}`}>
+                                      {f.name} {STATUS_META[f.status].label.toLowerCase()}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
                             </button>
                           );
                         })}

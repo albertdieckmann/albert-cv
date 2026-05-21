@@ -1,5 +1,6 @@
-import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
+import { buildSignedUrl } from "@/lib/fringe-api";
+import { assignArea, type Area } from "@/lib/fringe-area";
 
 // ─── Fringe API types ──────────────────────────────────────────────────────────
 
@@ -50,7 +51,13 @@ export type Show = {
   descriptionTeaser?: string;
   website?: string;
   status?: string;
-  venue: { name: string; address?: string; lat?: number; lon?: number };
+  venue: {
+    name: string;
+    address?: string;
+    lat?: number;
+    lon?: number;
+    area: Area;
+  };
   performances: {
     start: string;
     end: string;
@@ -64,27 +71,6 @@ export type Show = {
   imageUrl?: string;
 };
 
-// ─── Auth ──────────────────────────────────────────────────────────────────────
-
-const API_BASE = "https://api.edinburghfestivalcity.com";
-
-function buildSignedUrl(path: string, params: Record<string, string>): string {
-  const key = process.env.FRINGE_API_KEY!;
-  const secret = process.env.FRINGE_API_SECRET!;
-
-  // Content params first, then key — signature excluded from the signed string
-  const allParams = { ...params, key };
-  const qs = Object.entries(allParams)
-    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-    .join("&");
-
-  const toSign = `${path}?${qs}`;
-  // API requires plain ASCII hex — not base64
-  const sig = createHmac("sha1", secret).update(toSign).digest("hex");
-
-  return `${API_BASE}${toSign}&signature=${sig}`;
-}
-
 // ─── Mapping ───────────────────────────────────────────────────────────────────
 
 function mapEvent(e: FringeEvent): Show {
@@ -92,6 +78,10 @@ function mapEvent(e: FringeEvent): Show {
   const hero = images.find((i) => i.type === "hero");
   const thumb = images.find((i) => i.type === "thumb");
   const imageUrl = (hero ?? thumb)?.original?.url;
+
+  const lat = e.venue?.position?.lat;
+  const lon = e.venue?.position?.lon;
+  const postcode = e.venue?.post_code;
 
   return {
     id: e.url,
@@ -108,8 +98,9 @@ function mapEvent(e: FringeEvent): Show {
     venue: {
       name: e.venue?.name ?? "Venue TBA",
       address: e.venue?.address,
-      lat: e.venue?.position?.lat,
-      lon: e.venue?.position?.lon,
+      lat,
+      lon,
+      area: assignArea(lat, lon, postcode),
     },
     performances: (e.performances ?? [])
       .map((p) => ({
