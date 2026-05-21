@@ -605,15 +605,11 @@
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* All tab panels hidden by default */
-  .tabPanel { display: none !important; }
+  /* Tab panel show/hide is controlled by JS inline styles (isMobile state).
+     No CSS class rules needed here — inline styles beat any class-based rule. */
 
-  /* Active tab panel always visible — !important beats the gruppePanel rule
-     AND beats the tabPanel rule; later source order breaks the !important tie */
-  .tabPanelActive { display: block !important; }
-
-  /* Tab bar pinned to viewport bottom — !important ensures position:fixed
-     cannot be overridden by any other rule */
+  /* Tab bar: position: fixed locks it to the viewport bottom regardless of
+     scroll position or page length */
   .tabBar {
     display: flex !important;
     position: fixed !important;

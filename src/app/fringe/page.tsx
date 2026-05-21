@@ -268,11 +268,8 @@ export default function FringePage() {
   const [editEndDate,    setEditEndDate]    = useState("");
 
   // Mobile tab navigation
-  const [activeTab, setActiveTab] = useState<TabId>(() => {
-    if (typeof window === "undefined") return "shows";
-    const p = new URLSearchParams(window.location.search).get("tab") as TabId | null;
-    return (p === "shows" || p === "plan" || p === "gruppe") ? p : "shows";
-  });
+  const [activeTab, setActiveTab] = useState<TabId>("shows");
+  const [isMobile,  setIsMobile]  = useState(false);
   const tabRefShows  = useRef<HTMLDivElement>(null);
   const tabRefPlan   = useRef<HTMLDivElement>(null);
   const tabRefGruppe = useRef<HTMLDivElement>(null);
@@ -355,6 +352,17 @@ export default function FringePage() {
       return g.endDate ? g.endDate.slice(0, 10) : "";
     });
   }, [session.activeGroup?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Detect mobile breakpoint + read initial tab from URL
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    const p = new URLSearchParams(window.location.search).get("tab") as TabId | null;
+    if (p === "shows" || p === "plan" || p === "gruppe") setActiveTab(p);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   // Close genre dropdown when clicking outside
   useEffect(() => {
@@ -1350,7 +1358,7 @@ export default function FringePage() {
       {/* ══════════════════ TAB PANEL: PLAN ══════════════════ */}
       <div
         ref={tabRefPlan}
-        className={`${s.tabPanel} ${activeTab === "plan" ? s.tabPanelActive : ""}`}
+        style={isMobile ? { display: activeTab === "plan" ? "block" : "none" } : undefined}
       >
         {/* ── Stats ── */}
         <div className={s.statsStrip}>
@@ -1516,7 +1524,7 @@ export default function FringePage() {
       {/* ══════════════════ TAB PANEL: SHOWS ══════════════════ */}
       <div
         ref={tabRefShows}
-        className={`${s.tabPanel} ${activeTab === "shows" ? s.tabPanelActive : ""}`}
+        style={isMobile ? { display: activeTab === "shows" ? "block" : "none" } : undefined}
       >
       {/* ── Shows list ── */}
       <section className={s.section}>
@@ -1784,10 +1792,11 @@ export default function FringePage() {
       </section>
       </div>{/* end Shows tab panel */}
 
-      {/* ══════════════════ TAB PANEL: GRUPPE (mobile only) ══════════════════ */}
+      {/* ══════════════════ TAB PANEL: GRUPPE (mobile only, overrides .gruppePanel) ══════════════════ */}
       <div
         ref={tabRefGruppe}
-        className={`${s.tabPanel} ${s.gruppePanel} ${activeTab === "gruppe" ? s.tabPanelActive : ""}`}
+        className={s.gruppePanel}
+        style={isMobile ? { display: activeTab === "gruppe" ? "block" : "none" } : undefined}
       >
         {gruppeContent}
       </div>
