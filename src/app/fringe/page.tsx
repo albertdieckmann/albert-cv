@@ -102,6 +102,11 @@ const STATUSES: PickStatus[] = ["interested", "going", "has_ticket"];
 
 const UI_KEY = "fringe-planner-ui-v2";
 
+// Edinburgh is always Europe/London (BST in summer, GMT in winter)
+const EDINBURGH_TZ = "Europe/London";
+const fmtEdinburgh = (iso: string, opts: Intl.DateTimeFormatOptions): string =>
+  new Date(iso).toLocaleString("da-DK", { ...opts, timeZone: EDINBURGH_TZ });
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function loadUi() {
@@ -145,9 +150,8 @@ async function api(path: string, options: RequestInit = {}) {
 }
 
 function formatPerf(perf: Performance): { dateStr: string; timeStr: string; meta: string } {
-  const start = new Date(perf.start);
-  const dateStr = start.toLocaleDateString("da-DK", { weekday: "short", day: "numeric", month: "short" });
-  const timeStr = start.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" });
+  const dateStr = fmtEdinburgh(perf.start, { weekday: "short", day: "numeric", month: "short" });
+  const timeStr = fmtEdinburgh(perf.start, { hour: "2-digit", minute: "2-digit" });
   const parts: string[] = [];
   if (perf.durationMinutes) parts.push(`${perf.durationMinutes} min`);
   if (perf.priceString) parts.push(perf.priceString);
@@ -1004,8 +1008,7 @@ export default function FringePage() {
     const sorted = allPicks.sort((a, b) => a.pick.performance_start!.localeCompare(b.pick.performance_start!));
 
     for (const { show, pick } of sorted) {
-      const date = new Date(pick.performance_start!);
-      const dayKey = date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" });
+      const dayKey = fmtEdinburgh(pick.performance_start!, { weekday: "long", day: "numeric", month: "long" });
       // Group same show on same day together (use show+day+perf as unique entry key)
       const entryKey = `${dayKey}::${show.id}::${pick.performance_start}`;
 
@@ -1225,7 +1228,7 @@ export default function FringePage() {
             <div className={s.purchaseList}>
               {session.activeGroup.purchases.map((purchase) => {
                 const perfDate = purchase.performance_start
-                  ? new Date(purchase.performance_start).toLocaleDateString("da-DK", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+                  ? fmtEdinburgh(purchase.performance_start, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
                   : null;
                 return (
                   <div key={purchase.id} className={s.purchaseCard}>
@@ -1450,7 +1453,7 @@ export default function FringePage() {
                 const repPick = picks[0];
                 const isInterested = repPick.status === "interested";
                 const timeStr = repPick.performance_start
-                  ? new Date(repPick.performance_start).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })
+                  ? fmtEdinburgh(repPick.performance_start, { hour: "2-digit", minute: "2-digit" })
                   : "TBA";
 
                 // Feature 3: collect per-pick conflicts; determine card-level severity
@@ -1521,7 +1524,7 @@ export default function FringePage() {
                             key={pick.user_id}
                             className={`${s.conflictBadge} ${entries[0].level === "hard" ? s.conflictHard : s.conflictSoft}`}
                             title={entries.map((e) => {
-                              const t = new Date(e.otherPerfStart).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" });
+                              const t = fmtEdinburgh(e.otherPerfStart, { hour: "2-digit", minute: "2-digit" });
                               return `${e.otherShowTitle} (${t})`;
                             }).join(", ")}
                           >
@@ -1558,7 +1561,7 @@ export default function FringePage() {
                             className={s.quickJoinBtn}
                             style={{ marginTop: "0.35rem" }}
                             onClick={() => handleQuickJoin(show, cardPerf)}
-                            title={`Tag med til ${new Date(cardPerf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                            title={`Tag med til ${fmtEdinburgh(cardPerf.start, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
                           >
                             + Tag med
                           </button>
@@ -1752,8 +1755,8 @@ export default function FringePage() {
                 AREA_LABELS[show.venue.area] !== "Andet" ? AREA_LABELS[show.venue.area] : null,
                 show.venue.name,
                 firstPerf
-                  ? new Date(firstPerf.start).toLocaleDateString("da-DK", { day: "numeric", month: "short" }) +
-                    " " + new Date(firstPerf.start).toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })
+                  ? fmtEdinburgh(firstPerf.start, { day: "numeric", month: "short" }) +
+                    " " + fmtEdinburgh(firstPerf.start, { hour: "2-digit", minute: "2-digit" })
                   : null,
                 firstPerf?.priceString ?? (firstPerf?.price != null ? `£${firstPerf.price}` : null),
               ].filter(Boolean);
@@ -1893,14 +1896,14 @@ export default function FringePage() {
                           <div className={s.quickJoinRow}>
                             {joinableList.map((perf) => {
                               const label = multiPerf
-                                ? `+ Tag med · ${new Date(perf.start).toLocaleString("da-DK", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`
+                                ? `+ Tag med · ${fmtEdinburgh(perf.start, { weekday: "short", hour: "2-digit", minute: "2-digit" })}`
                                 : "+ Tag med";
                               return (
                                 <button
                                   key={perf.start}
                                   className={s.quickJoinBtn}
                                   onClick={() => handleQuickJoin(show, perf)}
-                                  title={`Tag med til ${new Date(perf.start).toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                                  title={`Tag med til ${fmtEdinburgh(perf.start, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
                                 >
                                   {label}
                                 </button>
@@ -2036,14 +2039,14 @@ export default function FringePage() {
             </div>
             <p className={s.muted} style={{ margin: "0 0 0.5rem" }}>
               Du har valgt{" "}
-              {new Date(joinConfirm.currentPerfStart!).toLocaleString("da-DK", {
+              {fmtEdinburgh(joinConfirm.currentPerfStart!, {
                 weekday: "short", day: "numeric", month: "short",
                 hour: "2-digit", minute: "2-digit",
               })}
             </p>
             <p className={s.muted} style={{ margin: "0 0 1.25rem" }}>
               Vil du flytte til{" "}
-              {new Date(joinConfirm.perf.start).toLocaleString("da-DK", {
+              {fmtEdinburgh(joinConfirm.perf.start, {
                 weekday: "short", day: "numeric", month: "short",
                 hour: "2-digit", minute: "2-digit",
               })}?
