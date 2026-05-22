@@ -44,10 +44,13 @@ type SessionData = {
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
-const STATUS_META: Record<PickStatus, { label: string; emoji: string; btnCls: string }> = {
+const STATUS_META: Record<string, { label: string; emoji: string; btnCls: string }> = {
   interested: { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
   going:      { label: "Går",           emoji: "👍", btnCls: s.catGoing },
   has_ticket: { label: "Skal i pitten", emoji: "🕳️", btnCls: s.catHasTicket },
+  must:       { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
+  should:     { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
+  beer:       { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
 };
 
 const UI_KEY = "roskilde-friends-planner-ui-v1";
