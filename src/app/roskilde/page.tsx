@@ -44,6 +44,8 @@ type SessionData = {
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
+const PICK_STATUSES: PickStatus[] = ["interested", "going", "has_ticket"];
+
 const STATUS_META: Record<string, { label: string; emoji: string; btnCls: string }> = {
   interested: { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
   going:      { label: "Går",           emoji: "👍", btnCls: s.catGoing },
@@ -557,17 +559,20 @@ export default function RoskildePage() {
                       <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
                     </div>
                     <div className={s.catGrid}>
-                      {(Object.entries(STATUS_META) as [PickStatus, typeof STATUS_META[PickStatus]][]).map(([key, meta]) => (
-                        <button
-                          key={key}
-                          className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
-                          onClick={() => handlePick(act.name, key)}
-                          disabled={!canPick}
-                          title={meta.label}
-                        >
-                          {meta.emoji}
-                        </button>
-                      ))}
+                      {PICK_STATUSES.map((key) => {
+                        const meta = STATUS_META[key];
+                        return (
+                          <button
+                            key={key}
+                            className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                            onClick={() => handlePick(act.name, key)}
+                            disabled={!canPick}
+                            title={meta.label}
+                          >
+                            {meta.emoji}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                   {picks.length > 0 && (
