@@ -7,7 +7,7 @@ import s from "./roskilde.module.css";
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
-type Category = "must" | "should" | "beer";
+type PickStatus = "interested" | "going" | "has_ticket";
 
 type Act = {
   name: string;
@@ -24,7 +24,7 @@ type Pick = {
   user_id: string;
   user_name: string;
   act_name: string;
-  category: Category;
+  category: PickStatus;
 };
 
 type Member = { id: string; name: string; role: string };
@@ -44,10 +44,10 @@ type SessionData = {
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
-const CATEGORY_META: Record<Category, { label: string; weight: number; cls: string }> = {
-  must:   { label: "Must see",     weight: 3, cls: s.catMust },
-  should: { label: "Skal nok se",  weight: 2, cls: s.catShould },
-  beer:   { label: "Fadøl-mode",   weight: 1, cls: s.catBeer },
+const STATUS_META: Record<PickStatus, { label: string; emoji: string; btnCls: string }> = {
+  interested: { label: "Interesseret",  emoji: "🍺", btnCls: s.catInterested },
+  going:      { label: "Går",           emoji: "👍", btnCls: s.catGoing },
+  has_ticket: { label: "Skal i pitten", emoji: "🕳️", btnCls: s.catHasTicket },
 };
 
 const UI_KEY = "roskilde-friends-planner-ui-v1";
@@ -233,7 +233,7 @@ export default function RoskildePage() {
     await run(() => fetchSession(id));
   }
 
-  async function handlePick(actName: string, category: Category) {
+  async function handlePick(actName: string, status: PickStatus) {
     if (!session.activeGroup || !session.user) return;
     const current = session.activeGroup.picks.find(
       (p) => p.act_name === actName && p.user_id === session.user!.id
@@ -244,7 +244,7 @@ export default function RoskildePage() {
         body: JSON.stringify({
           groupId: session.activeGroup!.id,
           actName,
-          category: current === category ? null : category,
+          category: current === status ? null : status,
         }),
       });
       await fetchSession();
@@ -253,7 +253,7 @@ export default function RoskildePage() {
 
   // ── derived ────────────────────────────────────────────────────────────────
 
-  function myPick(actName: string): Category | null {
+  function myPick(actName: string): PickStatus | null {
     if (!session.user || !session.activeGroup) return null;
     return session.activeGroup.picks.find(
       (p) => p.act_name === actName && p.user_id === session.user!.id
@@ -275,24 +275,20 @@ export default function RoskildePage() {
     });
   }
 
-  function timelineGroups(): [string, (Act & { picks: Pick[]; score: number })[]][] {
+  function timelineGroups(): [string, (Act & { picks: Pick[] })[]][] {
     const picksMap = new Map<string, Pick[]>();
     for (const p of session.activeGroup?.picks ?? []) {
       picksMap.set(p.act_name, [...(picksMap.get(p.act_name) ?? []), p]);
     }
     const selected = lineup
       .filter((a) => picksMap.has(a.name))
-      .map((a) => {
-        const picks = picksMap.get(a.name)!;
-        const score = picks.reduce((sum, p) => sum + CATEGORY_META[p.category].weight, 0);
-        return { ...a, picks, score };
-      })
+      .map((a) => ({ ...a, picks: picksMap.get(a.name)! }))
       .sort((a, b) => {
         const da = a.date ?? "9999", db = b.date ?? "9999";
         if (da !== db) return da.localeCompare(db);
         const ta = a.timeLabel ?? "99:99", tb = b.timeLabel ?? "99:99";
         if (ta !== tb) return ta.localeCompare(tb);
-        return b.score - a.score || a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name);
       });
 
     const groups = new Map<string, typeof selected>();
@@ -500,12 +496,11 @@ export default function RoskildePage() {
                         <p className={s.actMeta}>{item.type ?? "Act"}</p>
                         <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
                       </div>
-                      <span className={s.scoreTag}>{item.score} pt</span>
                     </div>
                     <div className={s.pickTags}>
                       {item.picks.map((p) => (
-                        <span key={p.user_id} className={`${s.tag} ${CATEGORY_META[p.category].cls}`}>
-                          {p.user_name}: {CATEGORY_META[p.category].label}
+                        <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
+                          {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
                         </span>
                       ))}
                     </div>
@@ -559,15 +554,15 @@ export default function RoskildePage() {
                       <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
                     </div>
                     <div className={s.catGrid}>
-                      {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
+                      {(Object.entries(STATUS_META) as [PickStatus, typeof STATUS_META[PickStatus]][]).map(([key, meta]) => (
                         <button
                           key={key}
-                          className={`${s.catBtn} ${meta.cls} ${mine === key ? s.catBtnActive : ""}`}
+                          className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
                           onClick={() => handlePick(act.name, key)}
                           disabled={!canPick}
                           title={meta.label}
                         >
-                          {mine === key ? "✓" : key === "must" ? "★" : key === "should" ? "◎" : "⌀"}
+                          {meta.emoji}
                         </button>
                       ))}
                     </div>
@@ -575,8 +570,8 @@ export default function RoskildePage() {
                   {picks.length > 0 && (
                     <div className={s.pickTags}>
                       {picks.map((p) => (
-                        <span key={p.user_id} className={`${s.tag} ${CATEGORY_META[p.category].cls}`}>
-                          {p.user_name}: {CATEGORY_META[p.category].label}
+                        <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
+                          {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
                         </span>
                       ))}
                     </div>

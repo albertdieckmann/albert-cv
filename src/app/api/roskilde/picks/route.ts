@@ -8,6 +8,8 @@ export async function POST(req: NextRequest) {
 
   const { groupId, actName, category } = await req.json();
   if (!groupId || !actName) return NextResponse.json({ error: "Manglende felter" }, { status: 400 });
+  const VALID = ["interested", "going", "has_ticket"];
+  if (category && !VALID.includes(category)) return NextResponse.json({ error: "Ugyldig kategori" }, { status: 400 });
 
   const memberCheck = await sql`
     SELECT user_name FROM roskilde_group_members
