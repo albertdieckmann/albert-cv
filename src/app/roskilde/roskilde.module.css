@@ -625,6 +625,23 @@
 .catBtnActive.catGoing      { background: #16c172; color: #fff; border-color: #16c172; }
 .catBtnActive.catHasTicket  { background: #4b9cf5; color: #fff; border-color: #4b9cf5; }
 
+.hasConflictHard { border-color: #ef4444 !important; }
+.hasConflictSoft { border-color: #f59e0b !important; }
+
+.conflictBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 0.4rem;
+  cursor: default;
+}
+.conflictHard { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.conflictSoft { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+
 .pickTags {
   display: flex;
   flex-wrap: wrap;

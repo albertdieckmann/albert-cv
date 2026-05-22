@@ -28,6 +28,10 @@ type Pick = {
   category: PickStatus;
 };
 
+type EnrichedPick = Pick & { act_start: string | null; act_end: string | null };
+type ConflictLevel = "hard" | "soft";
+type ConflictEntry = { level: ConflictLevel; otherActName: string; otherActStart: string };
+
 type Member = { id: string; name: string; role: string };
 type Group = { id: number; name: string };
 type ActiveGroup = {
@@ -76,6 +80,63 @@ function loadUi() {
 
 function saveUi(patch: Partial<{ search: string; selectedOnly: boolean; activeGroupId: number | null }>) {
   localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch }));
+}
+
+function enrichPicks(picks: Pick[], acts: Act[]): EnrichedPick[] {
+  const actMap = new Map(acts.map((a) => [a.name, a]));
+  return picks.map((p) => {
+    const act = actMap.get(p.act_name);
+    const start = act?.date ?? null;
+    let end: string | null = null;
+    if (start) {
+      const d = new Date(start);
+      d.setMinutes(d.getMinutes() + 90);
+      end = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:00`;
+    }
+    return { ...p, act_start: start, act_end: end };
+  });
+}
+
+function conflictKey(userId: string, actName: string) {
+  return `${userId}::${actName}`;
+}
+
+function computeConflicts(picks: EnrichedPick[]): Map<string, ConflictEntry[]> {
+  const byUser = new Map<string, EnrichedPick[]>();
+  for (const p of picks) {
+    if (p.act_start && p.act_end) {
+      const list = byUser.get(p.user_id) ?? [];
+      list.push(p);
+      byUser.set(p.user_id, list);
+    }
+  }
+
+  const result = new Map<string, ConflictEntry[]>();
+
+  function addConflict(pick: EnrichedPick, other: EnrichedPick, level: ConflictLevel) {
+    const key = conflictKey(pick.user_id, pick.act_name);
+    const list = result.get(key) ?? [];
+    list.push({ level, otherActName: other.act_name, otherActStart: other.act_start! });
+    result.set(key, list);
+  }
+
+  for (const [, userPicks] of byUser) {
+    const sorted = [...userPicks].sort((a, b) => a.act_start!.localeCompare(b.act_start!));
+    for (let i = 0; i < sorted.length; i++) {
+      for (let j = i + 1; j < sorted.length; j++) {
+        const a = sorted[i], b = sorted[j];
+        if (!(a.act_start! < b.act_end! && a.act_end! > b.act_start!)) continue;
+        const aCommitted = a.category === "going" || a.category === "has_ticket";
+        const bCommitted = b.category === "going" || b.category === "has_ticket";
+        if (aCommitted && bCommitted) {
+          addConflict(a, b, "hard"); addConflict(b, a, "hard");
+        } else if (aCommitted || bCommitted) {
+          addConflict(a, b, "soft"); addConflict(b, a, "soft");
+        }
+      }
+    }
+  }
+  return result;
 }
 
 async function api(path: string, options: RequestInit = {}) {
@@ -358,9 +419,11 @@ export default function RoskildePage() {
     );
   }
 
-  const acts    = visibleActs();
-  const tGroups = timelineGroups();
-  const tCount  = tGroups.reduce((n, [, items]) => n + items.length, 0);
+  const acts           = visibleActs();
+  const tGroups        = timelineGroups();
+  const tCount         = tGroups.reduce((n, [, items]) => n + items.length, 0);
+  const enrichedPicks  = enrichPicks(session.activeGroup?.picks ?? [], lineup);
+  const conflicts      = computeConflicts(enrichedPicks);
 
   // ── shared drawer / gruppe-tab content ─────────────────────────────────────
 
@@ -538,27 +601,52 @@ export default function RoskildePage() {
                   <span className={s.dayTag}>Dag</span>
                   <h3 className={s.dayTitle}>{day}</h3>
                 </div>
-                {items.map((item) => (
-                  <article key={item.name} className={s.timelineCard}>
-                    <div className={s.timeSlot}>{item.timeLabel ?? "TBA"}</div>
-                    <div className={s.timelineBody}>
-                      <div className={s.timelineTop}>
-                        <div>
-                          <h4 className={s.actName}>{item.name}</h4>
-                          <p className={s.actMeta}>{item.type ?? "Act"}</p>
-                          <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
+                {items.map((item) => {
+                  const pickConflicts = item.picks.map((p) => ({
+                    pick: p,
+                    entries: conflicts.get(conflictKey(p.user_id, p.act_name)) ?? [],
+                  }));
+                  const hasHard = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "hard"));
+                  const hasSoft = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "soft"));
+                  return (
+                    <article
+                      key={item.name}
+                      className={[s.timelineCard, hasHard ? s.hasConflictHard : hasSoft ? s.hasConflictSoft : ""].join(" ")}
+                    >
+                      <div className={s.timeSlot}>{item.timeLabel ?? "TBA"}</div>
+                      <div className={s.timelineBody}>
+                        <div className={s.timelineTop}>
+                          <div>
+                            <h4 className={s.actName}>{item.name}</h4>
+                            <p className={s.actMeta}>{item.type ?? "Act"}</p>
+                            <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
+                          </div>
+                        </div>
+                        {pickConflicts.map(({ pick, entries }) =>
+                          entries.length > 0 ? (
+                            <div
+                              key={pick.user_id}
+                              className={`${s.conflictBadge} ${entries[0].level === "hard" ? s.conflictHard : s.conflictSoft}`}
+                            >
+                              {entries[0].level === "hard" ? "⚠" : "⚡"}{" "}
+                              {pick.user_name}:{" "}
+                              {entries.length === 1
+                                ? `overlapper med "${entries[0].otherActName}"`
+                                : `${entries.length} overlap`}
+                            </div>
+                          ) : null
+                        )}
+                        <div className={s.pickTags}>
+                          {item.picks.map((p) => (
+                            <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
+                              {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                      <div className={s.pickTags}>
-                        {item.picks.map((p) => (
-                          <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
-                            {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  );
+                })}
               </div>
             ))
           )}
