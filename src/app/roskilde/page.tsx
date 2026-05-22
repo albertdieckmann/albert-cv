@@ -8,6 +8,7 @@ import s from "./roskilde.module.css";
 // ─── types ────────────────────────────────────────────────────────────────────
 
 type PickStatus = "interested" | "going" | "has_ticket";
+type TabId = "lineup" | "tidsplan" | "gruppe";
 
 type Act = {
   name: string;
@@ -105,6 +106,11 @@ export default function RoskildePage() {
   const [ready,        setReady]        = useState(false);
   const [drawerOpen,   setDrawerOpen]   = useState(false);
 
+  // Mobile tab navigation
+  const [activeTab, setActiveTab] = useState<TabId>("lineup");
+  const [isMobile,  setIsMobile]  = useState(false);
+  const savedScrolls = useRef<Record<TabId, number>>({ lineup: 0, tidsplan: 0, gruppe: 0 });
+
   const activeGroupIdRef = useRef<number | null>(null);
   const statusTimer      = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -148,6 +154,27 @@ export default function RoskildePage() {
     fetchSession(ui.activeGroupId).finally(() => setReady(true));
   }, [isLoaded, isSignedIn, fetchSession]);
 
+  // ── mobile breakpoint + URL-param ─────────────────────────────────────────
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    const p = new URLSearchParams(window.location.search).get("tab") as TabId | null;
+    if (p === "lineup" || p === "tidsplan" || p === "gruppe") setActiveTab(p);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // ── scroll-restore efter tab-skift ────────────────────────────────────────
+
+  useEffect(() => {
+    const saved = savedScrolls.current[activeTab];
+    requestAnimationFrame(() => {
+      window.scrollTo(0, saved);
+    });
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── busy wrapper ───────────────────────────────────────────────────────────
 
   async function run(task: () => Promise<void>) {
@@ -159,6 +186,16 @@ export default function RoskildePage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  // ── tab navigation ─────────────────────────────────────────────────────────
+
+  function switchTab(tab: TabId) {
+    savedScrolls.current[activeTab] = window.scrollY;
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", tab);
+    window.history.replaceState(null, "", url.toString());
+    setActiveTab(tab);
   }
 
   // ── handlers ───────────────────────────────────────────────────────────────
@@ -325,6 +362,109 @@ export default function RoskildePage() {
   const tGroups = timelineGroups();
   const tCount  = tGroups.reduce((n, [, items]) => n + items.length, 0);
 
+  // ── shared drawer / gruppe-tab content ─────────────────────────────────────
+
+  const gruppeContent = (
+    <>
+      {/* Profil */}
+      <div className={s.drawerSection}>
+        <p className={s.sectionTag}>Profil</p>
+        {!isSignedIn ? (
+          <div className={s.authCard}>
+            <p className={s.muted}>Log ind for at markere favoritter og dele med venner.</p>
+            <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/roskilde" }); }}>
+              Log ind eller opret profil
+            </button>
+          </div>
+        ) : (
+          <div className={s.identityCard}>
+            <div>
+              <p className={s.identityName}>{session.user?.name}</p>
+              <p className={s.identityEmail}>{session.user?.email}</p>
+            </div>
+            <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/roskilde" })}>Log ud</button>
+          </div>
+        )}
+      </div>
+
+      {/* Gruppe */}
+      {isSignedIn && (
+        <div className={s.drawerSection}>
+          <p className={s.sectionTag}>Gruppe</p>
+
+          {session.groups.length > 0 && (
+            <div className={s.groupSwitcher}>
+              {session.groups.map((g) => (
+                <button
+                  key={g.id}
+                  className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
+                  onClick={() => handleSwitchGroup(g.id)}
+                >
+                  {g.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {session.activeGroup && (
+            <>
+              <div className={s.memberList}>
+                {session.activeGroup.members.map((m) => (
+                  <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
+                    <span>{m.name}</span>
+                    <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
+                  </div>
+                ))}
+              </div>
+              <div className={s.inviteBar}>
+                <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
+                  <button type="submit" className={s.ghostBtn}>Ny invite-kode</button>
+                </form>
+                {session.activeGroup.invites[0] && (
+                  <button className={s.ghostBtn} onClick={handleCopyInvite}>
+                    Kopiér kode ({session.activeGroup.invites[0].code})
+                  </button>
+                )}
+              </div>
+              {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
+                <button className={s.deleteBtn} onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                  Slet gruppe
+                </button>
+              ) : (
+                <button className={s.deleteBtn} onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}>
+                  Forlad gruppe
+                </button>
+              )}
+            </>
+          )}
+
+          <details className={s.details}>
+            <summary className={s.detailsSummary}>
+              {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
+            </summary>
+            <div className={s.detailsBody}>
+              <form onSubmit={handleCreateGroup} className={s.stackForm}>
+                <label className={s.fieldWrap}>
+                  <span className={s.fieldLabel}>Gruppenavn</span>
+                  <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Roskilde-gæng 2026" maxLength={50} required />
+                </label>
+                <button type="submit" className={s.primaryBtn}>Opret gruppe</button>
+              </form>
+              <div className={s.orDivider}><span>eller</span></div>
+              <form onSubmit={handleJoinGroup} className={s.stackForm}>
+                <label className={s.fieldWrap}>
+                  <span className={s.fieldLabel}>Invite-kode</span>
+                  <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
+                </label>
+                <button type="submit" className={s.ghostBtn}>Join gruppe</button>
+              </form>
+            </div>
+          </details>
+        </div>
+      )}
+    </>
+  );
+
   // ── render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -340,7 +480,7 @@ export default function RoskildePage() {
         <div className={s.headerActions}>
           <button className={s.iconBtn} onClick={() => run(fetchSession)} aria-label="Opdatér" title="Opdatér">↻</button>
           <button
-            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""}`}
+            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""} ${s.desktopOnly}`}
             onClick={() => setDrawerOpen(v => !v)}
             aria-label="Profil og gruppe"
             title="Profil og gruppe"
@@ -350,248 +490,214 @@ export default function RoskildePage() {
         </div>
       </header>
 
-      {/* ── drawer overlay ── */}
+      {/* ── drawer overlay (desktop only) ── */}
       {drawerOpen && (
-        <div className={s.drawerOverlay} onClick={() => setDrawerOpen(false)} />
+        <div className={`${s.drawerOverlay} ${s.desktopOnly}`} onClick={() => setDrawerOpen(false)} />
       )}
 
-      {/* ── drawer panel ── */}
-      <aside className={`${s.drawer} ${drawerOpen ? s.drawerOpen : ""}`}>
+      {/* ── drawer panel (desktop only) ── */}
+      <aside className={`${s.drawer} ${drawerOpen ? s.drawerOpen : ""} ${s.desktopOnly}`}>
         <div className={s.drawerHeader}>
           <span className={s.drawerTitle}>Profil & Gruppe</span>
           <button className={s.iconBtn} onClick={() => setDrawerOpen(false)} aria-label="Luk">✕</button>
         </div>
-
-        {/* Profil */}
-        <div className={s.drawerSection}>
-          <p className={s.sectionTag}>Profil</p>
-          {!isSignedIn ? (
-            <div className={s.authCard}>
-              <p className={s.muted}>Log ind for at markere favoritter og dele med venner.</p>
-              <button className={s.primaryBtn} onClick={() => { setDrawerOpen(false); openSignIn({ fallbackRedirectUrl: "/roskilde" }); }}>
-                Log ind eller opret profil
-              </button>
-            </div>
-          ) : (
-            <div className={s.identityCard}>
-              <div>
-                <p className={s.identityName}>{session.user?.name}</p>
-                <p className={s.identityEmail}>{session.user?.email}</p>
-              </div>
-              <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/roskilde" })}>Log ud</button>
-            </div>
-          )}
-        </div>
-
-        {/* Gruppe */}
-        {isSignedIn && (
-          <div className={s.drawerSection}>
-            <p className={s.sectionTag}>Gruppe</p>
-
-            {session.groups.length > 0 && (
-              <div className={s.groupSwitcher}>
-                {session.groups.map((g) => (
-                  <button
-                    key={g.id}
-                    className={`${s.groupChip} ${g.id === session.activeGroup?.id ? s.active : ""}`}
-                    onClick={() => handleSwitchGroup(g.id)}
-                  >
-                    {g.name}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {session.activeGroup && (
-              <>
-                <div className={s.memberList}>
-                  {session.activeGroup.members.map((m) => (
-                    <div key={m.id} className={`${s.friendChip} ${m.id === session.user?.id ? s.active : ""}`}>
-                      <span>{m.name}</span>
-                      <small>{m.role === "owner" ? "Oprettede gruppen" : "Medlem"}</small>
-                    </div>
-                  ))}
-                </div>
-                <div className={s.inviteBar}>
-                  <form onSubmit={handleCreateInvite} style={{ display: "contents" }}>
-                    <button type="submit" className={s.ghostBtn}>Ny invite-kode</button>
-                  </form>
-                  {session.activeGroup.invites[0] && (
-                    <button className={s.ghostBtn} onClick={handleCopyInvite}>
-                      Kopiér kode ({session.activeGroup.invites[0].code})
-                    </button>
-                  )}
-                </div>
-                {session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner" ? (
-                  <button className={s.deleteBtn} onClick={() => handleDeleteGroup(session.activeGroup!.id, session.activeGroup!.name)}>
-                    Slet gruppe
-                  </button>
-                ) : (
-                  <button className={s.deleteBtn} onClick={() => handleLeaveGroup(session.activeGroup!.id, session.activeGroup!.name)}>
-                    Forlad gruppe
-                  </button>
-                )}
-              </>
-            )}
-
-            <details className={s.details}>
-              <summary className={s.detailsSummary}>
-                {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
-              </summary>
-              <div className={s.detailsBody}>
-                <form onSubmit={handleCreateGroup} className={s.stackForm}>
-                  <label className={s.fieldWrap}>
-                    <span className={s.fieldLabel}>Gruppenavn</span>
-                    <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Roskilde-gæng 2026" maxLength={50} required />
-                  </label>
-                  <button type="submit" className={s.primaryBtn}>Opret gruppe</button>
-                </form>
-                <div className={s.orDivider}><span>eller</span></div>
-                <form onSubmit={handleJoinGroup} className={s.stackForm}>
-                  <label className={s.fieldWrap}>
-                    <span className={s.fieldLabel}>Invite-kode</span>
-                    <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
-                  </label>
-                  <button type="submit" className={s.ghostBtn}>Join gruppe</button>
-                </form>
-              </div>
-            </details>
-          </div>
-        )}
+        {gruppeContent}
       </aside>
 
-      {/* ── stats ── */}
-      <div className={s.statsStrip}>
-        {[
-          { label: "Logget ind som", value: session.user?.name ?? "Gæst" },
-          { label: "Aktiv gruppe",   value: session.activeGroup?.name ?? "—" },
-          { label: "Valgte acts",    value: tCount },
-          { label: "I line-up",      value: lineup.length },
-        ].map(({ label, value }) => (
-          <div key={label} className={s.statCard}>
-            <span className={s.statLabel}>{label}</span>
-            <span className={s.statValue}>{String(value)}</span>
-          </div>
-        ))}
-      </div>
+      {/* ══════════════════ TAB PANEL: TIDSPLAN ══════════════════ */}
+      <div style={isMobile ? { display: activeTab === "tidsplan" ? "block" : "none" } : undefined}>
 
-      {/* ── tidsplan ── */}
-      <section className={s.section}>
-        <p className={s.sectionTag}>Tidsplan</p>
-        {tGroups.length === 0 ? (
-          <div className={s.empty}>
-            {session.activeGroup
-              ? "Marker acts i line-up herunder — de samles her som en kronologisk tidsplan."
-              : "Log ind og opret en gruppe for at bygge jeres tidsplan."}
-          </div>
-        ) : (
-          tGroups.map(([day, items]) => (
-            <div key={day} className={s.dayBlock}>
-              <div className={s.dayHeader}>
-                <span className={s.dayTag}>Dag</span>
-                <h3 className={s.dayTitle}>{day}</h3>
-              </div>
-              {items.map((item) => (
-                <article key={item.name} className={s.timelineCard}>
-                  <div className={s.timeSlot}>{item.timeLabel ?? "TBA"}</div>
-                  <div className={s.timelineBody}>
-                    <div className={s.timelineTop}>
-                      <div>
-                        <h4 className={s.actName}>{item.name}</h4>
-                        <p className={s.actMeta}>{item.type ?? "Act"}</p>
-                        <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
-                      </div>
-                    </div>
-                    <div className={s.pickTags}>
-                      {item.picks.map((p) => (
-                        <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
-                          {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </article>
-              ))}
+        {/* ── stats ── */}
+        <div className={s.statsStrip}>
+          {[
+            { label: "Logget ind som", value: session.user?.name ?? "Gæst" },
+            { label: "Aktiv gruppe",   value: session.activeGroup?.name ?? "—" },
+            { label: "Valgte acts",    value: tCount },
+            { label: "I line-up",      value: lineup.length },
+          ].map(({ label, value }) => (
+            <div key={label} className={s.statCard}>
+              <span className={s.statLabel}>{label}</span>
+              <span className={s.statValue}>{String(value)}</span>
             </div>
-          ))
-        )}
-      </section>
-
-      {/* ── line-up ── */}
-      <section className={s.section}>
-        <p className={s.sectionTag}>Line-up · {lineup.length} acts</p>
-
-        <div className={s.filterBar}>
-          <input
-            type="search"
-            className={s.searchInput}
-            placeholder="Søg i line-up…"
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
-          />
-          <label className={s.toggleRow}>
-            <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
-            <span>Vis kun valgte</span>
-          </label>
+          ))}
         </div>
 
-        {!session.activeGroup && (
-          <p className={s.hint}>
-            {session.user ? "Opret eller join en gruppe for at markere favoritter →" : "Log ind for at markere favoritter →"}
-            <button className={s.hintBtn} onClick={() => setDrawerOpen(true)}>Åbn profil</button>
-          </p>
-        )}
+        {/* ── tidsplan ── */}
+        <section className={s.section}>
+          <p className={s.sectionTag}>Tidsplan</p>
+          {tGroups.length === 0 ? (
+            <div className={s.empty}>
+              {session.activeGroup
+                ? "Marker acts i line-up herunder — de samles her som en kronologisk tidsplan."
+                : "Log ind og opret en gruppe for at bygge jeres tidsplan."}
+            </div>
+          ) : (
+            tGroups.map(([day, items]) => (
+              <div key={day} className={s.dayBlock}>
+                <div className={s.dayHeader}>
+                  <span className={s.dayTag}>Dag</span>
+                  <h3 className={s.dayTitle}>{day}</h3>
+                </div>
+                {items.map((item) => (
+                  <article key={item.name} className={s.timelineCard}>
+                    <div className={s.timeSlot}>{item.timeLabel ?? "TBA"}</div>
+                    <div className={s.timelineBody}>
+                      <div className={s.timelineTop}>
+                        <div>
+                          <h4 className={s.actName}>{item.name}</h4>
+                          <p className={s.actMeta}>{item.type ?? "Act"}</p>
+                          <p className={s.actMeta}>{[item.stage, item.showTitle].filter(Boolean).join(" · ") || "Scene ikke offentliggjort endnu"}</p>
+                        </div>
+                      </div>
+                      <div className={s.pickTags}>
+                        {item.picks.map((p) => (
+                          <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
+                            {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ))
+          )}
+        </section>
+      </div>{/* end tidsplan tab panel */}
 
-        {acts.length === 0 ? (
-          <div className={s.empty}>Ingen acts matcher dit søgeord.</div>
-        ) : (
-          <div className={s.actsList}>
-            {acts.map((act) => {
-              const picks = picksFor(act.name);
-              const mine  = myPick(act.name);
-              const canPick = !!(session.user && session.activeGroup);
+      {/* ══════════════════ TAB PANEL: LINEUP ══════════════════ */}
+      <div style={isMobile ? { display: activeTab === "lineup" ? "block" : "none" } : undefined}>
+        <section className={s.section}>
+          <p className={s.sectionTag}>Line-up · {lineup.length} acts</p>
 
-              return (
-                <article key={act.name} className={s.actCard}>
-                  <div className={s.actTop}>
-                    <div className={s.actInfo}>
-                      <h3 className={s.actName}>{act.name}</h3>
-                      <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
-                    </div>
-                    <div className={s.catGrid}>
-                      {PICK_STATUSES.map((key) => {
-                        const meta = STATUS_META[key];
-                        return (
-                          <button
-                            key={key}
-                            className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
-                            onClick={() => handlePick(act.name, key)}
-                            disabled={!canPick}
-                            title={meta.label}
-                          >
-                            {meta.emoji}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {picks.length > 0 && (
-                    <div className={s.pickTags}>
-                      {picks.map((p) => (
-                        <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
-                          {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </article>
-              );
-            })}
+          <div className={s.filterBar}>
+            <input
+              type="search"
+              className={s.searchInput}
+              placeholder="Søg i line-up…"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); saveUi({ search: e.target.value }); }}
+            />
+            <label className={s.toggleRow}>
+              <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
+              <span>Vis kun valgte</span>
+            </label>
           </div>
-        )}
-      </section>
 
-      <footer className={s.footer}>
+          {!session.activeGroup && (
+            <p className={s.hint}>
+              {session.user ? "Opret eller join en gruppe for at markere favoritter →" : "Log ind for at markere favoritter →"}
+              <button
+                className={s.hintBtn}
+                onClick={() => {
+                  if (typeof window !== "undefined" && window.innerWidth < 768) {
+                    switchTab("gruppe");
+                  } else {
+                    setDrawerOpen(true);
+                  }
+                }}
+              >Åbn profil</button>
+            </p>
+          )}
+
+          {acts.length === 0 ? (
+            <div className={s.empty}>Ingen acts matcher dit søgeord.</div>
+          ) : (
+            <div className={s.actsList}>
+              {acts.map((act) => {
+                const picks   = picksFor(act.name);
+                const mine    = myPick(act.name);
+                const canPick = !!(session.user && session.activeGroup);
+
+                return (
+                  <article key={act.name} className={s.actCard}>
+                    <div className={s.actTop}>
+                      <div className={s.actInfo}>
+                        <h3 className={s.actName}>{act.name}</h3>
+                        <p className={s.actMeta}>{act.type ?? "Act"} · {schedule(act)}</p>
+                      </div>
+                      <div className={s.catGrid}>
+                        {PICK_STATUSES.map((key) => {
+                          const meta = STATUS_META[key];
+                          return (
+                            <button
+                              key={key}
+                              className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                              onClick={() => handlePick(act.name, key)}
+                              disabled={!canPick}
+                              title={meta.label}
+                            >
+                              {meta.emoji}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {picks.length > 0 && (
+                      <div className={s.pickTags}>
+                        {picks.map((p) => (
+                          <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.category].btnCls}`}>
+                            {STATUS_META[p.category].emoji} {p.user_name}: {STATUS_META[p.category].label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>{/* end lineup tab panel */}
+
+      {/* ══════════════════ TAB PANEL: GRUPPE (mobil) ══════════════════ */}
+      <div
+        className={s.gruppePanel}
+        style={isMobile ? { display: activeTab === "gruppe" ? "block" : "none" } : undefined}
+      >
+        {gruppeContent}
+      </div>
+
+      {/* ══════════════════ MOBIL TAB BAR ══════════════════ */}
+      <div className={s.tabBar} role="navigation" aria-label="Navigation">
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "lineup" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("lineup")}
+          aria-label="Line-up"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          <span className={s.tabBarLabel}>Line-up</span>
+        </button>
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "tidsplan" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("tidsplan")}
+          aria-label="Tidsplan"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span className={s.tabBarLabel}>Tidsplan</span>
+        </button>
+        <button
+          className={`${s.tabBarBtn} ${activeTab === "gruppe" ? s.tabBarBtnActive : ""}`}
+          onClick={() => switchTab("gruppe")}
+          aria-label="Gruppe"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span className={s.tabBarLabel}>Gruppe</span>
+        </button>
+      </div>
+
+      <footer className={`${s.footer} ${s.desktopOnly}`}>
         <span>Roskilde Venneplanner · albertdieckmann.dk</span>
         <Link href="/" className={s.footerLink}>← Tilbage</Link>
       </footer>
