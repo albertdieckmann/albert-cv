@@ -1714,14 +1714,24 @@ export default function FringePage() {
             );
           })()}
 
-          <label className={s.toggleRow}>
-            <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />
-            <span>Kun mine</span>
-          </label>
-          <label className={s.toggleRow}>
-            <input type="checkbox" checked={hideInterested} onChange={(e) => setHideInterested(e.target.checked)} />
-            <span>Kun besluttet</span>
-          </label>
+          {/* Vis chips row */}
+          <div className={s.filterDimension}>
+            <span className={s.filterDimLabel}>Vis</span>
+            <div className={s.filterChipScroll}>
+              <button
+                className={`${s.filterChip} ${selectedOnly ? s.active : ""}`}
+                onClick={() => { setSelectedOnly(!selectedOnly); saveUi({ selectedOnly: !selectedOnly }); }}
+              >
+                Kun mine
+              </button>
+              <button
+                className={`${s.filterChip} ${hideInterested ? s.active : ""}`}
+                onClick={() => setHideInterested(!hideInterested)}
+              >
+                Kun besluttet
+              </button>
+            </div>
+          </div>
         </div>
 
         {!session.activeGroup && (
