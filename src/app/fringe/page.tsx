@@ -277,6 +277,10 @@ export default function FringePage() {
   const tabRefGruppe = useRef<HTMLDivElement>(null);
   const savedScrolls = useRef<Record<TabId, number>>({ shows: 0, plan: 0, gruppe: 0 });
 
+  // Day strip
+  const dayStripRef     = useRef<HTMLDivElement>(null);
+  const dayStripScrolled = useRef(false);
+
   // Purchase form
   const [purchaseForm, setPurchaseForm] = useState<{
     showId: string;
@@ -384,6 +388,20 @@ export default function FringePage() {
     });
   }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-scroll day strip to first selected day (or today) when shows populate
+  useEffect(() => {
+    if (dayStripScrolled.current) return;
+    const strip = dayStripRef.current;
+    if (!strip) return;
+    const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/London" });
+    const target = dateFrom || today;
+    const btn = strip.querySelector<HTMLElement>(`[data-day="${target}"]`);
+    if (btn) {
+      btn.scrollIntoView({ inline: "center", behavior: "instant", block: "nearest" });
+      dayStripScrolled.current = true;
+    }
+  }, [shows.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── Busy wrapper ───────────────────────────────────────────────────────────
 
   async function run(task: () => Promise<void>) {
@@ -474,6 +492,23 @@ export default function FringePage() {
     setDateTo("");
     saveUi({ dateFrom: "", dateTo: "" });
     await run(() => fetchSession(id));
+  }
+
+  function handleDayChipClick(day: string) {
+    let newFrom: string, newTo: string;
+    if (!dateFrom && !dateTo) {
+      newFrom = day; newTo = day;
+    } else if (dateFrom === dateTo) {
+      if (day === dateFrom) { newFrom = ""; newTo = ""; }            // toggle off
+      else if (day > dateFrom) { newFrom = dateFrom; newTo = day; }  // extend right
+      else { newFrom = day; newTo = dateFrom; }                       // extend left
+    } else {
+      // Range already active → reset to single day
+      newFrom = day; newTo = day;
+    }
+    setDateFrom(newFrom);
+    setDateTo(newTo);
+    saveUi({ dateFrom: newFrom, dateTo: newTo });
   }
 
   async function handleSaveGroupSettings(e: React.FormEvent) {
@@ -868,6 +903,32 @@ export default function FringePage() {
     const seen = new Set<Area>();
     for (const show of shows) seen.add(show.venue.area);
     return AREA_ORDER.filter((a) => seen.has(a));
+  }
+
+  // Day strip: derive all calendar days in the relevant range
+  function allDays(): string[] {
+    let from: string, to: string;
+    if (session.activeGroup?.startDate && session.activeGroup?.endDate) {
+      from = session.activeGroup.startDate.slice(0, 10);
+      to   = session.activeGroup.endDate.slice(0, 10);
+    } else {
+      const perfDates = shows.flatMap((sh) =>
+        sh.performances.map((p) =>
+          new Date(p.start).toLocaleDateString("sv-SE", { timeZone: "Europe/London" })
+        )
+      );
+      if (!perfDates.length) return [];
+      from = perfDates.reduce((a, b) => (a < b ? a : b));
+      to   = perfDates.reduce((a, b) => (a > b ? a : b));
+    }
+    const days: string[] = [];
+    const cur = new Date(from + "T12:00:00Z"); // noon UTC avoids DST edge
+    const end = new Date(to   + "T12:00:00Z");
+    while (cur <= end) {
+      days.push(cur.toISOString().slice(0, 10));
+      cur.setUTCDate(cur.getUTCDate() + 1);
+    }
+    return days;
   }
 
   function visibleShows(): Show[] {
@@ -1597,31 +1658,58 @@ export default function FringePage() {
             </div>
           )}
 
-          {/* Date range */}
-          <div className={s.dateFilterRow}>
-            <span className={s.fieldLabel}>Dato</span>
-            <input
-              type="date"
-              className={s.dateInput}
-              value={dateFrom}
-              onChange={(e) => { setDateFrom(e.target.value); saveUi({ dateFrom: e.target.value }); }}
-            />
-            <span className={s.dateSep}>–</span>
-            <input
-              type="date"
-              className={s.dateInput}
-              value={dateTo}
-              onChange={(e) => { setDateTo(e.target.value); saveUi({ dateTo: e.target.value }); }}
-            />
-            {(dateFrom || dateTo) && (
-              <button
-                className={s.clearFilter}
-                onClick={() => { setDateFrom(""); setDateTo(""); saveUi({ dateFrom: "", dateTo: "" }); }}
-              >
-                Ryd
-              </button>
-            )}
-          </div>
+          {/* Date day strip */}
+          {(() => {
+            const days = allDays();
+            if (!days.length) return null;
+            return (
+              <div className={s.filterDimension}>
+                <span className={s.filterDimLabel}>Dato</span>
+                <div className={s.filterChipScroll} ref={dayStripRef}>
+                  {days.map((day, i) => {
+                    const isEndpoint = day === dateFrom || day === dateTo;
+                    const isInRange  = !!(dateFrom && dateTo && dateFrom !== dateTo && day > dateFrom && day < dateTo);
+                    const date    = new Date(day + "T12:00:00Z");
+                    const prevDate = i > 0 ? new Date(days[i - 1] + "T12:00:00Z") : null;
+                    const monthChanged = prevDate != null && date.getUTCMonth() !== prevDate.getUTCMonth();
+                    const weekday  = date.toLocaleDateString("da-DK", { weekday: "short", timeZone: "UTC" });
+                    const dayNum   = date.toLocaleDateString("da-DK", { day: "numeric",   timeZone: "UTC" });
+                    const monthLbl = date.toLocaleDateString("da-DK", { month: "short",    timeZone: "UTC" });
+                    const ariaLbl  = date.toLocaleDateString("da-DK", {
+                      weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+                    });
+                    return (
+                      <span key={day} style={{ display: "contents" }}>
+                        {monthChanged && (
+                          <span className={s.dayMonthSep} aria-hidden="true">
+                            {monthLbl.toUpperCase()}
+                          </span>
+                        )}
+                        <button
+                          className={`${s.dayChip} ${isEndpoint ? s.dayChipSelected : isInRange ? s.dayChipInRange : ""}`}
+                          onClick={() => handleDayChipClick(day)}
+                          aria-pressed={isEndpoint || isInRange}
+                          aria-label={ariaLbl}
+                          data-day={day}
+                        >
+                          <span className={s.dayChipDay}>{weekday}</span>
+                          <span className={s.dayChipNum}>{dayNum}</span>
+                        </button>
+                      </span>
+                    );
+                  })}
+                  {(dateFrom || dateTo) && (
+                    <button
+                      className={s.filterChipClear}
+                      onClick={() => { setDateFrom(""); setDateTo(""); saveUi({ dateFrom: "", dateTo: "" }); }}
+                    >
+                      Ryd
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
           <label className={s.toggleRow}>
             <input type="checkbox" checked={selectedOnly} onChange={(e) => { setSelectedOnly(e.target.checked); saveUi({ selectedOnly: e.target.checked }); }} />

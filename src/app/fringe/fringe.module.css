@@ -464,19 +464,30 @@
   .filterChipScroll { flex-wrap: wrap; overflow-x: visible; }
 }
 
-/* Date filter */
-.dateFilterRow {
-  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+/* ── Day strip date picker ────────────────────────────────────────────────── */
+.dayChip {
+  display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: transparent; color: var(--muted);
+  cursor: pointer; flex-shrink: 0; min-width: 44px;
+  transition: all 0.12s;
 }
-.dateInput {
-  padding: 0.35rem 0.5rem;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text); font-size: 12px; outline: none;
-  transition: border-color 0.15s;
-  color-scheme: dark;
+.dayChip:hover { border-color: var(--accent); color: var(--text); }
+.dayChipDay { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1; }
+.dayChipNum { font-size: 15px; font-weight: 700; line-height: 1.1; }
+.dayChipInRange {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
 }
-.dateInput:focus { border-color: var(--accent); }
-.dateSep { font-size: 12px; color: var(--muted); }
+.dayChipSelected {
+  background: var(--accent); border-color: var(--accent); color: #000;
+}
+.dayMonthSep {
+  display: flex; align-items: center; align-self: center;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--muted); padding-inline: 0.2rem;
+  white-space: nowrap; flex-shrink: 0;
+}
 
 /* ── Modal dialogs (ticket buyer + join confirm) ──────────────────────────── */
 .modalOverlay {
