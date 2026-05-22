@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-22T10:19:06.700126Z",
-  "itemCount": 272,
+  "generatedAt": "2026-05-22T20:30:13.636138Z",
+  "itemCount": 269,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -1243,40 +1243,6 @@
         "date": "2026-06-28T14:15:00",
         "time": "14.15",
         "name": "Ozzy"
-      }
-    },
-    {
-      "name": "AKTIVISTISK TEGNESTUE",
-      "type": "Art & Activism",
-      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue",
-      "countryCode": "DK",
-      "lineupSceneLabel": "The Yard",
-      "dayFilters": [
-        "first-days"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "SUNDAY 28 JUNE",
-          "dayId": null,
-          "date": "2026-06-28T15:00:00",
-          "startTime": "2026-05-19T15:00:00",
-          "timeLabel": "15.00",
-          "stage": "The Yard",
-          "showTitle": "Book club with Aktivistisk Tegnestue"
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "SUNDAY 28 JUNE",
-      "date": "2026-06-28T15:00:00",
-      "timeLabel": "15.00",
-      "stage": "The Yard",
-      "showTitle": "Book club with Aktivistisk Tegnestue",
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-06-28T15:00:00",
-        "time": "15.00",
-        "name": "AKTIVISTISK TEGNESTUE"
       }
     },
     {
@@ -5668,40 +5634,6 @@
       }
     },
     {
-      "name": "ØLLINGEGAARD",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/oellingegaard",
-      "countryCode": "",
-      "lineupSceneLabel": "Food Is Now",
-      "dayFilters": [
-        "Thursday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "THURSDAY 2 JULY",
-          "dayId": "thursday",
-          "date": "2026-07-02T10:30:00",
-          "startTime": "2026-04-29T10:30:00",
-          "timeLabel": "10.30",
-          "stage": "Food Is Now",
-          "showTitle": null
-        }
-      ],
-      "dayId": "thursday",
-      "dateLabel": "THURSDAY 2 JULY",
-      "date": "2026-07-02T10:30:00",
-      "timeLabel": "10.30",
-      "stage": "Food Is Now",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-02T10:30:00",
-        "time": "10.30",
-        "name": "ØLLINGEGAARD"
-      }
-    },
-    {
       "name": "Uld",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/uld",
@@ -7191,40 +7123,6 @@
         "date": "2026-07-03T02:30:00",
         "time": "02.30",
         "name": "Sammy Virji"
-      }
-    },
-    {
-      "name": "Collective Bakery",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/collective-bakery",
-      "countryCode": "",
-      "lineupSceneLabel": "Food Is Now",
-      "dayFilters": [
-        "Friday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "FRIDAY 3 JULY",
-          "dayId": "friday",
-          "date": "2026-07-03T10:30:00",
-          "startTime": "2026-04-29T10:30:00",
-          "timeLabel": "10.30",
-          "stage": "Food Is Now",
-          "showTitle": null
-        }
-      ],
-      "dayId": "friday",
-      "dateLabel": "FRIDAY 3 JULY",
-      "date": "2026-07-03T10:30:00",
-      "timeLabel": "10.30",
-      "stage": "Food Is Now",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-03T10:30:00",
-        "time": "10.30",
-        "name": "Collective Bakery"
       }
     },
     {
