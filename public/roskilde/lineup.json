@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-25T20:21:32.970698Z",
+  "generatedAt": "2026-05-26T20:53:19.500422Z",
   "itemCount": 272,
   "items": [
     {
@@ -2828,7 +2828,7 @@
           "startTime": "2026-04-29T16:00:00",
           "timeLabel": "16.00",
           "stage": "Grow",
-          "showTitle": null
+          "showTitle": "Plant Speed Dating: Queer"
         },
         {
           "dateLabel": "TUESDAY 30 JUNE",
@@ -2837,7 +2837,7 @@
           "startTime": "2026-04-29T16:00:00",
           "timeLabel": "16.00",
           "stage": "Grow",
-          "showTitle": null
+          "showTitle": "Plant Speed Dating: Straight"
         }
       ],
       "dayId": null,
@@ -2845,7 +2845,7 @@
       "date": "2026-06-29T16:00:00",
       "timeLabel": "16.00",
       "stage": "Grow",
-      "showTitle": null,
+      "showTitle": "Plant Speed Dating: Queer",
       "hasMultipleShows": true,
       "sortKey": {
         "date": "2026-06-29T16:00:00",
