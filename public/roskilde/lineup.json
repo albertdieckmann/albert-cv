@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-26T20:53:19.500422Z",
+  "generatedAt": "2026-05-27T10:52:40.940601Z",
   "itemCount": 272,
   "items": [
     {
@@ -374,7 +374,7 @@
       "dayFilters": [
         "first-days",
         "first-days",
-        "first-days"
+        "Wednesday"
       ],
       "newInLineup": true,
       "appearances": [
@@ -397,9 +397,9 @@
           "showTitle": null
         },
         {
-          "dateLabel": "TUESDAY 30 JUNE",
-          "dayId": null,
-          "date": "2026-06-30T10:00:00",
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T10:00:00",
           "startTime": "2026-04-29T10:00:00",
           "timeLabel": "10.00",
           "stage": "Grow",
@@ -894,6 +894,40 @@
       }
     },
     {
+      "name": "Greenpeace",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/greenpeace",
+      "countryCode": "",
+      "lineupSceneLabel": "The Yard",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T12:30:00",
+          "startTime": "2026-05-27T12:30:00",
+          "timeLabel": "12.30",
+          "stage": "The Yard",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T12:30:00",
+      "timeLabel": "12.30",
+      "stage": "The Yard",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T12:30:00",
+        "time": "12.30",
+        "name": "Greenpeace"
+      }
+    },
+    {
       "name": "A slice for the climate",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/a-slice-for-the-climate",
@@ -1246,9 +1280,9 @@
       }
     },
     {
-      "name": "AKTIVISTISK TEGNESTUE",
+      "name": "AKTIVISTISK TEGNESTUE – DGUB",
       "type": "Art & Activism",
-      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue-dgub",
       "countryCode": "DK",
       "lineupSceneLabel": "The Yard",
       "dayFilters": [
@@ -1276,7 +1310,7 @@
       "sortKey": {
         "date": "2026-06-28T15:00:00",
         "time": "15.00",
-        "name": "AKTIVISTISK TEGNESTUE"
+        "name": "AKTIVISTISK TEGNESTUE – DGUB"
       }
     },
     {
@@ -5940,40 +5974,6 @@
       }
     },
     {
-      "name": "ANTON SCHMIDT FEIRING & ERIK LAUTRUP-NIELSEN",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/anton-schmidt-feiring-erik-lautrup-nielsen",
-      "countryCode": "",
-      "lineupSceneLabel": "Food Is Now",
-      "dayFilters": [
-        "Thursday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "THURSDAY 2 JULY",
-          "dayId": "thursday",
-          "date": "2026-07-02T15:00:00",
-          "startTime": "2026-04-29T15:00:00",
-          "timeLabel": "15.00",
-          "stage": "Food Is Now",
-          "showTitle": null
-        }
-      ],
-      "dayId": "thursday",
-      "dateLabel": "THURSDAY 2 JULY",
-      "date": "2026-07-02T15:00:00",
-      "timeLabel": "15.00",
-      "stage": "Food Is Now",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-02T15:00:00",
-        "time": "15.00",
-        "name": "ANTON SCHMIDT FEIRING & ERIK LAUTRUP-NIELSEN"
-      }
-    },
-    {
       "name": "JALEN NGONDA",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/jalen-ngonda",
@@ -6049,6 +6049,40 @@
         "date": "2026-07-02T15:00:00",
         "time": "15.00",
         "name": "JOANA ÖHLSCHLÄGER"
+      }
+    },
+    {
+      "name": "The Fermentation Workshop",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/the-fermentation-workshop",
+      "countryCode": "",
+      "lineupSceneLabel": "Food Is Now",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T15:00:00",
+          "startTime": "2026-04-29T15:00:00",
+          "timeLabel": "15.00",
+          "stage": "Food Is Now",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T15:00:00",
+      "timeLabel": "15.00",
+      "stage": "Food Is Now",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T15:00:00",
+        "time": "15.00",
+        "name": "The Fermentation Workshop"
       }
     },
     {
@@ -7544,9 +7578,9 @@
       }
     },
     {
-      "name": "MATT ORLANDO & MARTIN PETERSEN",
+      "name": "Matt Orlando and circular cooking",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/matt-orlando-martin-petersen",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/matt-orlando-and-circular-cooking",
       "countryCode": "",
       "lineupSceneLabel": "Food Is Now",
       "dayFilters": [
@@ -7574,7 +7608,7 @@
       "sortKey": {
         "date": "2026-07-03T15:00:00",
         "time": "15.00",
-        "name": "MATT ORLANDO & MARTIN PETERSEN"
+        "name": "Matt Orlando and circular cooking"
       }
     },
     {
@@ -8870,9 +8904,9 @@
       }
     },
     {
-      "name": "CHRISTIAN FENTZ",
+      "name": "Green Food Artisan – The Chef of the Future",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/christian-fentz",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/green-food-artisan-the-chef-of-the-future",
       "countryCode": "",
       "lineupSceneLabel": "Food Is Now",
       "dayFilters": [
@@ -8900,7 +8934,7 @@
       "sortKey": {
         "date": "2026-07-04T15:00:00",
         "time": "15.00",
-        "name": "CHRISTIAN FENTZ"
+        "name": "Green Food Artisan – The Chef of the Future"
       }
     },
     {
@@ -9749,28 +9783,6 @@
         "date": null,
         "time": null,
         "name": "EN:33"
-      }
-    },
-    {
-      "name": "Greenpeace",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/greenpeace",
-      "countryCode": "",
-      "lineupSceneLabel": "",
-      "dayFilters": [],
-      "newInLineup": true,
-      "appearances": [],
-      "dayId": null,
-      "dateLabel": null,
-      "date": null,
-      "timeLabel": null,
-      "stage": "",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": null,
-        "time": null,
-        "name": "Greenpeace"
       }
     },
     {
