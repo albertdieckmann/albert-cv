@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-28T10:47:30.701509Z",
-  "itemCount": 272,
+  "generatedAt": "2026-05-28T21:05:33.381859Z",
+  "itemCount": 273,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -1148,6 +1148,40 @@
       }
     },
     {
+      "name": "SOCIAL BASKETBALL TOURNAMENT",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/social-basketball-tournament",
+      "countryCode": "",
+      "lineupSceneLabel": "Stadion",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T14:00:00",
+          "startTime": "2026-05-28T14:00:00",
+          "timeLabel": "14.00",
+          "stage": "Stadion",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T14:00:00",
+      "timeLabel": "14.00",
+      "stage": "Stadion",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T14:00:00",
+        "time": "14.00",
+        "name": "SOCIAL BASKETBALL TOURNAMENT"
+      }
+    },
+    {
       "name": "Ukrudtsdrinks",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/ukrudtsdrinks",
@@ -1166,7 +1200,7 @@
           "startTime": "2026-04-29T14:00:00",
           "timeLabel": "14.00",
           "stage": "The Yard",
-          "showTitle": null
+          "showTitle": "Ukrudtsdrinks"
         },
         {
           "dateLabel": "MONDAY 29 JUNE",
@@ -1183,7 +1217,7 @@
       "date": "2026-06-28T14:00:00",
       "timeLabel": "14.00",
       "stage": "The Yard",
-      "showTitle": null,
+      "showTitle": "Ukrudtsdrinks",
       "hasMultipleShows": true,
       "sortKey": {
         "date": "2026-06-28T14:00:00",
@@ -2334,6 +2368,7 @@
       "countryCode": "",
       "lineupSceneLabel": "Stadion",
       "dayFilters": [
+        "first-days",
         "first-days",
         "Wednesday"
       ],
@@ -9601,7 +9636,7 @@
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
