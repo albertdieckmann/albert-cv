@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-27T21:00:05.014422Z",
+  "generatedAt": "2026-05-28T10:47:30.701509Z",
   "itemCount": 272,
   "items": [
     {
@@ -2328,6 +2328,59 @@
       }
     },
     {
+      "name": "3x3 Basket",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/3x3-basket",
+      "countryCode": "",
+      "lineupSceneLabel": "Stadion",
+      "dayFilters": [
+        "first-days",
+        "Wednesday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T12:00:00",
+          "startTime": "2026-04-29T12:00:00",
+          "timeLabel": "12.00",
+          "stage": "Stadion",
+          "showTitle": "Basketturnering: Indledende Heats"
+        },
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T12:00:00",
+          "startTime": "2026-04-29T12:00:00",
+          "timeLabel": "12.00",
+          "stage": "Stadion",
+          "showTitle": "Basket tournament: Heats"
+        },
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T11:00:00",
+          "startTime": "2026-04-29T11:00:00",
+          "timeLabel": "11.00",
+          "stage": "Stadion",
+          "showTitle": "Basket tournament: Finals"
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T12:00:00",
+      "timeLabel": "12.00",
+      "stage": "Stadion",
+      "showTitle": "Basketturnering: Indledende Heats",
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-06-29T12:00:00",
+        "time": "12.00",
+        "name": "3x3 Basket"
+      }
+    },
+    {
       "name": "Nøx, Kaka & Iris",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/noex-kaka-iris",
@@ -3541,50 +3594,6 @@
         "date": "2026-06-30T11:00:00",
         "time": "11.00",
         "name": "Why Freedom?"
-      }
-    },
-    {
-      "name": "3x3 Basket",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/3x3-basket",
-      "countryCode": "",
-      "lineupSceneLabel": "Stadion",
-      "dayFilters": [
-        "first-days",
-        "Wednesday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "TUESDAY 30 JUNE",
-          "dayId": null,
-          "date": "2026-06-30T12:00:00",
-          "startTime": "2026-04-29T12:00:00",
-          "timeLabel": "12.00",
-          "stage": "Stadion",
-          "showTitle": "Basket tournament: Heats"
-        },
-        {
-          "dateLabel": "WEDNESDAY 1 JULY",
-          "dayId": "wednesday",
-          "date": "2026-07-01T11:00:00",
-          "startTime": "2026-04-29T11:00:00",
-          "timeLabel": "11.00",
-          "stage": "Stadion",
-          "showTitle": "Basket tournament: Finals"
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "TUESDAY 30 JUNE",
-      "date": "2026-06-30T12:00:00",
-      "timeLabel": "12.00",
-      "stage": "Stadion",
-      "showTitle": "Basket tournament: Heats",
-      "hasMultipleShows": true,
-      "sortKey": {
-        "date": "2026-06-30T12:00:00",
-        "time": "12.00",
-        "name": "3x3 Basket"
       }
     },
     {
