@@ -1,0 +1,19 @@
+name: Opdater RF nyheder til infoskærm
+on:
+  schedule:
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - rf-pressecenter
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Hent og send nyheder
+        env:
+          RF_SCREEN_API_URL: ${{ secrets.RF_SCREEN_API_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: python3 scripts/rf-pressecenter/fetch_news.py

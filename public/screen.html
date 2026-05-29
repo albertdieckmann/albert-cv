@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RF Pressecenter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; color: #fff; font-family: sans-serif; height: 100vh; overflow: hidden; }
+    .screen { width: 100vw; height: 100vh; position: relative; }
+    .topbar { position: absolute; top: 0; left: 0; right: 0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); z-index: 10; }
+    .logo { font-size: 16px; font-weight: 500; letter-spacing: 0.05em; }
+    .logo span { color: #E8002D; }
+    .clock { font-size: 14px; color: rgba(255,255,255,0.6); font-variant-numeric: tabular-nums; }
+    .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 80px 60px 40px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+    .slide.active { opacity: 1; pointer-events: auto; }
+    .type-label { font-size: 11px; letter-spacing: 0.12em; color: #FF6B00; text-transform: uppercase; margin-bottom: 16px; }
+    .slide-title { font-size: 56px; font-weight: 500; line-height: 1.15; margin-bottom: 20px; }
+    .slide-body { font-size: 24px; color: rgba(255,255,255,0.75); line-height: 1.6; max-width: 800px; }
+    .bg-weather { background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 100%); }
+    .bg-program { background: #111; }
+    .bg-hours { background: #0d0d0d; }
+    .bg-message { background: #0f0f0f; border-left: 4px solid #E8002D; padding-left: 80px; }
+    .dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: background 0.3s; cursor: pointer; }
+    .dot.active { background: #fff; }
+    .progress { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.1); z-index: 10; }
+    .progress-bar { height: 100%; background: #E8002D; width: 0%; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="logo">RF<span>●</span>PRESSECENTER</div>
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+    <div id="slides"></div>
+    <div class="dots" id="dots"></div>
+    <div class="progress"><div class="progress-bar" id="pbar"></div></div>
+  </div>
+
+  <script>
+    const DURATION = 8000;
+    let current = 0;
+    let startTime = null;
+    let slides = [];
+
+    async function loadSlides() {
+      const res = await fetch('/api/slides');
+      slides = await res.json();
+      renderSlides();
+      requestAnimationFrame(tick);
+    }
+
+    function renderSlides() {
+      const container = document.getElementById('slides');
+      const dots = document.getElementById('dots');
+      container.innerHTML = slides.map((slide, i) => `
+        <div class="slide bg-${slide.type} ${i === 0 ? 'active' : ''}" id="slide-${i}">
+          <div class="type-label">${typeLabel(slide.type)}</div>
+          <div class="slide-title">${slide.title || typeLabel(slide.type)}</div>
+          ${slide.body ? `<div class="slide-body">${slide.body}</div>` : ''}
+        </div>
+      `).join('');
+      dots.innerHTML = slides.map((_, i) =>
+        `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}" onclick="showSlide(${i})"></div>`
+      ).join('');
+    }
+
+    function typeLabel(type) {
+      return {weather: 'Vejr', program: 'Program', hours: 'Åbningstider', message: 'Meddelelse'}[type] || type;
+    }
+
+    function showSlide(idx) {
+      document.getElementById('slide-' + current)?.classList.remove('active');
+      document.getElementById('dot-' + current)?.classList.remove('active');
+      current = ((idx % slides.length) + slides.length) % slides.length;
+      document.getElementById('slide-' + current)?.classList.add('active');
+      document.getElementById('dot-' + current)?.classList.add('active');
+      startTime = null;
+      document.getElementById('pbar').style.width = '0%';
+    }
+
+    function tick(ts) {
+      if (!startTime) startTime = ts;
+      const pct = Math.min(((ts - startTime) / DURATION) * 100, 100);
+      document.getElementById('pbar').style.width = pct + '%';
+      if (pct >= 100) showSlide(current + 1);
+      requestAnimationFrame(tick);
+    }
+
+    setInterval(loadSlides, 30000);
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('da-DK', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    loadSlides();
+  </script>
+</body>
+</html>
