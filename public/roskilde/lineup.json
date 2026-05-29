@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-28T21:05:33.381859Z",
+  "generatedAt": "2026-05-29T10:41:33.087916Z",
   "itemCount": 273,
   "items": [
     {
@@ -366,9 +366,9 @@
       }
     },
     {
-      "name": "WAKE WITH THE GARDEN",
+      "name": "Wake up with the garden",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-with-the-garden",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-up-with-the-garden",
       "countryCode": "",
       "lineupSceneLabel": "Grow",
       "dayFilters": [
@@ -376,7 +376,7 @@
         "first-days",
         "Wednesday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -416,7 +416,7 @@
       "sortKey": {
         "date": "2026-06-28T10:00:00",
         "time": "10.00",
-        "name": "WAKE WITH THE GARDEN"
+        "name": "Wake up with the garden"
       }
     },
     {
@@ -1104,7 +1104,7 @@
         "first-days",
         "first-days"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -1156,7 +1156,7 @@
       "dayFilters": [
         "first-days"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -6018,6 +6018,40 @@
       }
     },
     {
+      "name": "ANTON SCHMIDT FEIRING & ERIK LAUTRUP-NIELSEN",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/anton-schmidt-feiring-erik-lautrup-nielsen",
+      "countryCode": "",
+      "lineupSceneLabel": "Food Is Now",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T15:00:00",
+          "startTime": "2026-04-29T15:00:00",
+          "timeLabel": "15.00",
+          "stage": "Food Is Now",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T15:00:00",
+      "timeLabel": "15.00",
+      "stage": "Food Is Now",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T15:00:00",
+        "time": "15.00",
+        "name": "ANTON SCHMIDT FEIRING & ERIK LAUTRUP-NIELSEN"
+      }
+    },
+    {
       "name": "JALEN NGONDA",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/jalen-ngonda",
@@ -6093,40 +6127,6 @@
         "date": "2026-07-02T15:00:00",
         "time": "15.00",
         "name": "JOANA ÖHLSCHLÄGER"
-      }
-    },
-    {
-      "name": "The Fermentation Workshop",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/the-fermentation-workshop",
-      "countryCode": "",
-      "lineupSceneLabel": "Food Is Now",
-      "dayFilters": [
-        "Thursday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "THURSDAY 2 JULY",
-          "dayId": "thursday",
-          "date": "2026-07-02T15:00:00",
-          "startTime": "2026-04-29T15:00:00",
-          "timeLabel": "15.00",
-          "stage": "Food Is Now",
-          "showTitle": null
-        }
-      ],
-      "dayId": "thursday",
-      "dateLabel": "THURSDAY 2 JULY",
-      "date": "2026-07-02T15:00:00",
-      "timeLabel": "15.00",
-      "stage": "Food Is Now",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-07-02T15:00:00",
-        "time": "15.00",
-        "name": "The Fermentation Workshop"
       }
     },
     {
@@ -7622,9 +7622,9 @@
       }
     },
     {
-      "name": "Matt Orlando and circular cooking",
+      "name": "MATT ORLANDO & MARTIN PETERSEN",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/matt-orlando-and-circular-cooking",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/matt-orlando-martin-petersen",
       "countryCode": "",
       "lineupSceneLabel": "Food Is Now",
       "dayFilters": [
@@ -7652,7 +7652,7 @@
       "sortKey": {
         "date": "2026-07-03T15:00:00",
         "time": "15.00",
-        "name": "Matt Orlando and circular cooking"
+        "name": "MATT ORLANDO & MARTIN PETERSEN"
       }
     },
     {
@@ -8948,15 +8948,15 @@
       }
     },
     {
-      "name": "Green Food Artisan – The Chef of the Future",
+      "name": "CHRISTIAN FENTZ",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/green-food-artisan-the-chef-of-the-future",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/christian-fentz",
       "countryCode": "",
       "lineupSceneLabel": "Food Is Now",
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
@@ -8978,7 +8978,7 @@
       "sortKey": {
         "date": "2026-07-04T15:00:00",
         "time": "15.00",
-        "name": "Green Food Artisan – The Chef of the Future"
+        "name": "CHRISTIAN FENTZ"
       }
     },
     {
