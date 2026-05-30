@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-29T21:07:53.541079Z",
-  "itemCount": 273,
+  "generatedAt": "2026-05-30T09:11:13.942457Z",
+  "itemCount": 272,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -366,17 +366,17 @@
       }
     },
     {
-      "name": "Wake up with the garden",
+      "name": "WAKE WITH THE GARDEN",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-up-with-the-garden",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-with-the-garden",
       "countryCode": "",
       "lineupSceneLabel": "Grow",
       "dayFilters": [
         "first-days",
         "first-days",
-        "Wednesday"
+        "first-days"
       ],
-      "newInLineup": false,
+      "newInLineup": true,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -416,7 +416,7 @@
       "sortKey": {
         "date": "2026-06-28T10:00:00",
         "time": "10.00",
-        "name": "Wake up with the garden"
+        "name": "WAKE WITH THE GARDEN"
       }
     },
     {
@@ -898,10 +898,8 @@
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/greenpeace",
       "countryCode": "",
-      "lineupSceneLabel": "The Yard",
-      "dayFilters": [
-        "first-days"
-      ],
+      "lineupSceneLabel": "",
+      "dayFilters": [],
       "newInLineup": true,
       "appearances": [
         {
@@ -1104,7 +1102,7 @@
         "first-days",
         "first-days"
       ],
-      "newInLineup": false,
+      "newInLineup": true,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -1145,40 +1143,6 @@
         "date": "2026-06-28T14:00:00",
         "time": "14.00",
         "name": "Do you have Roskilde power?"
-      }
-    },
-    {
-      "name": "SOCIAL BASKETBALL TOURNAMENT",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/social-basketball-tournament",
-      "countryCode": "",
-      "lineupSceneLabel": "Stadion",
-      "dayFilters": [
-        "first-days"
-      ],
-      "newInLineup": false,
-      "appearances": [
-        {
-          "dateLabel": "SUNDAY 28 JUNE",
-          "dayId": null,
-          "date": "2026-06-28T14:00:00",
-          "startTime": "2026-05-28T14:00:00",
-          "timeLabel": "14.00",
-          "stage": "Stadion",
-          "showTitle": null
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "SUNDAY 28 JUNE",
-      "date": "2026-06-28T14:00:00",
-      "timeLabel": "14.00",
-      "stage": "Stadion",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-06-28T14:00:00",
-        "time": "14.00",
-        "name": "SOCIAL BASKETBALL TOURNAMENT"
       }
     },
     {
@@ -1314,9 +1278,9 @@
       }
     },
     {
-      "name": "AKTIVISTISK TEGNESTUE – DGUB",
+      "name": "AKTIVISTISK TEGNESTUE",
       "type": "Art & Activism",
-      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue-dgub",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue",
       "countryCode": "DK",
       "lineupSceneLabel": "The Yard",
       "dayFilters": [
@@ -1344,7 +1308,7 @@
       "sortKey": {
         "date": "2026-06-28T15:00:00",
         "time": "15.00",
-        "name": "AKTIVISTISK TEGNESTUE – DGUB"
+        "name": "AKTIVISTISK TEGNESTUE"
       }
     },
     {
@@ -2368,7 +2332,6 @@
       "countryCode": "",
       "lineupSceneLabel": "Stadion",
       "dayFilters": [
-        "first-days",
         "first-days",
         "Wednesday"
       ],
@@ -8956,7 +8919,7 @@
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": false,
+      "newInLineup": true,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
@@ -9636,7 +9599,7 @@
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": false,
+      "newInLineup": true,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
