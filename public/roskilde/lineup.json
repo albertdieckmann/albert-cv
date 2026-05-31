@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-05-21T20:48:19.473741Z",
-  "itemCount": 272,
+  "generatedAt": "2026-05-31T20:02:54.776543Z",
+  "itemCount": 273,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -366,17 +366,17 @@
       }
     },
     {
-      "name": "WAKE WITH THE GARDEN",
+      "name": "Wake up with the garden",
       "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-with-the-garden",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/wake-up-with-the-garden",
       "countryCode": "",
       "lineupSceneLabel": "Grow",
       "dayFilters": [
         "first-days",
         "first-days",
-        "first-days"
+        "Wednesday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -397,9 +397,9 @@
           "showTitle": null
         },
         {
-          "dateLabel": "TUESDAY 30 JUNE",
-          "dayId": null,
-          "date": "2026-06-30T10:00:00",
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T10:00:00",
           "startTime": "2026-04-29T10:00:00",
           "timeLabel": "10.00",
           "stage": "Grow",
@@ -416,7 +416,7 @@
       "sortKey": {
         "date": "2026-06-28T10:00:00",
         "time": "10.00",
-        "name": "WAKE WITH THE GARDEN"
+        "name": "Wake up with the garden"
       }
     },
     {
@@ -894,6 +894,40 @@
       }
     },
     {
+      "name": "Greenpeace",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/greenpeace",
+      "countryCode": "",
+      "lineupSceneLabel": "The Yard",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T12:30:00",
+          "startTime": "2026-05-27T12:30:00",
+          "timeLabel": "12.30",
+          "stage": "The Yard",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T12:30:00",
+      "timeLabel": "12.30",
+      "stage": "The Yard",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T12:30:00",
+        "time": "12.30",
+        "name": "Greenpeace"
+      }
+    },
+    {
       "name": "A slice for the climate",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/a-slice-for-the-climate",
@@ -1070,7 +1104,7 @@
         "first-days",
         "first-days"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -1114,6 +1148,40 @@
       }
     },
     {
+      "name": "SOCIAL BASKETBALL TOURNAMENT",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/social-basketball-tournament",
+      "countryCode": "",
+      "lineupSceneLabel": "Stadion",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T14:00:00",
+          "startTime": "2026-05-28T14:00:00",
+          "timeLabel": "14.00",
+          "stage": "Stadion",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T14:00:00",
+      "timeLabel": "14.00",
+      "stage": "Stadion",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T14:00:00",
+        "time": "14.00",
+        "name": "SOCIAL BASKETBALL TOURNAMENT"
+      }
+    },
+    {
       "name": "Ukrudtsdrinks",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/ukrudtsdrinks",
@@ -1132,7 +1200,7 @@
           "startTime": "2026-04-29T14:00:00",
           "timeLabel": "14.00",
           "stage": "The Yard",
-          "showTitle": null
+          "showTitle": "Ukrudtsdrinks"
         },
         {
           "dateLabel": "MONDAY 29 JUNE",
@@ -1149,7 +1217,7 @@
       "date": "2026-06-28T14:00:00",
       "timeLabel": "14.00",
       "stage": "The Yard",
-      "showTitle": null,
+      "showTitle": "Ukrudtsdrinks",
       "hasMultipleShows": true,
       "sortKey": {
         "date": "2026-06-28T14:00:00",
@@ -1246,9 +1314,9 @@
       }
     },
     {
-      "name": "AKTIVISTISK TEGNESTUE",
+      "name": "AKTIVISTISK TEGNESTUE – DGUB",
       "type": "Art & Activism",
-      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aktivistisk-tegnestue-dgub",
       "countryCode": "DK",
       "lineupSceneLabel": "The Yard",
       "dayFilters": [
@@ -1276,7 +1344,7 @@
       "sortKey": {
         "date": "2026-06-28T15:00:00",
         "time": "15.00",
-        "name": "AKTIVISTISK TEGNESTUE"
+        "name": "AKTIVISTISK TEGNESTUE – DGUB"
       }
     },
     {
@@ -2294,6 +2362,60 @@
       }
     },
     {
+      "name": "3x3 Basket",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/3x3-basket",
+      "countryCode": "",
+      "lineupSceneLabel": "Stadion",
+      "dayFilters": [
+        "first-days",
+        "first-days",
+        "Wednesday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T12:00:00",
+          "startTime": "2026-04-29T12:00:00",
+          "timeLabel": "12.00",
+          "stage": "Stadion",
+          "showTitle": "Basketturnering: Indledende Heats"
+        },
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T12:00:00",
+          "startTime": "2026-04-29T12:00:00",
+          "timeLabel": "12.00",
+          "stage": "Stadion",
+          "showTitle": "Basket tournament: Heats"
+        },
+        {
+          "dateLabel": "WEDNESDAY 1 JULY",
+          "dayId": "wednesday",
+          "date": "2026-07-01T11:00:00",
+          "startTime": "2026-04-29T11:00:00",
+          "timeLabel": "11.00",
+          "stage": "Stadion",
+          "showTitle": "Basket tournament: Finals"
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T12:00:00",
+      "timeLabel": "12.00",
+      "stage": "Stadion",
+      "showTitle": "Basketturnering: Indledende Heats",
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-06-29T12:00:00",
+        "time": "12.00",
+        "name": "3x3 Basket"
+      }
+    },
+    {
       "name": "Nøx, Kaka & Iris",
       "type": "Activities",
       "url": "https://www.roskilde-festival.dk/en/line-up/activities/noex-kaka-iris",
@@ -2828,7 +2950,7 @@
           "startTime": "2026-04-29T16:00:00",
           "timeLabel": "16.00",
           "stage": "Grow",
-          "showTitle": null
+          "showTitle": "Plant Speed Dating: Queer"
         },
         {
           "dateLabel": "TUESDAY 30 JUNE",
@@ -2837,7 +2959,7 @@
           "startTime": "2026-04-29T16:00:00",
           "timeLabel": "16.00",
           "stage": "Grow",
-          "showTitle": null
+          "showTitle": "Plant Speed Dating: Straight"
         }
       ],
       "dayId": null,
@@ -2845,7 +2967,7 @@
       "date": "2026-06-29T16:00:00",
       "timeLabel": "16.00",
       "stage": "Grow",
-      "showTitle": null,
+      "showTitle": "Plant Speed Dating: Queer",
       "hasMultipleShows": true,
       "sortKey": {
         "date": "2026-06-29T16:00:00",
@@ -3507,50 +3629,6 @@
         "date": "2026-06-30T11:00:00",
         "time": "11.00",
         "name": "Why Freedom?"
-      }
-    },
-    {
-      "name": "3x3 Basket",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/3x3-basket",
-      "countryCode": "",
-      "lineupSceneLabel": "Stadion",
-      "dayFilters": [
-        "first-days",
-        "Wednesday"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "TUESDAY 30 JUNE",
-          "dayId": null,
-          "date": "2026-06-30T12:00:00",
-          "startTime": "2026-04-29T12:00:00",
-          "timeLabel": "12.00",
-          "stage": "Stadion",
-          "showTitle": "Basket tournament: Heats"
-        },
-        {
-          "dateLabel": "WEDNESDAY 1 JULY",
-          "dayId": "wednesday",
-          "date": "2026-07-01T11:00:00",
-          "startTime": "2026-04-29T11:00:00",
-          "timeLabel": "11.00",
-          "stage": "Stadion",
-          "showTitle": "Basket tournament: Finals"
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "TUESDAY 30 JUNE",
-      "date": "2026-06-30T12:00:00",
-      "timeLabel": "12.00",
-      "stage": "Stadion",
-      "showTitle": "Basket tournament: Heats",
-      "hasMultipleShows": true,
-      "sortKey": {
-        "date": "2026-06-30T12:00:00",
-        "time": "12.00",
-        "name": "3x3 Basket"
       }
     },
     {
@@ -8878,7 +8956,7 @@
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
@@ -9558,7 +9636,7 @@
       "dayFilters": [
         "Saturday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SATURDAY 4 JULY",
@@ -9749,28 +9827,6 @@
         "date": null,
         "time": null,
         "name": "EN:33"
-      }
-    },
-    {
-      "name": "Greenpeace",
-      "type": "Activities",
-      "url": "https://www.roskilde-festival.dk/en/line-up/activities/greenpeace",
-      "countryCode": "",
-      "lineupSceneLabel": "",
-      "dayFilters": [],
-      "newInLineup": true,
-      "appearances": [],
-      "dayId": null,
-      "dateLabel": null,
-      "date": null,
-      "timeLabel": null,
-      "stage": "",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": null,
-        "time": null,
-        "name": "Greenpeace"
       }
     },
     {
