@@ -620,77 +620,6 @@ export default function FringePage() {
   }
 
   // Like handleStatusClick but with a specific performance already chosen — used from timeline cards
-  function handleStatusClickForPerf(show: Show, perf: Performance, status: PickStatus) {
-    if (!session.activeGroup || !session.user) return;
-    const current = myPick(show.id);
-
-    // Toggle off if the user is already on this status for this exact perf
-    const isActiveHere =
-      current?.status === status &&
-      (status === "interested" ||
-        (current?.performance_start &&
-          new Date(current.performance_start).toISOString() ===
-            new Date(perf.start).toISOString()));
-
-    if (isActiveHere) {
-      run(async () => {
-        await api("/api/fringe/picks", {
-          method: "POST",
-          body: JSON.stringify({
-            groupId: session.activeGroup!.id,
-            showId: show.id,
-            showTitle: show.title,
-            status: null,
-          }),
-        });
-        await fetchSession();
-      });
-      return;
-    }
-
-    if (status === "interested") {
-      // Downgrade to interested — clears the specific performance
-      run(async () => {
-        await api("/api/fringe/picks", {
-          method: "POST",
-          body: JSON.stringify({
-            groupId: session.activeGroup!.id,
-            showId: show.id,
-            showTitle: show.title,
-            status,
-            performanceId: null,
-            performanceStart: null,
-            performanceEnd: null,
-          }),
-        });
-        await fetchSession();
-      });
-      return;
-    }
-
-    if (status === "has_ticket") {
-      openTicketDialog(show, perf);
-      return;
-    }
-
-    // going: commit directly to this performance
-    run(async () => {
-      await api("/api/fringe/picks", {
-        method: "POST",
-        body: JSON.stringify({
-          groupId: session.activeGroup!.id,
-          showId: show.id,
-          showTitle: show.title,
-          status,
-          performanceId: perf.start,
-          performanceStart: perf.start,
-          performanceEnd: perf.end,
-        }),
-      });
-      await fetchSession();
-    });
-  }
-
   function openTicketDialog(show: Show, perf: Performance) {
     const members = session.activeGroup?.members ?? [];
     setTicketDialog({
@@ -972,65 +901,58 @@ export default function FringePage() {
   }
 
   // Feature 4: include interested picks (with performance_start) in timeline
-  function timelineGroups(): [string, { show: Show; picks: FringePick[] }[]][] {
+  function planGroups(): [string, { show: Show; picks: FringePick[] }[]][] {
     const showMap = new Map(shows.map((s) => [s.id, s]));
 
     const fromMs = dateFrom ? new Date(dateFrom).getTime() : null;
     const toMs   = dateTo   ? new Date(dateTo + "T23:59:59").getTime() : null;
 
-    const allPicks = (session.activeGroup?.picks ?? [])
-      .filter((p) => {
-        if (!p.performance_start) return false;
-        if (!(p.status === "going" || p.status === "has_ticket" || (p.status === "interested" && !hideInterested))) return false;
-        // Apply the same date range filter as the show list
-        if (fromMs !== null || toMs !== null) {
-          const t = new Date(p.performance_start).getTime();
-          if (fromMs !== null && t < fromMs) return false;
-          if (toMs   !== null && t > toMs)   return false;
-        }
-        return true;
-      })
-      .map((p) => {
-        // Fallback: if the show isn't in the API results, build a minimal Show from pick data
-        const show: Show = showMap.get(p.show_id) ?? {
-          id: p.show_id,
-          title: p.show_title,
-          venue: { name: "", area: "other" as Area },
-          performances: [],
-        };
-        return { show, pick: p };
-      });
-
-    // Group by show+day, collecting all users' picks per show
-    const byDate = new Map<string, { show: Show; picks: FringePick[] }[]>();
-    const seenKey = new Set<string>();
-
-    const sorted = allPicks.sort((a, b) => a.pick.performance_start!.localeCompare(b.pick.performance_start!));
-
-    for (const { show, pick } of sorted) {
-      const dayKey = fmtEdinburgh(pick.performance_start!, { weekday: "long", day: "numeric", month: "long" });
-      // Group same show on same day together (use show+day+perf as unique entry key)
-      const entryKey = `${dayKey}::${show.id}::${pick.performance_start}`;
-
-      if (seenKey.has(entryKey)) {
-        const group = byDate.get(dayKey)!;
-        const entry = group.find(
-          (e) => e.show.id === show.id &&
-                 e.picks[0]?.performance_start === pick.performance_start
-        );
-        if (entry && !entry.picks.some((p) => p.user_id === pick.user_id)) {
-          entry.picks.push(pick);
-        }
-        continue;
-      }
-
-      seenKey.add(entryKey);
-      const group = byDate.get(dayKey) ?? [];
-      group.push({ show, picks: [pick] });
-      byDate.set(dayKey, group);
+    // Group all picks by show
+    const byShow = new Map<string, { show: Show; picks: FringePick[] }>();
+    for (const pick of session.activeGroup?.picks ?? []) {
+      if (hideInterested && pick.status === "interested") continue;
+      const show: Show = showMap.get(pick.show_id) ?? {
+        id: pick.show_id, title: pick.show_title,
+        venue: { name: "", area: "other" as Area }, performances: [],
+      };
+      if (!byShow.has(pick.show_id)) byShow.set(pick.show_id, { show, picks: [] });
+      byShow.get(pick.show_id)!.picks.push(pick);
     }
 
-    return [...byDate.entries()];
+    // "~" sorts after all letters → used as key for "no date yet" bucket
+    const NODATE = "~";
+    const byDay = new Map<string, { show: Show; picks: FringePick[] }[]>();
+
+    for (const item of byShow.values()) {
+      // Find committed performances that fall within the active date range
+      let committedTimes = item.picks
+        .filter((p) => p.performance_start && (p.status === "going" || p.status === "has_ticket"))
+        .map((p) => p.performance_start!);
+
+      if (fromMs !== null || toMs !== null) {
+        const inRange = committedTimes.filter((t) => {
+          const ms = new Date(t).getTime();
+          return (fromMs === null || ms >= fromMs) && (toMs === null || ms <= toMs);
+        });
+        // Skip card if date filter active and no committed pick in range
+        // (unless it's an interested-only pick with no performance)
+        const hasUntimedInterested = item.picks.some((p) => p.status === "interested" && !p.performance_start);
+        if (inRange.length === 0 && !hasUntimedInterested) continue;
+        committedTimes = inRange;
+      }
+
+      // Use earliest committed performance to determine the day bucket
+      const earliest = [...committedTimes].sort()[0];
+      const dayKey = earliest
+        ? fmtEdinburgh(earliest, { weekday: "long", day: "numeric", month: "long" })
+        : NODATE;
+
+      const list = byDay.get(dayKey) ?? [];
+      list.push(item);
+      byDay.set(dayKey, list);
+    }
+
+    return [...byDay.entries()].sort(([a], [b]) => a.localeCompare(b));
   }
 
   // ── Early states ───────────────────────────────────────────────────────────
@@ -1046,6 +968,30 @@ export default function FringePage() {
     );
   }
 
+  if (!isSignedIn) {
+    return (
+      <div className={s.page}>
+        <header className={s.header}>
+          <Link href="/" className={s.backLink}>←</Link>
+          <div className={s.headerCenter}>
+            <span className={s.headerTitle}>Fringe Venneplanner</span>
+          </div>
+          <div className={s.headerActions} />
+        </header>
+        <div className={s.authWall}>
+          <p className={s.authWallTitle}>Edinburgh Fringe Venneplanner</p>
+          <p className={s.muted}>Log ind for at se programmet og planlægge med venner.</p>
+          <button
+            className={s.primaryBtn}
+            onClick={() => openSignIn({ fallbackRedirectUrl: "/fringe" })}
+          >
+            Log ind eller opret profil
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const canPick         = !!(session.user && session.activeGroup);
   const isGroupOwner    = session.activeGroup?.members.find((m) => m.id === session.user?.id)?.role === "owner";
   const groupSettingsChanged = session.activeGroup != null && (
@@ -1054,9 +1000,9 @@ export default function FringePage() {
     (editEndDate   || "") !== (session.activeGroup.endDate?.slice(0, 10)   ?? "")
   );
   const visible     = visibleShows();
-  const tGroups     = timelineGroups();
+  const pGroups     = planGroups();
   const conflicts   = computeConflicts(session.activeGroup?.picks ?? []);
-  const tCount      = new Set(tGroups.flatMap(([, items]) => items.map((i) => i.show.id))).size;
+  const tCount      = pGroups.flatMap(([, items]) => items).length;
   const genres      = allGenres();
   const areas       = allAreas();
 
@@ -1434,29 +1380,32 @@ export default function FringePage() {
       <section className={s.section}>
         <p className={s.sectionTag}>Jeres plan</p>
 
-        {tGroups.length === 0 ? (
+        {pGroups.length === 0 ? (
           <div className={s.empty}>
             {!session.activeGroup
               ? "Log ind og opret en gruppe for at bygge jeres plan."
               : (dateFrom || dateTo)
-              ? "Ingen forestillinger i det valgte datointerval — justér datofilteret for at se resten af planen."
-              : "Marker shows som 'Skal med' eller 'Har billet' og vælg en forestilling — de dukker op her."}
+              ? "Ingen shows i det valgte datointerval — justér datofilteret for at se resten af planen."
+              : "Marker shows som 'Vil gerne', 'Skal med' eller 'Har billet' — de dukker op her."}
           </div>
         ) : (
-          tGroups.map(([day, items]) => (
+          pGroups.map(([day, items]) => (
             <div key={day} className={s.dayBlock}>
               <div className={s.dayHeader}>
-                <span className={s.dayTag}>Dag</span>
-                <h3 className={s.dayTitle}>{day}</h3>
+                {day === "~" ? (
+                  <h3 className={s.dayTitle} style={{ color: "var(--muted)", fontStyle: "italic" }}>Ikke planlagt endnu</h3>
+                ) : (
+                  <>
+                    <span className={s.dayTag}>Dag</span>
+                    <h3 className={s.dayTitle}>{day}</h3>
+                  </>
+                )}
               </div>
               {items.map(({ show, picks }) => {
-                const repPick = picks[0];
-                const isInterested = repPick.status === "interested";
-                const timeStr = repPick.performance_start
-                  ? fmtEdinburgh(repPick.performance_start, { hour: "2-digit", minute: "2-digit" })
-                  : "TBA";
+                const myPickInCard = session.user ? picks.find((p) => p.user_id === session.user!.id) : undefined;
+                const allOnlyInterested = picks.every((p) => p.status === "interested");
 
-                // Feature 3: collect per-pick conflicts; determine card-level severity
+                // Conflict badges per pick
                 const pickConflicts = picks.map((p) => ({
                   pick: p,
                   entries: p.performance_start
@@ -1466,29 +1415,37 @@ export default function FringePage() {
                 const hasHard = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "hard"));
                 const hasSoft = pickConflicts.some((pc) => pc.entries.some((e) => e.level === "soft"));
 
-                // Timeline actions: build a Performance from pick data + find my pick in this card
-                const cardPerf: Performance = {
-                  start: repPick.performance_start!,
-                  end: repPick.performance_end ?? repPick.performance_start!,
-                };
-                const myPickInCard = session.user
-                  ? picks.find((p) => p.user_id === session.user!.id)
-                  : undefined;
+                // Unique committed friend performances I can quick-join
+                const myIsoCommitted =
+                  myPickInCard?.performance_start &&
+                  (myPickInCard.status === "going" || myPickInCard.status === "has_ticket")
+                    ? new Date(myPickInCard.performance_start).toISOString()
+                    : null;
+                const joinablePerfs = new Map<string, Performance>();
+                for (const p of picks) {
+                  if (p.user_id === session.user?.id) continue;
+                  if (!(p.status === "going" || p.status === "has_ticket") || !p.performance_start) continue;
+                  const iso = new Date(p.performance_start).toISOString();
+                  if (iso === myIsoCommitted) continue;
+                  if (!joinablePerfs.has(iso)) joinablePerfs.set(iso, { start: p.performance_start!, end: p.performance_end ?? p.performance_start! });
+                }
+                const joinableList = [...joinablePerfs.values()];
+                const multiPerf = joinableList.length > 1;
+
                 return (
                   <article
-                    key={`${show.id}::${repPick.performance_start}`}
+                    key={show.id}
                     className={[
                       s.showCard,
-                      isInterested ? s.timelineCardInterested : "",
+                      allOnlyInterested ? s.timelineCardInterested : "",
                       hasHard ? s.hasConflictHard : hasSoft ? s.hasConflictSoft : "",
                     ].join(" ")}
                   >
-                    {/* Top row: identical to show cards — info left, status buttons right */}
                     <div className={s.showTop}>
                       <div className={s.showInfo}>
                         <h3 className={s.showTitle}>{show.title}</h3>
                         <p className={s.showMeta}>
-                          {[timeStr, show.genre, show.venue.name].filter(Boolean).join(" · ")}
+                          {[show.genre, show.venue.name].filter(Boolean).join(" · ") || "Info mangler"}
                         </p>
                         {show.website && (
                           <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
@@ -1505,7 +1462,7 @@ export default function FringePage() {
                               <button
                                 key={status}
                                 className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
-                                onClick={() => handleStatusClickForPerf(show, cardPerf, status)}
+                                onClick={() => handleStatusClick(show, status)}
                                 title={meta.label}
                               >
                                 {meta.emoji}
@@ -1516,7 +1473,6 @@ export default function FringePage() {
                       )}
                     </div>
 
-                    {/* Bottom: conflict badges + pick tags + single Tag med */}
                     <div className={s.showBottom}>
                       {pickConflicts.map(({ pick, entries }) =>
                         entries.length > 0 ? (
@@ -1537,7 +1493,6 @@ export default function FringePage() {
                         ) : null
                       )}
                       <div className={s.pickTags}>
-                        {/* Own pick first, then friends */}
                         {[...picks]
                           .sort((a, b) =>
                             a.user_id === session.user?.id ? -1 :
@@ -1546,26 +1501,30 @@ export default function FringePage() {
                           .map((p) => (
                             <span key={p.user_id} className={`${s.tag} ${STATUS_META[p.status].cls}`}>
                               {STATUS_META[p.status].emoji} {p.user_name}: {STATUS_META[p.status].label}
+                              {p.performance_start && (p.status === "going" || p.status === "has_ticket") && (
+                                <span className={s.pickTime}>
+                                  {fmtEdinburgh(p.performance_start, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                              )}
                             </span>
                           ))}
                       </div>
-                      {/* Single Tag med per card — all picks share the same performance */}
-                      {canPick &&
-                        picks.some((p) =>
-                          p.user_id !== session.user?.id &&
-                          (p.status === "going" || p.status === "has_ticket")
-                        ) &&
-                        myPickInCard?.status !== "going" &&
-                        myPickInCard?.status !== "has_ticket" && (
-                          <button
-                            className={s.quickJoinBtn}
-                            style={{ marginTop: "0.35rem" }}
-                            onClick={() => handleQuickJoin(show, cardPerf)}
-                            title={`Tag med til ${fmtEdinburgh(cardPerf.start, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
-                          >
-                            + Tag med
-                          </button>
-                        )}
+                      {canPick && joinableList.length > 0 && (
+                        <div className={s.quickJoinRow}>
+                          {joinableList.map((perf) => (
+                            <button
+                              key={perf.start}
+                              className={s.quickJoinBtn}
+                              onClick={() => handleQuickJoin(show, perf)}
+                              title={`Tag med til ${fmtEdinburgh(perf.start, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`}
+                            >
+                              {multiPerf
+                                ? `+ Tag med · ${fmtEdinburgh(perf.start, { weekday: "short", hour: "2-digit", minute: "2-digit" })}`
+                                : "+ Tag med"}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </article>
                 );
