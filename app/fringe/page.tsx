@@ -2,6 +2,7 @@
 
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import s from "./fringe.module.css";
 import { AREA_LABELS, AREA_ORDER, type Area } from "@/lib/fringe-area";
@@ -226,6 +227,7 @@ function computeConflicts(picks: FringePick[]): Map<string, ConflictEntry[]> {
 export default function FringePage() {
   const { isLoaded, isSignedIn } = useUser();
   const { openSignIn, signOut } = useClerk();
+  const router = useRouter();
 
   const [shows,        setShows]        = useState<Show[]>([]);
   const [session,      setSession]      = useState<SessionData>({ user: null, groups: [], activeGroup: null });
@@ -280,6 +282,7 @@ export default function FringePage() {
   const tabRefPlan   = useRef<HTMLDivElement>(null);
   const tabRefGruppe = useRef<HTMLDivElement>(null);
   const savedScrolls = useRef<Record<TabId, number>>({ shows: 0, plan: 0, gruppe: 0 });
+  const tabHistory = useRef<TabId[]>([]);
 
   // Day strip
   const dayStripRef     = useRef<HTMLDivElement>(null);
@@ -378,10 +381,23 @@ export default function FringePage() {
 
   function switchTab(tab: TabId) {
     savedScrolls.current[activeTab] = window.scrollY;
+    tabHistory.current.push(activeTab);
     const url = new URL(window.location.href);
     url.searchParams.set("tab", tab);
     window.history.replaceState(null, "", url.toString());
     setActiveTab(tab);
+  }
+
+  function handleBack() {
+    if (isMobile && tabHistory.current.length > 0) {
+      const prev = tabHistory.current.pop()!;
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", prev);
+      window.history.replaceState(null, "", url.toString());
+      setActiveTab(prev);
+    } else {
+      router.back();
+    }
   }
 
   // Restore window scroll position after tab switch
@@ -972,7 +988,7 @@ export default function FringePage() {
     return (
       <div className={s.page}>
         <header className={s.header}>
-          <Link href="/" className={s.backLink}>←</Link>
+          <button className={s.backLink} onClick={handleBack}>←</button>
           <div className={s.headerCenter}>
             <span className={s.headerTitle}>Fringe Venneplanner</span>
           </div>
@@ -1327,7 +1343,7 @@ export default function FringePage() {
 
       {/* ── Header ── */}
       <header className={s.header}>
-        <Link href="/" className={s.backLink}>←</Link>
+        <button className={s.backLink} onClick={handleBack}>←</button>
         <div className={s.headerCenter}>
           <span className={s.headerTitle}>Fringe Venneplanner</span>
           {statusMsg && <span className={s.statusMsg}>{statusMsg}</span>}
@@ -1719,52 +1735,48 @@ export default function FringePage() {
               const isPickerOpen  = perfPicker?.showId === show.id;
               const rangePerfs    = perfsInRange(show);
               const firstPerf     = rangePerfs[0] ?? show.performances[0];
-              const metaParts  = [
+              const uniqueVenues = new Set(show.performances.map((p) => (p as {venue?: {name: string}}).venue?.name).filter(Boolean));
+              const venueName = uniqueVenues.size > 1 ? "Flere forskellige venues" : show.venue.name;
+              const metaParts = [
                 show.genre,
                 AREA_LABELS[show.venue.area] !== "Andet" ? AREA_LABELS[show.venue.area] : null,
-                show.venue.name,
-                firstPerf
-                  ? fmtEdinburgh(firstPerf.start, { day: "numeric", month: "short" }) +
-                    " " + fmtEdinburgh(firstPerf.start, { hour: "2-digit", minute: "2-digit" })
-                  : null,
-                firstPerf?.priceString ?? (firstPerf?.price != null ? `£${firstPerf.price}` : null),
+                venueName,
               ].filter(Boolean);
 
+              const isExpanded = expandedShows.has(show.id);
+              function toggleExpand() {
+                if (!show.descriptionTeaser) return;
+                setExpandedShows((prev) => {
+                  const next = new Set(prev);
+                  next.has(show.id) ? next.delete(show.id) : next.add(show.id);
+                  return next;
+                });
+              }
               return (
-                <article key={show.id} className={s.showCard}>
+                <article
+                  key={show.id}
+                  className={`${s.showCard} ${show.descriptionTeaser ? s.showCardClickable : ""}`}
+                  onClick={toggleExpand}
+                >
                   <div className={s.showTop}>
                     <div className={s.showInfo}>
-                      {show.descriptionTeaser ? (
-                        <button
-                          className={s.showTitleBtn}
-                          onClick={() =>
-                            setExpandedShows((prev) => {
-                              const next = new Set(prev);
-                              next.has(show.id) ? next.delete(show.id) : next.add(show.id);
-                              return next;
-                            })
-                          }
-                          aria-expanded={expandedShows.has(show.id)}
-                        >
-                          <span>{show.title}</span>
-                          <span className={s.expandArrow} aria-hidden="true">
-                            {expandedShows.has(show.id) ? "▴" : "▾"}
-                          </span>
-                        </button>
-                      ) : (
+                      <div className={s.showTitleRow}>
                         <h3 className={s.showTitle}>{show.title}</h3>
-                      )}
+                        {show.descriptionTeaser && (
+                          <span className={s.expandArrow} aria-hidden="true">{isExpanded ? "▴" : "▾"}</span>
+                        )}
+                      </div>
                       <p className={s.showMeta}>{metaParts.join(" · ") || "Info mangler"}</p>
                       {show.website && (
-                        <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink}>
+                        <a href={show.website} target="_blank" rel="noopener noreferrer" className={s.ticketLink} onClick={(e) => e.stopPropagation()}>
                           Billetter ↗
                         </a>
                       )}
-                      {show.descriptionTeaser && expandedShows.has(show.id) && (
+                      {show.descriptionTeaser && isExpanded && (
                         <p className={s.showDescription}>{show.descriptionTeaser}</p>
                       )}
                     </div>
-                    <div className={s.statusGrid}>
+                    <div className={s.statusGrid} onClick={(e) => e.stopPropagation()}>
                       {STATUSES.map((status) => {
                         const meta = STATUS_META[status];
                         const isActive = mine?.status === status;
@@ -1940,7 +1952,10 @@ export default function FringePage() {
       </div>
 
       <footer className={`${s.footer} ${s.desktopOnly}`}>
-        <span>Edinburgh Fringe Venneplanner · albertdieckmann.dk</span>
+        <div>
+          <span>Edinburgh Fringe Venneplanner · albertdieckmann.dk</span>
+          <p className={s.footerDisclaimer}>Not an official festival application · Listings provided courtesy of the Edinburgh Festivals Listings API</p>
+        </div>
         <Link href="/" className={s.footerLink}>← Tilbage</Link>
       </footer>
 

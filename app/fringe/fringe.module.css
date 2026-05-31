@@ -75,6 +75,9 @@
   line-height: 1;
   padding: 0 0.25rem;
   flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 .backLink:hover { color: var(--text); }
 .headerCenter {
@@ -546,23 +549,18 @@
   overflow: hidden;
   transition: border-color 0.15s;
 }
+.showCardClickable { cursor: pointer; }
+.showCardClickable:hover { border-color: var(--surface2); }
 .showCard:has(.statusBtnActive) { border-color: var(--surface2); }
 .showTop {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;
   padding: 0.75rem;
 }
 .showInfo { flex: 1; min-width: 0; }
-.showTitle { font-size: 14px; font-weight: 700; margin: 0 0 0.25rem; }
-/* Clickable title button — visually identical to .showTitle but as <button> */
-.showTitleBtn {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem;
-  width: 100%;
-  border: none; background: transparent; padding: 0; margin: 0 0 0.25rem;
-  color: var(--text); font-size: 14px; font-weight: 700;
-  text-align: left; cursor: pointer;
-  line-height: inherit;
-}
-.showTitleBtn:hover { color: var(--accent); }
+.showInfoClickable { cursor: pointer; }
+.showInfoClickable:hover .showTitle { color: var(--accent); }
+.showTitleRow { display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem; margin-bottom: 0.25rem; }
+.showTitle { font-size: 14px; font-weight: 700; margin: 0; }
 .expandArrow { font-size: 10px; color: var(--muted); flex-shrink: 0; }
 .showDescription {
   font-size: 12px; color: var(--muted); margin: 0.4rem 0 0;
@@ -670,6 +668,7 @@
   border-top: 1px solid var(--border);
   font-size: 11px; color: var(--muted);
 }
+.footerDisclaimer { margin: 0.2rem 0 0; font-size: 10px; opacity: 0.6; }
 .footerLink { color: var(--muted); text-decoration: none; }
 .footerLink:hover { color: var(--text); }
 
