@@ -20,6 +20,7 @@ type FringeEvent = {
   artist?: string;
   genre?: string;
   description_teaser?: string;
+  description?: string;
   website?: string;
   status?: string;
   venue?: {
@@ -43,7 +44,11 @@ function mapEvent(e: FringeEvent) {
     subTitle: e.sub_title || undefined,
     artist: e.artist || undefined,
     genre: e.genre || undefined,
-    descriptionTeaser: e.description_teaser || undefined,
+    descriptionTeaser: (() => {
+      const t = e.description_teaser || e.description || "";
+      if (!t) return undefined;
+      return t.length > 220 ? t.slice(0, 220).replace(/\s\S*$/, "") + "…" : t;
+    })(),
     website: e.website || undefined,
     venue: {
       name: e.venue?.name ?? "Venue TBA",
@@ -116,22 +121,25 @@ async function handleRefresh(req: NextRequest) {
 
     const shows = allRaw.filter((e) => e.status !== "deleted").map(mapEvent);
 
-    // Upsert all shows in batches of 50 to avoid hitting query size limits
+    // Upsert in parallel batches of 50 (each batch is one SQL statement)
     const BATCH = 50;
     const now = new Date().toISOString();
-    for (let i = 0; i < shows.length; i += BATCH) {
-      const batch = shows.slice(i, i + BATCH);
-      // Build a multi-row upsert
-      for (const show of batch) {
-        await sql`
-          INSERT INTO fringe_shows_cache (id, data, refreshed_at)
-          VALUES (${show.id}, ${JSON.stringify(show)}, ${now})
-          ON CONFLICT (id) DO UPDATE
-            SET data = EXCLUDED.data,
-                refreshed_at = EXCLUDED.refreshed_at
-        `;
-      }
-    }
+    const batches: (typeof shows)[] = [];
+    for (let i = 0; i < shows.length; i += BATCH) batches.push(shows.slice(i, i + BATCH));
+
+    await Promise.all(
+      batches.map((batch) => {
+        // Build VALUES list: ($1,$2,$3),($4,$5,$6),...
+        const values = batch.map((_, j) => `($${j * 3 + 1},$${j * 3 + 2}::jsonb,$${j * 3 + 3})`).join(",");
+        const params = batch.flatMap((show) => [show.id, JSON.stringify(show), now]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (sql as any).query(
+          `INSERT INTO fringe_shows_cache (id, data, refreshed_at) VALUES ${values}
+           ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, refreshed_at = EXCLUDED.refreshed_at`,
+          params,
+        );
+      }),
+    );
 
     // Delete shows that were not in this refresh (deleted/removed from API)
     // We do this by removing rows whose refreshed_at is older than the current refresh
