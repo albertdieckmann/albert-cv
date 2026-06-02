@@ -268,6 +268,10 @@ export default function FringePage() {
   // Expanded show descriptions (shows tab only)
   const [expandedShows, setExpandedShows] = useState<Set<string>>(new Set());
 
+  // Pagination for shows tab
+  const PAGE_SIZE = 50;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
   // Group settings (drawer edit form)
   const [editGroupName,  setEditGroupName]  = useState("");
   const [editStartDate,  setEditStartDate]  = useState("");
@@ -324,6 +328,9 @@ export default function FringePage() {
       .then((d) => setShows(d.items ?? []))
       .catch(console.error);
   }, []);
+
+  // Reset pagination when filters change
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, selectedOnly, genreFilter, areaFilter, dateFrom, dateTo]);
 
   useEffect(() => {
     const ui = loadUi();
@@ -999,7 +1006,9 @@ export default function FringePage() {
     (editStartDate || "") !== (session.activeGroup.startDate?.slice(0, 10) ?? "") ||
     (editEndDate   || "") !== (session.activeGroup.endDate?.slice(0, 10)   ?? "")
   );
-  const visible     = visibleShows();
+  const allVisible  = visibleShows();
+  const visible     = allVisible.slice(0, visibleCount);
+  const hasMore     = visibleCount < allVisible.length;
   const pGroups     = planGroups();
   const conflicts   = computeConflicts(session.activeGroup?.picks ?? []);
   const tCount      = pGroups.flatMap(([, items]) => items).length;
@@ -1543,7 +1552,12 @@ export default function FringePage() {
       {/* ── Shows list ── */}
       <section className={s.section}>
         <div className={s.sectionHeader}>
-          <p className={s.sectionTag}>Programme · {shows.length} shows</p>
+          <p className={s.sectionTag}>
+            Programme ·{" "}
+            {allVisible.length < shows.length
+              ? `${allVisible.length} af ${shows.length} shows`
+              : `${shows.length} shows`}
+          </p>
         </div>
 
         <div className={s.filterBar}>
@@ -1886,6 +1900,16 @@ export default function FringePage() {
                 </article>
               );
             })}
+          </div>
+        )}
+        {hasMore && (
+          <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+            <button
+              className={s.ghostBtn}
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+            >
+              Vis flere · {allVisible.length - visibleCount} tilbage
+            </button>
           </div>
         )}
       </section>

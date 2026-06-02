@@ -23,7 +23,7 @@ type FringeEvent = {
   artist?: string;
   artist_type?: string;
   genre?: string;
-  genre_tags?: string[];
+  genre_tags?: string[] | string;
   description_teaser?: string;
   website?: string;
   status?: string;
@@ -34,7 +34,7 @@ type FringeEvent = {
     position?: { lat: number; lon: number };
   };
   performances?: FringePerformance[];
-  images?: Record<string, { type: string; original?: { url: string } }>;
+  images?: Record<string, { type: string; versions?: { original?: { url: string } }; original?: { url: string } }>;
 };
 
 // ─── Internal Show type (exported for use in page) ────────────────────────────
@@ -77,7 +77,8 @@ function mapEvent(e: FringeEvent): Show {
   const images = e.images ? Object.values(e.images) : [];
   const hero = images.find((i) => i.type === "hero");
   const thumb = images.find((i) => i.type === "thumb");
-  const imageUrl = (hero ?? thumb)?.original?.url;
+  const best = hero ?? thumb;
+  const imageUrl = best?.versions?.original?.url ?? best?.original?.url;
 
   const lat = e.venue?.position?.lat;
   const lon = e.venue?.position?.lon;
@@ -91,7 +92,11 @@ function mapEvent(e: FringeEvent): Show {
     artist: e.artist || undefined,
     artistType: e.artist_type || undefined,
     genre: e.genre || undefined,
-    genreTags: e.genre_tags?.length ? e.genre_tags : undefined,
+    genreTags: e.genre_tags
+      ? (typeof e.genre_tags === "string"
+          ? e.genre_tags.split(",").map((t) => t.trim()).filter(Boolean)
+          : e.genre_tags)
+      : undefined,
     descriptionTeaser: e.description_teaser || undefined,
     website: e.website || undefined,
     status: e.status,
@@ -130,21 +135,43 @@ export async function GET() {
 
   try {
     const festival = process.env.FRINGE_FESTIVAL_ID ?? "demofringe";
-    const url = buildSignedUrl("/events", { festival, size: "100" });
+    const PAGE_SIZE = 100;
 
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error(`Fringe API ${res.status}:`, body);
-      return NextResponse.json({ items: [], error: `API error: ${res.status}` });
+    // Fetch first page to determine total, then fetch remaining pages in parallel
+    const firstUrl = buildSignedUrl("/events", { festival, size: String(PAGE_SIZE), from: "0" });
+    const firstRes = await fetch(firstUrl, { next: { revalidate: 3600 } });
+    if (!firstRes.ok) {
+      const body = await firstRes.text().catch(() => "");
+      console.error(`Fringe API ${firstRes.status}:`, body);
+      return NextResponse.json({ items: [], error: `API error: ${firstRes.status}` });
     }
 
-    const data = await res.json();
-    const raw: FringeEvent[] = Array.isArray(data)
-      ? data
-      : (data.results ?? data.items ?? data.events ?? []);
+    const firstPage: FringeEvent[] = await firstRes.json();
+    if (!Array.isArray(firstPage) || firstPage.length === 0) {
+      return NextResponse.json({ items: [], count: 0 });
+    }
 
-    const shows = raw.filter((e) => e.status !== "deleted").map(mapEvent);
+    // If first page is full, fetch remaining pages in parallel (cap at 50 pages = 5000 shows)
+    let allRaw: FringeEvent[] = firstPage;
+    if (firstPage.length === PAGE_SIZE) {
+      const MAX_PAGES = 50;
+      const remainingUrls = Array.from({ length: MAX_PAGES - 1 }, (_, i) =>
+        buildSignedUrl("/events", { festival, size: String(PAGE_SIZE), from: String((i + 1) * PAGE_SIZE) })
+      );
+      const responses = await Promise.all(
+        remainingUrls.map((url) => fetch(url, { next: { revalidate: 3600 } }))
+      );
+      const pages = await Promise.all(
+        responses.map((r) => (r.ok ? r.json() : Promise.resolve([])))
+      );
+      for (const page of pages) {
+        if (!Array.isArray(page) || page.length === 0) break;
+        allRaw = allRaw.concat(page);
+        if (page.length < PAGE_SIZE) break;
+      }
+    }
+
+    const shows = allRaw.filter((e) => e.status !== "deleted").map(mapEvent);
     return NextResponse.json({ items: shows, count: shows.length });
   } catch (err) {
     console.error("Failed to fetch Fringe shows:", err);
