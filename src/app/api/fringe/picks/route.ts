@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
+import { buildGroupSession } from "@/lib/fringe-session";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -59,5 +60,6 @@ export async function POST(req: NextRequest) {
     `;
   }
 
-  return NextResponse.json({ ok: true });
+  const activeGroup = await buildGroupSession(userId, groupId);
+  return NextResponse.json({ ok: true, groupId, activeGroup });
 }

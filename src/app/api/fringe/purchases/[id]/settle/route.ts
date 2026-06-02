@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
+import { buildGroupSession } from "@/lib/fringe-session";
 
 export async function POST(
   req: NextRequest,
@@ -25,6 +26,7 @@ export async function POST(
   if (!accessCheck.rows.length) {
     return NextResponse.json({ error: "Ikke adgang" }, { status: 403 });
   }
+  const groupId: number = accessCheck.rows[0].group_id;
 
   const isSettled = settled !== false;
 
@@ -42,5 +44,6 @@ export async function POST(
     `;
   }
 
-  return NextResponse.json({ ok: true });
+  const activeGroup = await buildGroupSession(userId, groupId);
+  return NextResponse.json({ ok: true, activeGroup });
 }
