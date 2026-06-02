@@ -5,8 +5,17 @@ export const UI_KEY = "fringe-planner-ui-v2";
 export const EDINBURGH_TZ = "Europe/London";
 export const PAGE_SIZE = 50;
 
-export const fmtEdinburgh = (iso: string, opts: Intl.DateTimeFormatOptions): string =>
-  new Date(iso).toLocaleString("da-DK", { ...opts, timeZone: EDINBURGH_TZ });
+// The Fringe API returns times in Edinburgh local time with no timezone suffix
+// (e.g. "2026-08-05 15:00:00"). Appending Z treats them as UTC for parsing,
+// then we display with timeZone: "UTC" — giving back the original Edinburgh time
+// without any shift. Strings that already carry a TZ offset ("+01:00" etc.)
+// are passed through unchanged and displayed as Europe/London.
+export const fmtEdinburgh = (iso: string, opts: Intl.DateTimeFormatOptions): string => {
+  const hasOffset = iso.includes("+") || iso.match(/Z$/);
+  const normalized = hasOffset ? iso : iso.replace(" ", "T") + "Z";
+  const tz = hasOffset ? EDINBURGH_TZ : "UTC";
+  return new Date(normalized).toLocaleString("da-DK", { ...opts, timeZone: tz });
+};
 
 export function loadUi() {
   if (typeof window === "undefined") {

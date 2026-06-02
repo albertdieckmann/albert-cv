@@ -51,10 +51,8 @@ function mapEvent(e: FringeEvent) {
     },
     performances: (e.performances ?? [])
       .map((p) => ({
-        // The Fringe API returns times in Edinburgh local time (BST, UTC+1 in Aug)
-        // with no timezone suffix. Append +01:00 so JS Date parses them correctly.
-        start: p.start.includes("+") || p.start.endsWith("Z") ? p.start : p.start.replace(" ", "T") + "+01:00",
-        end:   p.end.includes("+")   || p.end.endsWith("Z")   ? p.end   : p.end.replace(" ", "T")   + "+01:00",
+        start: p.start,
+        end: p.end,
         durationMinutes: p.duration_minutes,
         price: p.price,
         priceString: p.price_string,
