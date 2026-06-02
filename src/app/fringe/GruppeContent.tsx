@@ -60,6 +60,8 @@ export function GruppeContent({
   );
 
   const [purchaseForm, setPurchaseForm] = useState<PurchaseForm | null>(null);
+  const [detailsOpen,  setDetailsOpen]  = useState(false);
+  const [drawerMsg,    setDrawerMsg]    = useState("");
 
   return (
     <>
@@ -163,7 +165,9 @@ export function GruppeContent({
             </>
           )}
 
-          <details className={s.details}>
+          {drawerMsg && <p className={s.drawerMsg}>{drawerMsg}</p>}
+
+          <details className={s.details} open={detailsOpen} onToggle={(e) => setDetailsOpen((e.target as HTMLDetailsElement).open)}>
             <summary className={s.detailsSummary}>
               {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
             </summary>
@@ -171,6 +175,9 @@ export function GruppeContent({
               <form
                 onSubmit={(e) => handleCreateGroup(e, groupName, groupStartDate, groupEndDate, () => {
                   setGroupName(""); setGroupStartDate(""); setGroupEndDate("");
+                  setDetailsOpen(false);
+                  setDrawerMsg("Gruppe oprettet ✓");
+                  setTimeout(() => setDrawerMsg(""), 3000);
                 })}
                 className={s.stackForm}
               >
@@ -192,7 +199,12 @@ export function GruppeContent({
               </form>
               <div className={s.orDivider}><span>eller</span></div>
               <form
-                onSubmit={(e) => handleJoinGroup(e, inviteCode, () => setInviteCode(""))}
+                onSubmit={(e) => handleJoinGroup(e, inviteCode, () => {
+                  setInviteCode("");
+                  setDetailsOpen(false);
+                  setDrawerMsg("Du er med i gruppen ✓");
+                  setTimeout(() => setDrawerMsg(""), 3000);
+                })}
                 className={s.stackForm}
               >
                 <label className={s.fieldWrap}>
