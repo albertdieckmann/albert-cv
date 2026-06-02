@@ -35,10 +35,6 @@ export default function FringePage() {
   const [areaFilter,   setAreaFilter]   = useState<Area[]>([]);
   const [dateFrom,     setDateFrom]     = useState("");
   const [dateTo,       setDateTo]       = useState("");
-  const [groupName,    setGroupName]    = useState("");
-  const [groupStartDate, setGroupStartDate] = useState("");
-  const [groupEndDate,   setGroupEndDate]   = useState("");
-  const [inviteCode,   setInviteCode]   = useState("");
   const [statusMsg,    setStatusMsg]    = useState("");
   const [busy,         setBusy]         = useState(false);
   const [ready,        setReady]        = useState(false);
@@ -64,9 +60,6 @@ export default function FringePage() {
   const [expandedShows, setExpandedShows] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const [editGroupName,  setEditGroupName]  = useState("");
-  const [editStartDate,  setEditStartDate]  = useState("");
-  const [editEndDate,    setEditEndDate]    = useState("");
 
   const [activeTab, setActiveTab] = useState<TabId>("shows");
   const [isMobile,  setIsMobile]  = useState(false);
@@ -74,8 +67,6 @@ export default function FringePage() {
 
   const dayStripRef      = useRef<HTMLDivElement>(null);
   const dayStripScrolled = useRef(false);
-
-  const [purchaseForm, setPurchaseForm] = useState<PurchaseForm | null>(null);
 
   const activeGroupIdRef = useRef<number | null>(null);
   const statusTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -139,12 +130,6 @@ export default function FringePage() {
   }, [isLoaded, isSignedIn, fetchSession]);
 
   useEffect(() => {
-    setEditGroupName(session.activeGroup?.name ?? "");
-    setEditStartDate(session.activeGroup?.startDate?.slice(0, 10) ?? "");
-    setEditEndDate(session.activeGroup?.endDate?.slice(0, 10) ?? "");
-  }, [session.activeGroup?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     const g = session.activeGroup;
     const hasGroupDates = !!(g?.startDate && g?.endDate);
     if (hasGroupDates) {
@@ -204,14 +189,14 @@ export default function FringePage() {
 
   // ── Group handlers ─────────────────────────────────────────────────────────
 
-  async function handleCreateGroup(e: React.FormEvent) {
+  async function handleCreateGroup(e: React.FormEvent, name: string, startDate: string, endDate: string, reset: () => void) {
     e.preventDefault();
     await run(async () => {
       const pay = await api("/api/fringe/groups", {
         method: "POST",
-        body: JSON.stringify({ name: groupName, startDate: groupStartDate || null, endDate: groupEndDate || null }),
+        body: JSON.stringify({ name, startDate: startDate || null, endDate: endDate || null }),
       });
-      setGroupName(""); setGroupStartDate(""); setGroupEndDate("");
+      reset();
       await fetchSession(pay.groupId);
       flash("Gruppe oprettet.");
     });
@@ -241,11 +226,11 @@ export default function FringePage() {
     }
   }
 
-  async function handleJoinGroup(e: React.FormEvent) {
+  async function handleJoinGroup(e: React.FormEvent, code: string, reset: () => void) {
     e.preventDefault();
     await run(async () => {
-      await api("/api/fringe/invites/accept", { method: "POST", body: JSON.stringify({ code: inviteCode }) });
-      setInviteCode("");
+      await api("/api/fringe/invites/accept", { method: "POST", body: JSON.stringify({ code }) });
+      reset();
       await fetchSession();
       flash("Du er med i gruppen.");
     });
@@ -297,7 +282,7 @@ export default function FringePage() {
     saveUi({ dateFrom: newFrom, dateTo: newTo });
   }
 
-  async function handleSaveGroupSettings(e: React.FormEvent) {
+  async function handleSaveGroupSettings(e: React.FormEvent, editGroupName: string, editStartDate: string, editEndDate: string) {
     e.preventDefault();
     if (!session.activeGroup) return;
     const isOwner = session.activeGroup.members.find((m) => m.id === session.user?.id)?.role === "owner";
@@ -524,11 +509,11 @@ export default function FringePage() {
 
   // ── Purchase handlers ──────────────────────────────────────────────────────
 
-  async function handleLogPurchase(e: React.FormEvent) {
+  async function handleLogPurchase(e: React.FormEvent, purchaseForm: PurchaseForm, closePurchaseForm: () => void) {
     e.preventDefault();
-    if (!purchaseForm || !session.activeGroup) return;
+    if (!session.activeGroup) return;
     const form = purchaseForm;
-    setPurchaseForm(null);
+    closePurchaseForm();
     await run(async () => {
       if (form.editId) {
         const r = await api(`/api/fringe/purchases/${form.editId}`, {
@@ -558,8 +543,8 @@ export default function FringePage() {
     });
   }
 
-  function handleEditPurchase(purchase: Purchase) {
-    setPurchaseForm({
+  function handleEditPurchase(purchase: Purchase): PurchaseForm {
+    return {
       editId: purchase.id,
       showId: purchase.show_id,
       perfStart: purchase.performance_start ?? "",
@@ -567,7 +552,7 @@ export default function FringePage() {
       cost: purchase.total_cost ?? "",
       notes: purchase.notes ?? "",
       covered: purchase.covers.map((c) => c.covered_user_id),
-    });
+    };
   }
 
   async function handleDeletePurchase(id: number, title: string) {
@@ -763,11 +748,6 @@ export default function FringePage() {
 
   const canPick         = !!(session.user && session.activeGroup);
   const isGroupOwner    = session.activeGroup?.members.find((m) => m.id === session.user?.id)?.role === "owner";
-  const groupSettingsChanged = session.activeGroup != null && (
-    editGroupName !== session.activeGroup.name ||
-    (editStartDate || "") !== (session.activeGroup.startDate?.slice(0, 10) ?? "") ||
-    (editEndDate   || "") !== (session.activeGroup.endDate?.slice(0, 10)   ?? "")
-  );
   const allVisible  = visibleShows();
   const visible     = allVisible.slice(0, visibleCount);
   const hasMore     = visibleCount < allVisible.length;
@@ -779,11 +759,7 @@ export default function FringePage() {
   const days        = allDays();
 
   const gruppeProps = {
-    session, isSignedIn: !!isSignedIn, isGroupOwner: !!isGroupOwner, groupSettingsChanged,
-    editGroupName, setEditGroupName, editStartDate, setEditStartDate, editEndDate, setEditEndDate,
-    groupName, setGroupName, groupStartDate, setGroupStartDate, groupEndDate, setGroupEndDate,
-    inviteCode, setInviteCode,
-    purchaseForm, setPurchaseForm, shows,
+    session, isSignedIn: !!isSignedIn, isGroupOwner: !!isGroupOwner, shows,
     handleSaveGroupSettings, handleCreateGroup, handleJoinGroup,
     handleCreateInvite, handleCopyInvite, handleLeaveGroup, handleDeleteGroup, handleSwitchGroup,
     handleLogPurchase, handleEditPurchase, handleDeletePurchase, handleSettle,

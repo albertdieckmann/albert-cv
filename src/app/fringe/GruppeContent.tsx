@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { formatPerf } from "./utils";
 import type { SessionData, Show, Purchase, PurchaseForm } from "./types";
 import s from "./fringe.module.css";
@@ -8,38 +9,18 @@ type Props = {
   session: SessionData;
   isSignedIn: boolean;
   isGroupOwner: boolean;
-  groupSettingsChanged: boolean;
-  // Group settings
-  editGroupName: string;
-  setEditGroupName: (v: string) => void;
-  editStartDate: string;
-  setEditStartDate: (v: string) => void;
-  editEndDate: string;
-  setEditEndDate: (v: string) => void;
-  // New group form
-  groupName: string;
-  setGroupName: (v: string) => void;
-  groupStartDate: string;
-  setGroupStartDate: (v: string) => void;
-  groupEndDate: string;
-  setGroupEndDate: (v: string) => void;
-  inviteCode: string;
-  setInviteCode: (v: string) => void;
-  // Purchase form
-  purchaseForm: PurchaseForm | null;
-  setPurchaseForm: (v: PurchaseForm | null | ((prev: PurchaseForm | null) => PurchaseForm | null)) => void;
   shows: Show[];
   // Handlers
-  handleSaveGroupSettings: (e: React.FormEvent) => void;
-  handleCreateGroup: (e: React.FormEvent) => void;
-  handleJoinGroup: (e: React.FormEvent) => void;
+  handleSaveGroupSettings: (e: React.FormEvent, editGroupName: string, editStartDate: string, editEndDate: string) => void;
+  handleCreateGroup: (e: React.FormEvent, name: string, startDate: string, endDate: string, reset: () => void) => void;
+  handleJoinGroup: (e: React.FormEvent, code: string, reset: () => void) => void;
   handleCreateInvite: (e: React.FormEvent) => void;
   handleCopyInvite: () => void;
   handleLeaveGroup: (id: number, name: string) => void;
   handleDeleteGroup: (id: number, name: string) => void;
   handleSwitchGroup: (id: number) => void;
-  handleLogPurchase: (e: React.FormEvent) => void;
-  handleEditPurchase: (purchase: Purchase) => void;
+  handleLogPurchase: (e: React.FormEvent, form: PurchaseForm, close: () => void) => void;
+  handleEditPurchase: (purchase: Purchase) => PurchaseForm;
   handleDeletePurchase: (id: number, title: string) => void;
   handleSettle: (purchaseId: number, coveredUserId: string, settled: boolean) => void;
   openSignIn: () => void;
@@ -49,16 +30,37 @@ type Props = {
 };
 
 export function GruppeContent({
-  session, isSignedIn, isGroupOwner, groupSettingsChanged,
-  editGroupName, setEditGroupName, editStartDate, setEditStartDate, editEndDate, setEditEndDate,
-  groupName, setGroupName, groupStartDate, setGroupStartDate, groupEndDate, setGroupEndDate,
-  inviteCode, setInviteCode,
-  purchaseForm, setPurchaseForm, shows,
+  session, isSignedIn, isGroupOwner, shows,
   handleSaveGroupSettings, handleCreateGroup, handleJoinGroup,
   handleCreateInvite, handleCopyInvite, handleLeaveGroup, handleDeleteGroup, handleSwitchGroup,
   handleLogPurchase, handleEditPurchase, handleDeletePurchase, handleSettle,
   openSignIn, setDrawerOpen, signOut, fmtEdinburgh,
 }: Props) {
+  // ── Local form state (isolated here so keystrokes don't re-render the show list) ──
+  const [groupName,      setGroupName]      = useState("");
+  const [groupStartDate, setGroupStartDate] = useState("");
+  const [groupEndDate,   setGroupEndDate]   = useState("");
+  const [inviteCode,     setInviteCode]     = useState("");
+
+  // Group settings — initialise from session, sync when group changes
+  const [editGroupName, setEditGroupName] = useState(session.activeGroup?.name ?? "");
+  const [editStartDate, setEditStartDate] = useState(session.activeGroup?.startDate?.slice(0, 10) ?? "");
+  const [editEndDate,   setEditEndDate]   = useState(session.activeGroup?.endDate?.slice(0, 10)   ?? "");
+
+  useEffect(() => {
+    setEditGroupName(session.activeGroup?.name ?? "");
+    setEditStartDate(session.activeGroup?.startDate?.slice(0, 10) ?? "");
+    setEditEndDate(session.activeGroup?.endDate?.slice(0, 10)     ?? "");
+  }, [session.activeGroup?.id]);
+
+  const groupSettingsChanged = session.activeGroup != null && (
+    editGroupName !== session.activeGroup.name ||
+    (editStartDate || "") !== (session.activeGroup.startDate?.slice(0, 10) ?? "") ||
+    (editEndDate   || "") !== (session.activeGroup.endDate?.slice(0, 10)   ?? "")
+  );
+
+  const [purchaseForm, setPurchaseForm] = useState<PurchaseForm | null>(null);
+
   return (
     <>
       {/* Profil */}
@@ -103,7 +105,7 @@ export function GruppeContent({
 
           {session.activeGroup && (
             <>
-              <form onSubmit={handleSaveGroupSettings} className={s.groupSettingsForm}>
+              <form onSubmit={(e) => handleSaveGroupSettings(e, editGroupName, editStartDate, editEndDate)} className={s.groupSettingsForm}>
                 {isGroupOwner && (
                   <label className={s.fieldWrap}>
                     <span className={s.fieldLabel}>Gruppenavn</span>
@@ -166,7 +168,12 @@ export function GruppeContent({
               {session.groups.length === 0 ? "Opret gruppe eller join med invite-kode" : "Ny gruppe / join med kode"}
             </summary>
             <div className={s.detailsBody}>
-              <form onSubmit={handleCreateGroup} className={s.stackForm}>
+              <form
+                onSubmit={(e) => handleCreateGroup(e, groupName, groupStartDate, groupEndDate, () => {
+                  setGroupName(""); setGroupStartDate(""); setGroupEndDate("");
+                })}
+                className={s.stackForm}
+              >
                 <label className={s.fieldWrap}>
                   <span className={s.fieldLabel}>Navn</span>
                   <input className={s.fieldInput} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Fx Edinburgh-gæng" maxLength={50} required />
@@ -184,7 +191,10 @@ export function GruppeContent({
                 <button type="submit" className={s.primaryBtn}>Opret</button>
               </form>
               <div className={s.orDivider}><span>eller</span></div>
-              <form onSubmit={handleJoinGroup} className={s.stackForm}>
+              <form
+                onSubmit={(e) => handleJoinGroup(e, inviteCode, () => setInviteCode(""))}
+                className={s.stackForm}
+              >
                 <label className={s.fieldWrap}>
                   <span className={s.fieldLabel}>Invite-kode</span>
                   <input className={s.fieldInput} value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Fx A3X7K2" maxLength={10} required />
@@ -223,7 +233,7 @@ export function GruppeContent({
                         )}
                         {purchase.buyer_user_id === session.user?.id && (
                           <div className={s.purchaseActions}>
-                            <button className={s.purchaseActionBtn} onClick={() => handleEditPurchase(purchase)} title="Rediger">✎</button>
+                            <button className={s.purchaseActionBtn} onClick={() => setPurchaseForm(handleEditPurchase(purchase))} title="Rediger">✎</button>
                             <button className={s.purchaseActionBtn} onClick={() => handleDeletePurchase(purchase.id, purchase.show_title)} title="Slet">✕</button>
                           </div>
                         )}
@@ -255,7 +265,7 @@ export function GruppeContent({
           )}
 
           {purchaseForm ? (
-            <form onSubmit={handleLogPurchase} className={`${s.stackForm} ${s.purchaseFormWrap}`}>
+            <form onSubmit={(e) => handleLogPurchase(e, purchaseForm, () => setPurchaseForm(null))} className={`${s.stackForm} ${s.purchaseFormWrap}`}>
               {purchaseForm.editId && (
                 <p className={s.fieldLabel} style={{ marginBottom: "0.5rem" }}>
                   Rediger: {shows.find((sh) => sh.id === purchaseForm.showId)?.title ?? purchaseForm.showId}
