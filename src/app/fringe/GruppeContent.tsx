@@ -10,6 +10,8 @@ type Props = {
   isSignedIn: boolean;
   isGroupOwner: boolean;
   shows: Show[];
+  clerkUserName: string | null;
+  clerkUserEmail: string | null;
   // Handlers
   handleSaveGroupSettings: (e: React.FormEvent, editGroupName: string, editStartDate: string, editEndDate: string) => void;
   handleCreateGroup: (e: React.FormEvent, name: string, startDate: string, endDate: string, reset: () => void) => void;
@@ -31,6 +33,7 @@ type Props = {
 
 export function GruppeContent({
   session, isSignedIn, isGroupOwner, shows,
+  clerkUserName, clerkUserEmail,
   handleSaveGroupSettings, handleCreateGroup, handleJoinGroup,
   handleCreateInvite, handleCopyInvite, handleLeaveGroup, handleDeleteGroup, handleSwitchGroup,
   handleLogPurchase, handleEditPurchase, handleDeletePurchase, handleSettle,
@@ -78,8 +81,8 @@ export function GruppeContent({
         ) : (
           <div className={s.identityCard}>
             <div>
-              <p className={s.identityName}>{session.user?.name}</p>
-              <p className={s.identityEmail}>{session.user?.email}</p>
+              <p className={s.identityName}>{session.user?.name ?? clerkUserName ?? "…"}</p>
+              <p className={s.identityEmail}>{session.user?.email ?? clerkUserEmail ?? ""}</p>
             </div>
             <button className={s.ghostBtn} onClick={() => signOut({ redirectUrl: "/fringe" })}>Log ud</button>
           </div>

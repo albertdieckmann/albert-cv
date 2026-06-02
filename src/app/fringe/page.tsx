@@ -22,7 +22,7 @@ import { TicketDialog, JoinConfirmDialog } from "./Dialogs";
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function FringePage() {
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user: clerkUser } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
   const openSignIn = () => router.push("/fringe/sign-in");
@@ -760,6 +760,8 @@ export default function FringePage() {
 
   const gruppeProps = {
     session, isSignedIn: !!isSignedIn, isGroupOwner: !!isGroupOwner, shows,
+    clerkUserName: clerkUser?.fullName ?? clerkUser?.firstName ?? null,
+    clerkUserEmail: clerkUser?.primaryEmailAddress?.emailAddress ?? null,
     handleSaveGroupSettings, handleCreateGroup, handleJoinGroup,
     handleCreateInvite, handleCopyInvite, handleLeaveGroup, handleDeleteGroup, handleSwitchGroup,
     handleLogPurchase, handleEditPurchase, handleDeletePurchase, handleSettle,
@@ -777,13 +779,25 @@ export default function FringePage() {
         </div>
         <div className={s.headerActions}>
           <button className={s.iconBtn} onClick={() => run(fetchSession)} aria-label="Opdatér" title="Opdatér">↻</button>
-          <button
-            className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""} ${s.desktopOnly}`}
-            onClick={() => setDrawerOpen((v) => !v)}
-            aria-label="Profil og gruppe"
-          >
-            {session.activeGroup ? "●" : "○"}
-          </button>
+          {isSignedIn && (
+            <button
+              className={`${s.userChip} ${drawerOpen ? s.userChipActive : ""} ${s.desktopOnly}`}
+              onClick={() => setDrawerOpen((v) => !v)}
+              aria-label="Profil og gruppe"
+              title={session.user?.email ?? clerkUser?.primaryEmailAddress?.emailAddress ?? ""}
+            >
+              {(session.user?.name ?? clerkUser?.fullName ?? clerkUser?.firstName ?? "…").split(" ")[0]}
+            </button>
+          )}
+          {!isSignedIn && (
+            <button
+              className={`${s.iconBtn} ${drawerOpen ? s.iconBtnActive : ""} ${s.desktopOnly}`}
+              onClick={() => setDrawerOpen((v) => !v)}
+              aria-label="Profil og gruppe"
+            >
+              ○
+            </button>
+          )}
         </div>
       </header>
 

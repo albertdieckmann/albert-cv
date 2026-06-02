@@ -34,7 +34,7 @@ export function PlanTab({
       {/* Stats */}
       <div className={s.statsStrip}>
         {[
-          { label: "Du",        value: session.user?.name ?? "Gæst" },
+          { label: "Du",        value: session.user?.name.split(" ")[0] ?? "Gæst" },
           { label: "Gruppe",    value: session.activeGroup?.name ?? "—" },
           { label: "I planen",  value: tCount },
           { label: "Programme", value: shows.length },
