@@ -44,11 +44,7 @@ function mapEvent(e: FringeEvent) {
     subTitle: e.sub_title || undefined,
     artist: e.artist || undefined,
     genre: e.genre || undefined,
-    descriptionTeaser: (() => {
-      const t = e.description_teaser || e.description || "";
-      if (!t) return undefined;
-      return t.length > 220 ? t.slice(0, 220).replace(/\s\S*$/, "") + "…" : t;
-    })(),
+    descriptionTeaser: e.description_teaser || e.description || undefined,
     website: e.website || undefined,
     venue: {
       name: e.venue?.name ?? "Venue TBA",
