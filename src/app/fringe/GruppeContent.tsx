@@ -386,6 +386,11 @@ export function GruppeContent({
           )}
         </div>
       )}
+
+      <div className={s.gruppeFooter}>
+        <p>Ikke en officiel festival-applikation.</p>
+        <p>Programoversigt leveret af Edinburgh Festivals Listings API.</p>
+      </div>
     </>
   );
 }

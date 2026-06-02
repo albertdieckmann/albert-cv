@@ -397,16 +397,25 @@ export function ShowsTab({
             })}
           </div>
         )}
-        {hasMore && (
-          <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+        <div className={s.showsFooter}>
+          {hasMore && (
             <button
               className={s.ghostBtn}
               onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
             >
               Vis flere · {allVisible.length - visibleCount} tilbage
             </button>
-          </div>
-        )}
+          )}
+          {allVisible.length > 10 && (
+            <button
+              className={s.scrollTopBtn}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              aria-label="Scroll til toppen"
+            >
+              ↑ Top
+            </button>
+          )}
+        </div>
       </section>
     </div>
   );
