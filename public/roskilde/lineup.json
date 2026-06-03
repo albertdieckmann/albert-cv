@@ -1,6 +1,6 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-06-03T11:53:14.630330Z",
+  "generatedAt": "2026-06-03T21:45:08.181723Z",
   "itemCount": 273,
   "items": [
     {
@@ -250,7 +250,7 @@
         "Friday",
         "Friday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -303,7 +303,7 @@
           "date": "2026-06-30T11:00:00",
           "startTime": "2026-05-07T11:00:00",
           "timeLabel": "11.00",
-          "stage": "",
+          "stage": "Stadion",
           "showTitle": null
         },
         {
