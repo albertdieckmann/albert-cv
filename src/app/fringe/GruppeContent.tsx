@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { formatPerf } from "./utils";
 import type { SessionData, Show, Purchase, PurchaseForm } from "./types";
 import s from "./fringe.module.css";
+
+const AreaMap = dynamic(() => import("./AreaMap").then((m) => m.AreaMap), { ssr: false, loading: () => <div style={{ height: 340, background: "var(--surface)", borderRadius: 10 }} /> });
 
 type Props = {
   session: SessionData;
@@ -386,6 +389,14 @@ export function GruppeContent({
           )}
         </div>
       )}
+
+      <div className={s.section} style={{ marginTop: "1.5rem" }}>
+        <p className={s.sectionTag}>Områdekort</p>
+        <p className={s.muted} style={{ marginBottom: "0.75rem", fontSize: "0.85rem" }}>
+          Sådan har vi inddelt Edinburgh i områder til filtrering af shows.
+        </p>
+        <AreaMap />
+      </div>
 
       <div className={s.gruppeFooter}>
         <p>Ikke en officiel festival-applikation.</p>
