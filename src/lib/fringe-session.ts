@@ -6,10 +6,10 @@ import { sql } from "@vercel/postgres";
 // the next day. Strip the Z+millis to restore the original "YYYY-MM-DD HH:MM:SS" format.
 function normalizeTs(val: unknown): string | null {
   if (val == null) return null;
-  return String(val)
-    .replace("T", " ")
-    .replace(/\.\d+Z$/, "")
-    .replace(/Z$/, "");
+  // pg may return TIMESTAMP columns as Date objects or ISO strings — normalise both
+  // to "YYYY-MM-DD HH:MM:SS" so fmtEdinburgh treats them as Edinburgh local time.
+  const s = val instanceof Date ? val.toISOString() : String(val);
+  return s.replace("T", " ").replace(/\.\d+Z$/, "").replace(/Z$/, "");
 }
 
 export async function buildGroupSession(userId: string, groupId: number) {
