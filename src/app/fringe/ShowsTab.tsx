@@ -30,6 +30,8 @@ type Props = {
   dateTo: string;
   setDateTo: (v: string) => void;
   groupDateLocked: boolean;
+  groupStart: string;
+  groupEnd: string;
   genres: string[];
   areas: Area[];
   allDays: string[];
@@ -61,7 +63,7 @@ export function ShowsTab({
   search, setSearch, selectedOnly, setSelectedOnly, hideInterested, setHideInterested,
   genreFilter, setGenreFilter, areaFilter, setAreaFilter,
   dateFrom, setDateFrom, dateTo, setDateTo,
-  groupDateLocked, genres, areas, allDays, dayStripRef,
+  groupDateLocked, groupStart, groupEnd, genres, areas, allDays, dayStripRef,
   myPick, picksFor, perfPicksFor, perfsInRange,
   canPick, perfPicker, setPerfPicker, expandedShows, setExpandedShows,
   isMobile, activeTab,
@@ -168,7 +170,6 @@ export function ShowsTab({
                         aria-pressed={isEndpoint || isInRange}
                         aria-label={ariaLbl}
                         data-day={day}
-                        disabled={groupDateLocked}
                       >
                         <span className={s.dayChipDay}>{weekday}</span>
                         <span className={s.dayChipNum}>{dayNum}</span>
@@ -176,14 +177,21 @@ export function ShowsTab({
                     </span>
                   );
                 })}
-                {(dateFrom || dateTo) && !groupDateLocked && (
-                  <button
-                    className={s.filterChipClear}
-                    onClick={() => { setDateFrom(""); setDateTo(""); saveUi({ dateFrom: "", dateTo: "" }); }}
-                  >
-                    Ryd
-                  </button>
-                )}
+                {(() => {
+                  const atGroupDefault = groupDateLocked && dateFrom === groupStart && dateTo === groupEnd;
+                  const hasCustomRange = (dateFrom || dateTo) && !atGroupDefault;
+                  if (!hasCustomRange) return null;
+                  const resetFrom = groupStart || "";
+                  const resetTo   = groupEnd   || "";
+                  return (
+                    <button
+                      className={s.filterChipClear}
+                      onClick={() => { setDateFrom(resetFrom); setDateTo(resetTo); saveUi({ dateFrom: resetFrom, dateTo: resetTo }); }}
+                    >
+                      Ryd
+                    </button>
+                  );
+                })()}
               </div>
             </div>
           )}

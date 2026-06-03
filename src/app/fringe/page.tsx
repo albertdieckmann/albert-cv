@@ -267,7 +267,6 @@ export default function FringePage() {
   }
 
   function handleDayChipClick(day: string) {
-    if (groupDateLocked) return;
     let newFrom: string, newTo: string;
     if (!dateFrom && !dateTo) {
       newFrom = day; newTo = day;
@@ -854,6 +853,8 @@ export default function FringePage() {
         dateFrom={dateFrom} setDateFrom={setDateFrom}
         dateTo={dateTo} setDateTo={setDateTo}
         groupDateLocked={groupDateLocked}
+        groupStart={session.activeGroup?.startDate?.slice(0, 10) ?? ""}
+        groupEnd={session.activeGroup?.endDate?.slice(0, 10) ?? ""}
         genres={genres}
         areas={areas}
         allDays={days}
