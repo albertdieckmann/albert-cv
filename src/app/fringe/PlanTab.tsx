@@ -1,6 +1,6 @@
 "use client";
 
-import { fmtEdinburgh, conflictKey } from "./utils";
+import { fmtEdinburgh, formatPerf, conflictKey, toComparableIso } from "./utils";
 import { STATUS_META, STATUSES } from "./types";
 import type { SessionData, Show, Performance, FringePick, ConflictEntry, PickStatus, TabId } from "./types";
 import s from "./fringe.module.css";
@@ -18,14 +18,28 @@ type Props = {
   canPick: boolean;
   isMobile: boolean;
   activeTab: TabId;
+  perfPicker: { showId: string; status: "going" | "has_ticket" } | null;
+  setPerfPicker: (v: { showId: string; status: "going" | "has_ticket" } | null) => void;
+  expandedShows: Set<string>;
+  setExpandedShows: (fn: (prev: Set<string>) => Set<string>) => void;
+  perfsInRange: (show: Show) => Performance[];
+  perfPicksFor: (showId: string, perfStart: string) => { name: string; status: PickStatus }[];
   handleStatusClick: (show: Show, status: PickStatus) => void;
+  handleSelectPerformance: (show: Show, perf: Performance) => void;
   handleQuickJoin: (show: Show, perf: Performance) => void;
 };
+
+function formatDayKey(day: string): string {
+  const d = new Date(day + "T12:00:00Z");
+  return d.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+}
 
 export function PlanTab({
   session, shows, pGroups, conflicts, tCount,
   dateFrom, dateTo, canPick, isMobile, activeTab,
-  handleStatusClick, handleQuickJoin,
+  perfPicker, setPerfPicker, expandedShows, setExpandedShows,
+  perfsInRange, perfPicksFor,
+  handleStatusClick, handleSelectPerformance, handleQuickJoin,
 }: Props) {
   return (
     <div
@@ -67,13 +81,15 @@ export function PlanTab({
                 ) : (
                   <>
                     <span className={s.dayTag}>Dag</span>
-                    <h3 className={s.dayTitle}>{day}</h3>
+                    <h3 className={s.dayTitle}>{formatDayKey(day)}</h3>
                   </>
                 )}
               </div>
               {items.map(({ show, picks }) => {
                 const myPickInCard = session.user ? picks.find((p) => p.user_id === session.user!.id) : undefined;
                 const allOnlyInterested = picks.every((p) => p.status === "interested");
+                const isPickerOpen = perfPicker?.showId === show.id;
+                const rangePerfs = perfsInRange(show);
 
                 const pickConflicts = picks.map((p) => ({
                   pick: p,
@@ -87,13 +103,13 @@ export function PlanTab({
                 const myIsoCommitted =
                   myPickInCard?.performance_start &&
                   (myPickInCard.status === "going" || myPickInCard.status === "has_ticket")
-                    ? new Date(myPickInCard.performance_start).toISOString()
+                    ? toComparableIso(myPickInCard.performance_start)
                     : null;
                 const joinablePerfs = new Map<string, Performance>();
                 for (const p of picks) {
                   if (p.user_id === session.user?.id) continue;
                   if (!(p.status === "going" || p.status === "has_ticket") || !p.performance_start) continue;
-                  const iso = new Date(p.performance_start).toISOString();
+                  const iso = toComparableIso(p.performance_start);
                   if (iso === myIsoCommitted) continue;
                   if (!joinablePerfs.has(iso)) joinablePerfs.set(iso, { start: p.performance_start!, end: p.performance_end ?? p.performance_start! });
                 }
@@ -111,7 +127,26 @@ export function PlanTab({
                   >
                     <div className={s.showTop}>
                       <div className={s.showInfo}>
-                        <h3 className={s.showTitle}>{show.title}</h3>
+                        {show.descriptionTeaser ? (
+                          <button
+                            className={s.showTitleBtn}
+                            onClick={() =>
+                              setExpandedShows((prev) => {
+                                const next = new Set(prev);
+                                next.has(show.id) ? next.delete(show.id) : next.add(show.id);
+                                return next;
+                              })
+                            }
+                            aria-expanded={expandedShows.has(show.id)}
+                          >
+                            <span>{show.title}</span>
+                            <span className={s.expandArrow} aria-hidden="true">
+                              {expandedShows.has(show.id) ? "▴" : "▾"}
+                            </span>
+                          </button>
+                        ) : (
+                          <h3 className={s.showTitle}>{show.title}</h3>
+                        )}
                         <p className={s.showMeta}>
                           {[show.genre, show.venue.name].filter(Boolean).join(" · ") || "Info mangler"}
                         </p>
@@ -121,25 +156,68 @@ export function PlanTab({
                           </a>
                         )}
                       </div>
-                      {canPick && (
-                        <div className={s.statusGrid}>
-                          {STATUSES.map((status) => {
-                            const meta = STATUS_META[status];
-                            const isActive = myPickInCard?.status === status;
+                      <div className={s.statusGrid}>
+                        {STATUSES.map((status) => {
+                          const meta = STATUS_META[status];
+                          const isActive = myPickInCard?.status === status;
+                          return (
+                            <button
+                              key={status}
+                              className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
+                              onClick={() => handleStatusClick(show, status)}
+                              disabled={!canPick}
+                              title={meta.label}
+                            >
+                              {meta.emoji}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {show.descriptionTeaser && expandedShows.has(show.id) && (
+                      <p className={s.showDescription}>{show.descriptionTeaser}</p>
+                    )}
+
+                    {/* Performance picker */}
+                    {isPickerOpen && (
+                      <div className={s.perfPicker}>
+                        <p className={s.perfPickerLabel}>Hvilken dag?</p>
+                        <div className={s.perfList}>
+                          {rangePerfs.map((perf) => {
+                            const { dateStr, timeStr, meta } = formatPerf(perf);
+                            const friends = perfPicksFor(show.id, perf.start);
                             return (
                               <button
-                                key={status}
-                                className={`${s.statusBtn} ${meta.btnCls} ${isActive ? s.statusBtnActive : ""}`}
-                                onClick={() => handleStatusClick(show, status)}
-                                title={meta.label}
+                                key={perf.start}
+                                className={s.perfItem}
+                                onClick={() => handleSelectPerformance(show, perf)}
                               >
-                                {meta.emoji}
+                                <div className={s.perfItemMain}>
+                                  <span>
+                                    <span className={s.perfItemTime}>{timeStr}</span>
+                                    {" · "}{dateStr}
+                                  </span>
+                                  {meta && <span className={s.perfItemMeta}>{meta}</span>}
+                                </div>
+                                {friends.length > 0 && (
+                                  <div className={s.perfFriends}>
+                                    {friends.map((f) => (
+                                      <span key={f.name} className={`${s.perfFriendTag} ${STATUS_META[f.status].cls}`}>
+                                        {f.name} {STATUS_META[f.status].label.toLowerCase()}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
                               </button>
                             );
                           })}
                         </div>
-                      )}
-                    </div>
+                        <button className={`${s.ghostBtn} ${s.perfPickerCancel}`} onClick={() => setPerfPicker(null)}>
+                          Annuller
+                        </button>
+                      </div>
+                    )}
 
                     <div className={s.showBottom}>
                       {pickConflicts.map(({ pick, entries }) =>

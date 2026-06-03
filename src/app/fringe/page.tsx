@@ -7,7 +7,7 @@ import Link from "next/link";
 import { AREA_ORDER, type Area } from "@/lib/fringe-area";
 import s from "./fringe.module.css";
 import {
-  loadUi, saveUi, api, fmtEdinburgh, PAGE_SIZE,
+  loadUi, saveUi, api, fmtEdinburgh, PAGE_SIZE, toComparableIso,
 } from "./utils";
 import type {
   PickStatus, Performance, Show, FringePick, Purchase, ActiveGroup,
@@ -440,7 +440,7 @@ export default function FringePage() {
     if (!session.user || !session.activeGroup) return;
     const mine = myPick(show.id);
     const samePerf = mine?.performance_start &&
-      new Date(mine.performance_start).toISOString() === new Date(targetPerf.start).toISOString();
+      toComparableIso(mine.performance_start) === toComparableIso(targetPerf.start);
 
     if (samePerf) {
       if (mine?.status === "interested") {
@@ -592,7 +592,7 @@ export default function FringePage() {
       .filter((p) =>
         p.show_id === showId &&
         p.performance_start &&
-        new Date(p.performance_start).toISOString() === new Date(perfStart).toISOString()
+        toComparableIso(p.performance_start) === toComparableIso(perfStart)
       )
       .map((p) => ({ name: p.user_name, status: p.status }));
   }
@@ -702,7 +702,8 @@ export default function FringePage() {
 
       const earliest = [...committedTimes].sort()[0];
       const dayKey = earliest
-        ? fmtEdinburgh(earliest, { weekday: "long", day: "numeric", month: "long" })
+        ? new Date(earliest.includes("+") || earliest.match(/Z$/) ? earliest : earliest.replace(" ", "T") + "Z")
+            .toLocaleDateString("sv-SE", { timeZone: "UTC" })
         : NODATE;
 
       const list = byDay.get(dayKey) ?? [];
@@ -825,7 +826,14 @@ export default function FringePage() {
         canPick={canPick}
         isMobile={isMobile}
         activeTab={activeTab}
+        perfPicker={perfPicker}
+        setPerfPicker={setPerfPicker}
+        expandedShows={expandedShows}
+        setExpandedShows={setExpandedShows}
+        perfsInRange={perfsInRange}
+        perfPicksFor={perfPicksFor}
         handleStatusClick={handleStatusClick}
+        handleSelectPerformance={handleSelectPerformance}
         handleQuickJoin={handleQuickJoin}
       />
 

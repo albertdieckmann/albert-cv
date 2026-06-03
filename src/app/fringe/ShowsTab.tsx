@@ -1,7 +1,7 @@
 "use client";
 
 import { AREA_LABELS, type Area } from "@/lib/fringe-area";
-import { fmtEdinburgh, formatPerf, saveUi, PAGE_SIZE } from "./utils";
+import { fmtEdinburgh, formatPerf, saveUi, PAGE_SIZE, toComparableIso } from "./utils";
 import { STATUS_META, STATUSES } from "./types";
 import type { SessionData, Show, Performance, FringePick, PickStatus, TabId } from "./types";
 import s from "./fringe.module.css";
@@ -342,7 +342,7 @@ export function ShowsTab({
                     const myIsoCommitted =
                       myCurrentPick?.performance_start &&
                       (myCurrentPick.status === "going" || myCurrentPick.status === "has_ticket")
-                        ? new Date(myCurrentPick.performance_start).toISOString()
+                        ? toComparableIso(myCurrentPick.performance_start)
                         : null;
 
                     const joinablePerfs = new Map<string, Performance>();
@@ -352,7 +352,7 @@ export function ShowsTab({
                         !(p.status === "going" || p.status === "has_ticket") ||
                         !p.performance_start
                       ) continue;
-                      const iso = new Date(p.performance_start).toISOString();
+                      const iso = toComparableIso(p.performance_start);
                       if (iso === myIsoCommitted) continue;
                       if (!joinablePerfs.has(iso)) {
                         joinablePerfs.set(iso, { start: p.performance_start!, end: p.performance_end ?? p.performance_start! });

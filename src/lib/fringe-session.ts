@@ -1,5 +1,17 @@
 import { sql } from "@vercel/postgres";
 
+// pg returns TIMESTAMP WITHOUT TIMEZONE columns as "YYYY-MM-DDTHH:MM:SS.000Z" (JS Date serialized as UTC).
+// Our times are Edinburgh local time stored without an offset marker, so the Z suffix causes fmtEdinburgh
+// to apply Europe/London (BST +1), shifting every time 1 hour forward and rolling late-night shows to
+// the next day. Strip the Z+millis to restore the original "YYYY-MM-DD HH:MM:SS" format.
+function normalizeTs(val: unknown): string | null {
+  if (val == null) return null;
+  return String(val)
+    .replace("T", " ")
+    .replace(/\.\d+Z$/, "")
+    .replace(/Z$/, "");
+}
+
 export async function buildGroupSession(userId: string, groupId: number) {
   const [membersResult, invitesResult, picksResult, purchasesResult, coversResult, groupResult] =
     await Promise.all([
@@ -28,9 +40,14 @@ export async function buildGroupSession(userId: string, groupId: number) {
     endDate: g.end_date ?? null,
     members: membersResult.rows,
     invites: invitesResult.rows,
-    picks: picksResult.rows,
+    picks: picksResult.rows.map((p) => ({
+      ...p,
+      performance_start: normalizeTs(p.performance_start),
+      performance_end:   normalizeTs(p.performance_end),
+    })),
     purchases: purchasesResult.rows.map((p) => ({
       ...p,
+      performance_start: normalizeTs(p.performance_start),
       covers: coversByPurchase.get(p.id) ?? [],
     })),
   };

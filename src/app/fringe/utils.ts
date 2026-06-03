@@ -67,6 +67,14 @@ export function formatPerf(perf: { start: string; end: string; durationMinutes?:
   return { dateStr, timeStr, meta: parts.join(" · ") };
 }
 
+// Safe ISO string for comparing performance times regardless of format.
+// "YYYY-MM-DD HH:MM:SS" (Edinburgh local, no offset) → append Z and parse as UTC.
+// "...+01:00" / "...Z" → parse as-is.
+export function toComparableIso(s: string): string {
+  const hasOffset = s.includes("+") || /Z$/i.test(s);
+  return new Date(hasOffset ? s : s.replace(" ", "T") + "Z").toISOString();
+}
+
 export function conflictKey(userId: string, showId: string, perfStart: string) {
   return `${userId}::${showId}::${perfStart}`;
 }
