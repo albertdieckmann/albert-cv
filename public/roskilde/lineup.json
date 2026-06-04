@@ -1,7 +1,7 @@
 {
   "source": "https://www.roskilde-festival.dk/en/line-up",
-  "generatedAt": "2026-06-03T21:45:08.181723Z",
-  "itemCount": 273,
+  "generatedAt": "2026-06-04T10:35:59.184711Z",
+  "itemCount": 281,
   "items": [
     {
       "name": "SIMONE LONE YOGA",
@@ -572,7 +572,7 @@
         "first-days",
         "Thursday"
       ],
-      "newInLineup": true,
+      "newInLineup": false,
       "appearances": [
         {
           "dateLabel": "SUNDAY 28 JUNE",
@@ -613,6 +613,50 @@
         "date": "2026-06-28T11:00:00",
         "time": "11.00",
         "name": "Actionaid Denmark"
+      }
+    },
+    {
+      "name": "Emma Holten X Emil Falster",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/emma-holten-x-emil-falster",
+      "countryCode": "",
+      "lineupSceneLabel": "Cinema",
+      "dayFilters": [
+        "first-days",
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T11:00:00",
+          "startTime": "2026-04-29T11:00:00",
+          "timeLabel": "11.00",
+          "stage": "Cinema",
+          "showTitle": "The Tender Revolution"
+        },
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T12:30:00",
+          "startTime": "2026-06-02T12:30:00",
+          "timeLabel": "12.30",
+          "stage": "Cinema",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T11:00:00",
+      "timeLabel": "11.00",
+      "stage": "Cinema",
+      "showTitle": "The Tender Revolution",
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-06-28T11:00:00",
+        "time": "11.00",
+        "name": "Emma Holten X Emil Falster"
       }
     },
     {
@@ -691,40 +735,6 @@
         "date": "2026-06-28T11:00:00",
         "time": "11.00",
         "name": "THE PIECE FOR PEACE MOVEMENT"
-      }
-    },
-    {
-      "name": "The Tender Revolution (2024)",
-      "type": "Art & Activism",
-      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/the-tender-revolution-2024",
-      "countryCode": "",
-      "lineupSceneLabel": "Cinema",
-      "dayFilters": [
-        "first-days"
-      ],
-      "newInLineup": true,
-      "appearances": [
-        {
-          "dateLabel": "SUNDAY 28 JUNE",
-          "dayId": null,
-          "date": "2026-06-28T11:00:00",
-          "startTime": "2026-04-29T11:00:00",
-          "timeLabel": "11.00",
-          "stage": "Cinema",
-          "showTitle": null
-        }
-      ],
-      "dayId": null,
-      "dateLabel": "SUNDAY 28 JUNE",
-      "date": "2026-06-28T11:00:00",
-      "timeLabel": "11.00",
-      "stage": "Cinema",
-      "showTitle": null,
-      "hasMultipleShows": false,
-      "sortKey": {
-        "date": "2026-06-28T11:00:00",
-        "time": "11.00",
-        "name": "The Tender Revolution (2024)"
       }
     },
     {
@@ -925,6 +935,40 @@
         "date": "2026-06-28T12:30:00",
         "time": "12.30",
         "name": "Greenpeace"
+      }
+    },
+    {
+      "name": "Muskelsvindfonden",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/muskelsvindfonden",
+      "countryCode": "",
+      "lineupSceneLabel": "Rehearsals of Belonging",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SUNDAY 28 JUNE",
+          "dayId": null,
+          "date": "2026-06-28T12:30:00",
+          "startTime": "2026-06-02T12:30:00",
+          "timeLabel": "12.30",
+          "stage": "Rehearsals of Belonging",
+          "showTitle": null
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "SUNDAY 28 JUNE",
+      "date": "2026-06-28T12:30:00",
+      "timeLabel": "12.30",
+      "stage": "Rehearsals of Belonging",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-28T12:30:00",
+        "time": "12.30",
+        "name": "Muskelsvindfonden"
       }
     },
     {
@@ -2494,6 +2538,50 @@
       }
     },
     {
+      "name": "ASEEL CHARKIE, BENITA MINKA & NINA SIKKERSOQ",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/aseel-charkie-benita-minka-nina-sikkersoq",
+      "countryCode": "",
+      "lineupSceneLabel": "The Long Way Around",
+      "dayFilters": [
+        "first-days",
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T13:00:00",
+          "startTime": "2026-06-03T13:00:00",
+          "timeLabel": "13.00",
+          "stage": "The Long Way Around",
+          "showTitle": "Shared exploration"
+        },
+        {
+          "dateLabel": "TUESDAY 30 JUNE",
+          "dayId": null,
+          "date": "2026-06-30T13:00:00",
+          "startTime": "2026-06-03T13:00:00",
+          "timeLabel": "13.00",
+          "stage": "The Long Way Around",
+          "showTitle": "Shared exploration"
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T13:00:00",
+      "timeLabel": "13.00",
+      "stage": "The Long Way Around",
+      "showTitle": "Shared exploration",
+      "hasMultipleShows": true,
+      "sortKey": {
+        "date": "2026-06-29T13:00:00",
+        "time": "13.00",
+        "name": "ASEEL CHARKIE, BENITA MINKA & NINA SIKKERSOQ"
+      }
+    },
+    {
       "name": "ESBEN HOLK",
       "type": "Art & Activism",
       "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/esben-holk",
@@ -2715,6 +2803,40 @@
         "date": "2026-06-29T14:15:00",
         "time": "14.15",
         "name": "Kayak"
+      }
+    },
+    {
+      "name": "Alcarrás",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/alcarras",
+      "countryCode": "",
+      "lineupSceneLabel": "Cinema",
+      "dayFilters": [
+        "first-days"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "MONDAY 29 JUNE",
+          "dayId": null,
+          "date": "2026-06-29T15:00:00",
+          "startTime": "2026-06-02T15:00:00",
+          "timeLabel": "15.00",
+          "stage": "Cinema",
+          "showTitle": "Pærfekt Croquis"
+        }
+      ],
+      "dayId": null,
+      "dateLabel": "MONDAY 29 JUNE",
+      "date": "2026-06-29T15:00:00",
+      "timeLabel": "15.00",
+      "stage": "Cinema",
+      "showTitle": "Pærfekt Croquis",
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-06-29T15:00:00",
+        "time": "15.00",
+        "name": "Alcarrás"
       }
     },
     {
@@ -5780,6 +5902,40 @@
       }
     },
     {
+      "name": "Jazzed on Grains X Sæsonmelier",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/jazzed-on-grains-x-saesonmelier",
+      "countryCode": "",
+      "lineupSceneLabel": "Food Is Now",
+      "dayFilters": [
+        "Thursday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "THURSDAY 2 JULY",
+          "dayId": "thursday",
+          "date": "2026-07-02T11:30:00",
+          "startTime": "2026-05-27T11:30:00",
+          "timeLabel": "11.30",
+          "stage": "Food Is Now",
+          "showTitle": null
+        }
+      ],
+      "dayId": "thursday",
+      "dateLabel": "THURSDAY 2 JULY",
+      "date": "2026-07-02T11:30:00",
+      "timeLabel": "11.30",
+      "stage": "Food Is Now",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-02T11:30:00",
+        "time": "11.30",
+        "name": "Jazzed on Grains X Sæsonmelier"
+      }
+    },
+    {
       "name": "Uld",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/uld",
@@ -7306,6 +7462,74 @@
       }
     },
     {
+      "name": "HAIDAR ANSARI X BRIMHEIM",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/haidar-ansari-x-brimheim",
+      "countryCode": "",
+      "lineupSceneLabel": "Gloria",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T10:30:00",
+          "startTime": "2026-06-02T10:30:00",
+          "timeLabel": "10.30",
+          "stage": "Gloria",
+          "showTitle": "HAIDAR ANSARI X BRIMHEIM"
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T10:30:00",
+      "timeLabel": "10.30",
+      "stage": "Gloria",
+      "showTitle": "HAIDAR ANSARI X BRIMHEIM",
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T10:30:00",
+        "time": "10.30",
+        "name": "HAIDAR ANSARI X BRIMHEIM"
+      }
+    },
+    {
+      "name": "Plantetarisk Forsamling",
+      "type": "Activities",
+      "url": "https://www.roskilde-festival.dk/en/line-up/activities/plantetarisk-forsamling",
+      "countryCode": "",
+      "lineupSceneLabel": "Food Is Now",
+      "dayFilters": [
+        "Friday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "FRIDAY 3 JULY",
+          "dayId": "friday",
+          "date": "2026-07-03T11:30:00",
+          "startTime": "2026-06-02T11:30:00",
+          "timeLabel": "11.30",
+          "stage": "Food Is Now",
+          "showTitle": null
+        }
+      ],
+      "dayId": "friday",
+      "dateLabel": "FRIDAY 3 JULY",
+      "date": "2026-07-03T11:30:00",
+      "timeLabel": "11.30",
+      "stage": "Food Is Now",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-03T11:30:00",
+        "time": "11.30",
+        "name": "Plantetarisk Forsamling"
+      }
+    },
+    {
       "name": "SPELLCHESTRA",
       "type": "Art & Activism",
       "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/spellchestra",
@@ -8778,6 +9002,40 @@
       }
     },
     {
+      "name": "Midori Takada & Jakob Bro",
+      "type": "Music",
+      "url": "https://www.roskilde-festival.dk/en/line-up/music/midori-takada-jakob-bro",
+      "countryCode": "JP/DK",
+      "lineupSceneLabel": "Fauna",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": true,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T12:30:00",
+          "startTime": "2026-06-03T12:30:00",
+          "timeLabel": "12.30",
+          "stage": "Fauna",
+          "showTitle": null
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T12:30:00",
+      "timeLabel": "12.30",
+      "stage": "Fauna",
+      "showTitle": null,
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T12:30:00",
+        "time": "12.30",
+        "name": "Midori Takada & Jakob Bro"
+      }
+    },
+    {
       "name": "Lojay",
       "type": "Music",
       "url": "https://www.roskilde-festival.dk/en/line-up/music/lojay",
@@ -9591,6 +9849,40 @@
         "date": "2026-07-04T21:45:00",
         "time": "21.45",
         "name": "Bad Gyal"
+      }
+    },
+    {
+      "name": "ANNIKA KAHRS",
+      "type": "Art & Activism",
+      "url": "https://www.roskilde-festival.dk/en/line-up/art-activism/annika-kahrs",
+      "countryCode": "",
+      "lineupSceneLabel": "Platform",
+      "dayFilters": [
+        "Saturday"
+      ],
+      "newInLineup": false,
+      "appearances": [
+        {
+          "dateLabel": "SATURDAY 4 JULY",
+          "dayId": "saturday",
+          "date": "2026-07-04T22:00:00",
+          "startTime": "2026-06-02T22:00:00",
+          "timeLabel": "22.00",
+          "stage": "Platform",
+          "showTitle": "THIS IS A LOVE SONG"
+        }
+      ],
+      "dayId": "saturday",
+      "dateLabel": "SATURDAY 4 JULY",
+      "date": "2026-07-04T22:00:00",
+      "timeLabel": "22.00",
+      "stage": "Platform",
+      "showTitle": "THIS IS A LOVE SONG",
+      "hasMultipleShows": false,
+      "sortKey": {
+        "date": "2026-07-04T22:00:00",
+        "time": "22.00",
+        "name": "ANNIKA KAHRS"
       }
     },
     {
