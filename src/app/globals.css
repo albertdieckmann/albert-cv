@@ -741,35 +741,36 @@ footer p {
   .projects-grid { grid-template-columns: 1fr; }
 }
 
-/* FRINGE — Leaflet area map: force dark background, no tiles */
-.leaflet-container { background: #13151a !important; }
+/* FRINGE — Leaflet area map: light city background, no tiles */
+.leaflet-container { background: #e8edf2 !important; }
 
 /* FRINGE — Leaflet area map tooltip styling */
 .leaflet-tooltip.area-tooltip {
-  background: rgba(31, 33, 36, 0.82);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.88);
+  color: #1f2124;
   border: none;
   border-radius: 4px;
   padding: 2px 7px;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.03em;
   white-space: nowrap;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
   pointer-events: none;
 }
 .leaflet-tooltip.area-tooltip::before { display: none; }
 
 .leaflet-tooltip.landmark-tooltip {
-  background: transparent;
+  background: rgba(255,255,255,0.82);
   border: none;
-  box-shadow: none;
-  color: rgba(255,255,255,0.75);
-  font-size: 0.68rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  color: rgba(31,33,36,0.80);
+  font-size: 0.67rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   white-space: nowrap;
-  padding: 0;
+  padding: 1px 5px;
+  border-radius: 3px;
   pointer-events: none;
 }
 .leaflet-tooltip.landmark-tooltip::before { display: none; }

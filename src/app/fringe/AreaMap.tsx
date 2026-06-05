@@ -95,11 +95,11 @@ const AREA_LABEL_POSITIONS: AreaLabel[] = [
 export function AreaMap() {
   return (
     // Outer div: square aspect-ratio + border-radius clips Leaflet canvas to circle
-    <div style={{ width: "100%", aspectRatio: "1", borderRadius: "50%", overflow: "hidden", background: "#13151a" }}>
+    <div style={{ width: "100%", aspectRatio: "1", borderRadius: "50%", overflow: "hidden", background: "#e8edf2" }}>
       <MapContainer
         center={[55.947, -3.191]}
         zoom={13}
-        style={{ height: "100%", width: "100%", background: "#13151a" }}
+        style={{ height: "100%", width: "100%", background: "#e8edf2" }}
         scrollWheelZoom={false}
         dragging={false}
         doubleClickZoom={false}
@@ -111,7 +111,7 @@ export function AreaMap() {
           <Polygon
             key={area}
             positions={coords}
-            pathOptions={{ color, fillColor: color, fillOpacity: 0.52, weight: 0 }}
+            pathOptions={{ color, fillColor: color, fillOpacity: 0.72, weight: 0 }}
           />
         ))}
 
@@ -133,7 +133,7 @@ export function AreaMap() {
         <Circle
           center={[55.947, -3.191]}
           radius={1800}
-          pathOptions={{ color: "rgba(255,255,255,0.30)", fillOpacity: 0, weight: 1.5, dashArray: "6 6" }}
+          pathOptions={{ color: "rgba(60,80,100,0.35)", fillOpacity: 0, weight: 1.5, dashArray: "6 6" }}
         />
 
         {/* Landmark pins */}
@@ -142,7 +142,7 @@ export function AreaMap() {
             key={label}
             center={pos}
             radius={4}
-            pathOptions={{ color: "#fff", fillColor: "#fff", fillOpacity: 0.9, weight: 1.5 }}
+            pathOptions={{ color: "#1f2124", fillColor: "#fff", fillOpacity: 0.9, weight: 1.5 }}
           >
             <Tooltip permanent direction="top" offset={[0, -6]} className="landmark-tooltip">
               {icon} {label}
