@@ -757,6 +757,20 @@ footer p {
 }
 .leaflet-tooltip.area-tooltip::before { display: none; }
 
+.leaflet-tooltip.landmark-tooltip {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  padding: 0;
+  pointer-events: none;
+}
+.leaflet-tooltip.landmark-tooltip::before { display: none; }
+
 /* MADSPILD — responsiv header */
 .madspild-header-right { display: flex; align-items: center; gap: 1rem; }
 .madspild-geo-badge { display: flex; align-items: center; gap: 0.3rem; }

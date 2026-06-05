@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Tooltip, CircleMarker } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { AREA_LABELS } from "@/lib/fringe-area";
@@ -12,6 +12,17 @@ type AreaDef = {
   coords: LatLngExpression[];
   color: string;
 };
+
+type Landmark = { label: string; pos: LatLngExpression; icon?: string };
+
+const LANDMARKS: Landmark[] = [
+  { label: "Edinburgh Castle", pos: [55.9486, -3.2003], icon: "🏰" },
+  { label: "Calton Hill",      pos: [55.9543, -3.1765], icon: "⛰" },
+  { label: "Arthur's Seat",    pos: [55.9445, -3.1618], icon: "⛰" },
+  { label: "Greyfriars Kirk",  pos: [55.9463, -3.1904], icon: "⛪" },
+  { label: "Waverley Station", pos: [55.9521, -3.1888], icon: "🚂" },
+  { label: "The Meadows",      pos: [55.9382, -3.1870], icon: "🌳" },
+];
 
 // Coordinates are [lat, lon]. Key reference streets:
 //   Princes Street:         lat ≈ 55.952 (E-W, N boundary of Old Town)
@@ -126,10 +137,10 @@ export function AreaMap() {
       style={{ height: 360, width: "100%", borderRadius: 10, zIndex: 0 }}
       scrollWheelZoom={false}
     >
-      {/* CartoDB Positron (no labels) — clean grey base, our polygons are the visual */}
+      {/* CartoDB Dark Matter (no labels) — dark base, polygons and landmarks pop */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
         maxZoom={20}
       />
@@ -143,6 +154,18 @@ export function AreaMap() {
             {AREA_LABELS[area]}
           </Tooltip>
         </Polygon>
+      ))}
+      {LANDMARKS.map(({ label, pos, icon }) => (
+        <CircleMarker
+          key={label}
+          center={pos}
+          radius={4}
+          pathOptions={{ color: "#fff", fillColor: "#fff", fillOpacity: 0.9, weight: 1.5 }}
+        >
+          <Tooltip permanent direction="top" offset={[0, -6]} className="landmark-tooltip">
+            {icon} {label}
+          </Tooltip>
+        </CircleMarker>
       ))}
     </MapContainer>
   );
