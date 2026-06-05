@@ -1001,6 +1001,32 @@
   background: rgba(245, 158, 11, 0.04) !important;
 }
 
+/* I smalle konflikt-kort: stack indhold lodret og tillad tekst-wrap */
+.conflictBand .timelineTop {
+  flex-direction: column;
+  gap: 0.375rem;
+  align-items: flex-start;
+}
+
+.conflictBand .actName {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  font-size: 0.9rem;
+}
+
+.conflictBand .catBtn {
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+}
+
+.conflictBand .timeSlot {
+  min-width: 40px;
+  font-size: 10px;
+  padding: 0.875rem 0.375rem;
+}
+
 /* ── filter bottom row ───────────────────────────────────────────────────── */
 
 .filterBottomRow {
