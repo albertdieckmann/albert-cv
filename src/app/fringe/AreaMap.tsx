@@ -126,15 +126,18 @@ export function AreaMap() {
       style={{ height: 360, width: "100%", borderRadius: 10, zIndex: 0 }}
       scrollWheelZoom={false}
     >
+      {/* CartoDB Positron (no labels) — clean grey base, our polygons are the visual */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
+        maxZoom={20}
       />
       {AREAS.map(({ area, coords, color }) => (
         <Polygon
           key={area}
           positions={coords}
-          pathOptions={{ color, fillColor: color, fillOpacity: 0.28, weight: 2 }}
+          pathOptions={{ color, fillColor: color, fillOpacity: 0.42, weight: 2.5 }}
         >
           <Tooltip permanent direction="center" className="area-tooltip">
             {AREA_LABELS[area]}
