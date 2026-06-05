@@ -741,6 +741,9 @@ footer p {
   .projects-grid { grid-template-columns: 1fr; }
 }
 
+/* FRINGE — Leaflet area map: force dark background, no tiles */
+.leaflet-container { background: #13151a !important; }
+
 /* FRINGE — Leaflet area map tooltip styling */
 .leaflet-tooltip.area-tooltip {
   background: rgba(31, 33, 36, 0.82);
