@@ -1,31 +1,26 @@
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
+// DELETE: slet gruppe — kun det første medlem (opretteren) kan det
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Ikke logget ind" }, { status: 401 });
+  const { id: groupId } = await params;
+  const memberId = req.headers.get("x-member-id");
+  if (!memberId) return NextResponse.json({ error: "Mangler member-id" }, { status: 400 });
 
-  const { id } = await params;
-  const groupId = parseInt(id, 10);
-  if (!groupId) return NextResponse.json({ error: "Ugyldigt gruppe-id" }, { status: 400 });
-
-  // Kun ejeren må slette
+  // Tjek at memberId tilhører gruppen og er det ældste (opretteren)
   const ownerCheck = await sql`
-    SELECT 1 FROM roskilde_groups
-    WHERE id = ${groupId} AND created_by = ${userId}
+    SELECT member_id FROM roskilde_members
+    WHERE group_id = ${groupId}
+    ORDER BY joined_at ASC
+    LIMIT 1
   `;
-  if (!ownerCheck.rows.length) {
-    return NextResponse.json({ error: "Kun den der oprettede gruppen kan slette den" }, { status: 403 });
+  if (!ownerCheck.rows.length || ownerCheck.rows[0].member_id !== memberId) {
+    return NextResponse.json({ error: "Kun opretteren kan slette gruppen" }, { status: 403 });
   }
 
-  // Picks har ikke FK cascade, slettes manuelt først
-  await sql`DELETE FROM roskilde_picks WHERE group_id = ${groupId}`;
-  // Members og invites slettes via ON DELETE CASCADE på groups
-  await sql`DELETE FROM roskilde_groups WHERE id = ${groupId}`;
-
+  await sql`DELETE FROM roskilde_groups_v2 WHERE id = ${groupId}`;
   return NextResponse.json({ ok: true });
 }

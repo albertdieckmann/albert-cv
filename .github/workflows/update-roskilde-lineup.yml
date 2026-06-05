@@ -2,13 +2,9 @@ name: Opdater Roskilde line-up
 
 on:
   schedule:
-    # Kører to gange dagligt: 07:00 og 19:00 UTC
     - cron: "0 7 * * *"
     - cron: "0 19 * * *"
-  workflow_dispatch: # Kan også køres manuelt fra GitHub Actions-fanen
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
   update-lineup:
@@ -18,20 +14,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Hent line-up fra Roskilde Festival
+      - name: Scrape line-up fra Roskilde Festival
         run: python3 scripts/roskilde/build_lineup_data.py
 
-      - name: Kopiér output til public-mappen
+      - name: Validér output
+        run: |
+          ANTAL=$(python3 -c "import json; d=json.load(open('output/lineup_data.json')); print(len(d['items']))")
+          echo "Fandt $ANTAL acts"
+          if [ "$ANTAL" -lt 50 ]; then
+            echo "For få acts ($ANTAL < 50) — afviser og bevarer last-good"
+            exit 1
+          fi
+
+      - name: Send til ingest-endpoint (DB-cache)
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Content-Type: application/json" \
+            -H "x-ingest-token: ${{ secrets.ROSKILDE_INGEST_TOKEN }}" \
+            -d @output/lineup_data.json \
+            https://albertdieckmann.dk/api/roskilde/ingest)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          STATUS=$(echo "$RESPONSE" | tail -n 1)
+          echo "HTTP $STATUS: $BODY"
+          if [ "$STATUS" != "200" ]; then
+            echo "Ingest fejlede (HTTP $STATUS) — last-good bevares"
+            exit 1
+          fi
+
+      - name: Opdatér fallback-fil i public/ (last-good backup)
         run: |
           mkdir -p public/roskilde
           cp output/lineup_data.json public/roskilde/lineup.json
 
-      - name: Commit og push hvis der er ændringer
+      - name: Commit fallback-fil hvis ændret
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if git diff --quiet public/roskilde/lineup.json; then
-            echo "Ingen ændringer i line-up data — springer commit over."
+            echo "Ingen ændringer i fallback-fil"
           else
             ANTAL=$(python3 -c "import json; d=json.load(open('public/roskilde/lineup.json')); print(len(d['items']))")
             git add public/roskilde/lineup.json
