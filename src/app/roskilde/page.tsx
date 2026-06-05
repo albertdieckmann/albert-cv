@@ -1,36 +1,41 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
 import s from "./roskilde.module.css";
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
 type PickCategory = "interested" | "going" | "has_ticket";
 type TabId = "lineup" | "tidsplan" | "gruppe";
-
-type Act = {
-  name: string;
-  type?: string;
-  lineupSceneLabel?: string;
-  stage?: string;
-  timeLabel?: string;
-  dateLabel?: string;
-  date?: string;
-  appearances?: Appearance[];
-};
+type TimeSlot = "alle" | "formiddag" | "eftermiddag" | "aften" | "nat";
 
 type Appearance = {
   dateLabel?: string;
   timeLabel?: string;
   stage?: string;
+  date?: string;       // ISO: "2026-07-02T23:00:00"
+  showTitle?: string;
+};
+
+type Act = {
+  name: string;
+  type?: string;
+  lineupSceneLabel?: string;
+  url?: string;
+  countryCode?: string;
+  appearances?: Appearance[];
+  // top-level fallbacks
+  dateLabel?: string;
+  timeLabel?: string;
   date?: string;
+  stage?: string;
 };
 
 type GroupPick = {
   memberId: string;
   displayName: string;
   actName: string;
+  appearanceDate: string;
   category: PickCategory;
 };
 
@@ -55,10 +60,18 @@ type Me = {
 const CATEGORIES: PickCategory[] = ["interested", "going", "has_ticket"];
 
 const CAT_META: Record<PickCategory, { label: string; emoji: string; btnCls: string }> = {
-  interested: { label: "Interesseret",  emoji: "🍺",  btnCls: s.catInterested },
-  going:      { label: "Går",           emoji: "👍",  btnCls: s.catGoing },
-  has_ticket: { label: "Skal i pitten", emoji: "🕳️", btnCls: s.catHasTicket },
+  interested: { label: "Fadøl",    emoji: "🍺",  btnCls: s.catInterested },
+  going:      { label: "Ser show", emoji: "👍",  btnCls: s.catGoing },
+  has_ticket: { label: "Pit",      emoji: "🕳️", btnCls: s.catHasTicket },
 };
+
+const TIME_SLOTS: { id: TimeSlot; label: string; range: string }[] = [
+  { id: "alle",       label: "Alle tider",      range: "" },
+  { id: "formiddag",  label: "Formiddag",        range: "06–12" },
+  { id: "eftermiddag",label: "Eftermiddag",      range: "12–17" },
+  { id: "aften",      label: "Aften",            range: "17–00" },
+  { id: "nat",        label: "Nat",              range: "00–06" },
+];
 
 const LS_KEY = "roskilde-v2-member";
 
@@ -68,11 +81,9 @@ function loadMemberId(): string | null {
   if (typeof window === "undefined") return null;
   try { return localStorage.getItem(LS_KEY); } catch { return null; }
 }
-
 function saveMemberId(id: string) {
   try { localStorage.setItem(LS_KEY, id); } catch { /* ignore */ }
 }
-
 function clearMemberId() {
   try { localStorage.removeItem(LS_KEY); } catch { /* ignore */ }
 }
@@ -96,43 +107,82 @@ function initials(name: string): string {
   return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
-function toMin(t: string): number {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
+// Returnerer minutter siden midnat — natshows 00-05 returneres som 1440+min (dvs. "næste dag")
+function timeToSortMin(label: string): number {
+  const clean = label.replace(".", ":");
+  const [h, m] = clean.split(":").map(Number);
+  if (isNaN(h)) return 9999;
+  const min = h * 60 + (m || 0);
+  // Nat 00:00-05:59 → sortér som 24:00+ (efter aftenens shows)
+  return min < 360 ? min + 1440 : min;
+}
+
+function timeToMin(label: string): number {
+  const clean = label.replace(".", ":");
+  const [h, m] = clean.split(":").map(Number);
+  if (isNaN(h)) return -1;
+  return h * 60 + (m || 0);
+}
+
+function timeSlotFor(label: string): TimeSlot {
+  const min = timeToMin(label);
+  if (min < 0) return "alle";
+  if (min < 360) return "nat";          // 00-05:59
+  if (min < 750) return "formiddag";   // 06-12:29
+  if (min < 1020) return "eftermiddag"; // 12:30-16:59
+  return "aften";                        // 17:00-23:59
+}
+
+// Normalisér appearances — acts uden appearances bruger top-level felter
+function getAppearances(act: Act): Appearance[] {
+  if (act.appearances?.length) return act.appearances;
+  return [{ dateLabel: act.dateLabel, timeLabel: act.timeLabel, stage: act.lineupSceneLabel ?? act.stage, date: act.date }];
+}
+
+// Sortér dateLabels kronologisk ud fra den tidligste ISO-dato i appearances
+function buildDayOrder(acts: Act[]): Map<string, string> {
+  const firstDate = new Map<string, string>();
+  for (const act of acts) {
+    for (const app of getAppearances(act)) {
+      if (app.dateLabel && app.date) {
+        const cur = firstDate.get(app.dateLabel);
+        if (!cur || app.date < cur) firstDate.set(app.dateLabel, app.date);
+      }
+    }
+  }
+  return firstDate;
 }
 
 // ─── component ────────────────────────────────────────────────────────────────
 
 export default function RoskildePage() {
-  // identity
-  const [me,       setMe]       = useState<Me | null>(null);
-  const [group,    setGroup]    = useState<Group | null>(null);
-  const [ready,    setReady]    = useState(false);
-  const memberId = me?.memberId ?? null;
+  const [me,    setMe]    = useState<Me | null>(null);
+  const [group, setGroup] = useState<Group | null>(null);
+  const [ready, setReady] = useState(false);
 
-  // lineup
-  const [lineup,   setLineup]   = useState<Act[]>([]);
+  const [lineup,  setLineup]  = useState<Act[]>([]);
+  const [dayOrder, setDayOrder] = useState<Map<string, string>>(new Map());
 
-  // UI state
-  const [activeTab, setActiveTab] = useState<TabId>("lineup");
-  const [search,    setSearch]    = useState("");
-  const [stageF,    setStageF]    = useState("alle");
-  const [typeF,     setTypeF]     = useState("alle");
-  const [dayF,      setDayF]      = useState("alle");
+  const [activeTab,    setActiveTab]    = useState<TabId>("lineup");
+  const [search,       setSearch]       = useState("");
+  const [stageF,       setStageF]       = useState("alle");
+  const [typeF,        setTypeF]        = useState("alle");
+  const [dayF,         setDayF]         = useState("alle");
+  const [timeSlotF,    setTimeSlotF]    = useState<TimeSlot>("alle");
   const [selectedOnly, setSelectedOnly] = useState(false);
   const [activePlanDay, setActivePlanDay] = useState<string | null>(null);
-  const [nowMin, setNowMin] = useState<number | null>(null); // minutter siden midnat
+  const [expandedActs, setExpandedActs] = useState<Set<string>>(new Set());
+  const [nowMin, setNowMin] = useState<number | null>(null);
 
   // gruppe tab
-  const [displayName,  setDisplayName]  = useState("");
-  const [groupName,    setGroupName]    = useState("");
-  const [shareToken,   setShareToken]   = useState("");
-  const [recallGroup,  setRecallGroup]  = useState("");
-  const [recallCode,   setRecallCode]   = useState("");
-  const [renameVal,    setRenameVal]    = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [groupName,   setGroupName]   = useState("");
+  const [shareToken,  setShareToken]  = useState("");
+  const [recallGroup, setRecallGroup] = useState("");
+  const [recallCode,  setRecallCode]  = useState("");
 
-  const [status,  setStatus]  = useState("");
-  const [busy,    setBusy]    = useState(false);
+  const [status, setStatus] = useState("");
+  const [busy,   setBusy]   = useState(false);
 
   const savedScrolls = useRef<Record<TabId, number>>({ lineup: 0, tidsplan: 0, gruppe: 0 });
   const statusTimer  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -143,7 +193,7 @@ export default function RoskildePage() {
     statusTimer.current = setTimeout(() => setStatus(""), 4000);
   }
 
-  // ── session fetch ─────────────────────────────────────────────────────────
+  // ── session ───────────────────────────────────────────────────────────────
 
   const fetchSession = useCallback(async (mid: string) => {
     const pay = await api(`/api/roskilde/session?memberId=${mid}`);
@@ -161,11 +211,32 @@ export default function RoskildePage() {
 
   useEffect(() => {
     api("/api/roskilde/lineup")
-      .then((d) => setLineup(d.items ?? []))
+      .then((d) => {
+        const items: Act[] = d.items ?? [];
+        setLineup(items);
+        setDayOrder(buildDayOrder(items));
+      })
       .catch(console.error);
   }, []);
 
-  // Nu-markør: opdatér hvert minut
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlMid = params.get("mid");
+    const stored = loadMemberId();
+    const mid = urlMid ?? stored;
+    const tabParam = params.get("tab") as TabId | null;
+    if (tabParam === "lineup" || tabParam === "tidsplan" || tabParam === "gruppe") {
+      setActiveTab(tabParam);
+    }
+    if (mid) {
+      saveMemberId(mid);
+      fetchSession(mid).finally(() => setReady(true));
+    } else {
+      setReady(true);
+    }
+  }, [fetchSession]);
+
+  // Nu-markør
   useEffect(() => {
     function tick() {
       const d = new Date();
@@ -176,28 +247,7 @@ export default function RoskildePage() {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    // URL-param ?mid=... override (genoptag-link)
-    const params = new URLSearchParams(window.location.search);
-    const urlMid = params.get("mid");
-    const stored = loadMemberId();
-    const mid = urlMid ?? stored;
-
-    const tabParam = params.get("tab") as TabId | null;
-    if (tabParam === "lineup" || tabParam === "tidsplan" || tabParam === "gruppe") {
-      setActiveTab(tabParam);
-    }
-
-    if (mid) {
-      saveMemberId(mid);
-      fetchSession(mid).finally(() => setReady(true));
-    } else {
-      setReady(true);
-    }
-  }, [fetchSession]);
-
-  // ── scroll restore ────────────────────────────────────────────────────────
-
+  // Scroll restore
   useEffect(() => {
     const saved = savedScrolls.current[activeTab];
     requestAnimationFrame(() => window.scrollTo(0, saved));
@@ -235,7 +285,7 @@ export default function RoskildePage() {
       await fetchSession(pay.memberId);
       setGroupName("");
       setDisplayName("");
-      flash(`Gruppe oprettet! Token: ${pay.shareToken} · Genkald-kode: ${pay.recallCode}`);
+      flash(`Gruppe oprettet! Token: ${pay.shareToken} · Genkald: ${pay.recallCode}`);
       switchTab("tidsplan");
     });
   }
@@ -251,7 +301,7 @@ export default function RoskildePage() {
       await fetchSession(pay.memberId);
       setShareToken("");
       setDisplayName("");
-      flash(`Velkommen til "${pay.groupName}"! Genkald-kode: ${pay.recallCode}`);
+      flash(`Velkommen til "${pay.groupName}"! Genkald: ${pay.recallCode}`);
       switchTab("tidsplan");
     });
   }
@@ -270,7 +320,7 @@ export default function RoskildePage() {
 
   async function handleLeaveGroup() {
     if (!me || !group) return;
-    if (!confirm(`Forlad gruppen "${group.name}"? Dine valg slettes.`)) return;
+    if (!confirm(`Forlad gruppen "${group.name}"? Dine picks slettes.`)) return;
     await run(async () => {
       await api(`/api/roskilde/groups/${group.id}/leave`, { method: "DELETE" }, me.memberId);
       clearMemberId();
@@ -282,7 +332,7 @@ export default function RoskildePage() {
 
   async function handleDeleteGroup() {
     if (!me || !group) return;
-    if (!confirm(`Slet gruppen "${group.name}"? Dette sletter alle picks og kan ikke fortrydes.`)) return;
+    if (!confirm(`Slet gruppen "${group.name}"? Kan ikke fortrydes.`)) return;
     await run(async () => {
       await api(`/api/roskilde/groups/${group.id}`, { method: "DELETE" }, me.memberId);
       clearMemberId();
@@ -292,15 +342,15 @@ export default function RoskildePage() {
     });
   }
 
-  async function handlePick(actName: string, category: PickCategory) {
+  async function handlePick(actName: string, appearanceDate: string, category: PickCategory) {
     if (!me || !group) return;
     const current = group.picks.find(
-      (p) => p.actName === actName && p.memberId === me.memberId
+      (p) => p.actName === actName && p.appearanceDate === appearanceDate && p.memberId === me.memberId
     )?.category ?? null;
     await run(async () => {
       await api("/api/roskilde/picks", {
         method: "POST",
-        body: JSON.stringify({ actName, category: current === category ? null : category }),
+        body: JSON.stringify({ actName, appearanceDate, category: current === category ? null : category }),
       }, me.memberId);
       await fetchSession(me.memberId);
     });
@@ -309,123 +359,113 @@ export default function RoskildePage() {
   async function copyResumeLink() {
     if (!me) return;
     const url = `${window.location.origin}/roskilde?mid=${me.memberId}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      flash("Genoptag-link kopieret!");
-    } catch {
-      flash(`Genoptag-link: ${url}`);
-    }
+    try { await navigator.clipboard.writeText(url); flash("Genoptag-link kopieret!"); }
+    catch { flash(`Link: ${url}`); }
   }
 
   async function copyShareToken() {
     if (!group) return;
-    try {
-      await navigator.clipboard.writeText(group.shareToken);
-      flash(`Token ${group.shareToken} kopieret!`);
-    } catch {
-      flash(`Token: ${group.shareToken}`);
-    }
+    try { await navigator.clipboard.writeText(group.shareToken); flash(`Token ${group.shareToken} kopieret!`); }
+    catch { flash(`Token: ${group.shareToken}`); }
+  }
+
+  function toggleExpand(actName: string) {
+    setExpandedActs((prev) => {
+      const next = new Set(prev);
+      next.has(actName) ? next.delete(actName) : next.add(actName);
+      return next;
+    });
   }
 
   // ── derived ───────────────────────────────────────────────────────────────
 
-  function myPick(actName: string): PickCategory | null {
+  function myPickFor(actName: string, appearanceDate: string): PickCategory | null {
     if (!me || !group) return null;
-    return group.picks.find((p) => p.actName === actName && p.memberId === me.memberId)?.category ?? null;
+    return group.picks.find(
+      (p) => p.actName === actName && p.appearanceDate === appearanceDate && p.memberId === me.memberId
+    )?.category ?? null;
   }
 
-  function picksFor(actName: string): GroupPick[] {
-    return (group?.picks ?? []).filter((p) => p.actName === actName);
+  function groupPicksFor(actName: string, appearanceDate: string): GroupPick[] {
+    return (group?.picks ?? []).filter(
+      (p) => p.actName === actName && p.appearanceDate === appearanceDate
+    );
   }
 
-  // Flatten appearances — hvert act kan have flere optrædener
-  function flatActs(): (Act & { _app: Appearance })[] {
-    const out: (Act & { _app: Appearance })[] = [];
-    for (const act of lineup) {
-      const apps = act.appearances ?? [{ dateLabel: act.dateLabel, timeLabel: act.timeLabel, stage: act.lineupSceneLabel ?? act.stage, date: act.date }];
-      for (const app of apps) {
-        out.push({ ...act, _app: app });
-      }
-    }
-    return out;
-  }
+  const allStages  = [...new Set(lineup.map((a) => a.lineupSceneLabel ?? a.stage).filter(Boolean))].sort() as string[];
+  const allTypes   = [...new Set(lineup.map((a) => a.type).filter(Boolean))].sort() as string[];
+  const sortedDays = [...dayOrder.entries()].sort((a, b) => a[1].localeCompare(b[1])).map(([label]) => label);
 
-  // Unikke scener og typer
-  const allStages = [...new Set(lineup.map((a) => a.lineupSceneLabel ?? a.stage).filter(Boolean))].sort() as string[];
-  const allTypes  = [...new Set(lineup.map((a) => a.type).filter(Boolean))].sort() as string[];
-  const allDays   = [...new Set(
-    lineup.flatMap((a) =>
-      (a.appearances ?? [{ dateLabel: a.dateLabel }]).map((ap) => ap.dateLabel).filter(Boolean)
-    )
-  )].sort() as string[];
-
-  function visibleActs() {
-    const q = search.trim().toLowerCase();
+  function visibleActs(): Act[] {
+    const q     = search.trim().toLowerCase();
     const picked = new Set((group?.picks ?? []).map((p) => p.actName));
     return lineup.filter((act) => {
       if (selectedOnly && !picked.has(act.name)) return false;
       if (stageF !== "alle" && (act.lineupSceneLabel ?? act.stage) !== stageF) return false;
       if (typeF  !== "alle" && act.type !== typeF) return false;
-      if (dayF   !== "alle") {
-        const days = (act.appearances ?? [{ dateLabel: act.dateLabel }]).map((ap) => ap.dateLabel);
-        if (!days.includes(dayF)) return false;
-      }
+
+      const apps = getAppearances(act);
+      if (dayF !== "alle" && !apps.some((a) => a.dateLabel === dayF)) return false;
+      if (timeSlotF !== "alle" && !apps.some((a) => timeSlotFor(a.timeLabel ?? "") === timeSlotF)) return false;
+
       if (!q) return true;
-      const hay = [act.name, act.type ?? "", act.lineupSceneLabel ?? act.stage ?? "", act.timeLabel ?? "", act.dateLabel ?? ""]
+      const hay = [act.name, act.type ?? "", act.lineupSceneLabel ?? act.stage ?? ""]
         .join(" ").toLowerCase();
       return hay.includes(q);
     });
   }
 
-  // Timeline: alle gruppemedlemmers picks grupperet pr. dag, sorteret på tid
-  function timelineByDay(): Map<string, (Act & { _picks: GroupPick[]; _app: Appearance })[]> {
+  // Timeline: gruppér alle gruppemedlemmers picks pr. dag, sortér natshows sidst
+  function timelineByDay(): Map<string, { act: Act; app: Appearance; picks: GroupPick[]; sortMin: number }[]> {
     if (!group) return new Map();
-    const pickedNames = new Set(group.picks.map((p) => p.actName));
-    const byDay = new Map<string, (Act & { _picks: GroupPick[]; _app: Appearance })[]>();
+    const byDay = new Map<string, { act: Act; app: Appearance; picks: GroupPick[]; sortMin: number }[]>();
 
     for (const act of lineup) {
-      if (!pickedNames.has(act.name)) continue;
-      const picks = group.picks.filter((p) => p.actName === act.name);
-      const apps = act.appearances?.length
-        ? act.appearances
-        : [{ dateLabel: act.dateLabel, timeLabel: act.timeLabel, stage: act.lineupSceneLabel ?? act.stage, date: act.date }];
-
+      const apps = getAppearances(act);
       for (const app of apps) {
+        const appDate = app.date ?? "";
+        const picks = group.picks.filter(
+          (p) => p.actName === act.name && p.appearanceDate === appDate
+        );
+        if (!picks.length) continue;
         const day = app.dateLabel ?? "Dato ikke offentliggjort";
-        const entry = { ...act, _picks: picks, _app: app };
+        const sortMin = timeToSortMin(app.timeLabel ?? "");
         const list = byDay.get(day) ?? [];
-        list.push(entry);
+        list.push({ act, app, picks, sortMin });
         byDay.set(day, list);
       }
     }
 
-    // Sortér hvert dags-array efter starttid
+    // Sortér hvert dag kronologisk (nat sidst)
     for (const [day, items] of byDay) {
-      byDay.set(day, items.sort((a, b) => (a._app.timeLabel ?? "99:99").localeCompare(b._app.timeLabel ?? "99:99")));
+      byDay.set(day, items.sort((a, b) => a.sortMin - b.sortMin));
     }
 
-    // Sortér dagene
-    const sorted = new Map([...byDay.entries()].sort(([a], [b]) => a.localeCompare(b)));
-    return sorted;
+    // Sortér dagene kronologisk
+    return new Map(
+      [...byDay.entries()].sort((a, b) => {
+        const da = dayOrder.get(a[0]) ?? "9999";
+        const db = dayOrder.get(b[0]) ?? "9999";
+        return da.localeCompare(db);
+      })
+    );
   }
 
-  // Sammenstøds-detektion: to picks fra SAMME person på SAMME dag overlapper tidsmæssigt
-  function hasConflict(items: (Act & { _picks: GroupPick[]; _app: Appearance })[], idx: number): boolean {
+  // Overlap: to picks fra SAMME person med start < 60 min fra hinanden
+  function hasConflict(
+    items: { act: Act; app: Appearance; picks: GroupPick[]; sortMin: number }[],
+    idx: number
+  ): boolean {
     const item = items[idx];
-    const tA = item._app.timeLabel;
-    if (!tA) return false;
+    if (!item.app.timeLabel) return false;
+    const aMin = item.sortMin;
     for (let j = 0; j < items.length; j++) {
-      if (j === idx) continue;
-      const other = items[j];
-      const tB = other._app.timeLabel;
-      if (!tB) continue;
-      // Tjek om nogen af de SAMME members er picked til begge
-      const aMembers = new Set(item._picks.map((p) => p.memberId));
-      const overlapMembers = other._picks.filter((p) => aMembers.has(p.memberId));
-      if (!overlapMembers.length) continue;
-      // Grovt overlap: antag 90 min varighed
-      const aStart = toMin(tA), bStart = toMin(tB);
-      if (Math.abs(aStart - bStart) < 90) return true;
+      if (j === idx || !items[j].app.timeLabel) continue;
+      const bMin = items[j].sortMin;
+      if (Math.abs(aMin - bMin) >= 60) continue;
+      // Mindst ét fælles gruppemedlem i begge picks
+      const aMembers = new Set(item.picks.map((p) => p.memberId));
+      if (items[j].picks.some((p) => aMembers.has(p.memberId))) return true;
     }
     return false;
   }
@@ -435,32 +475,26 @@ export default function RoskildePage() {
   if (!ready) {
     return (
       <div className={s.page}>
-        <div className={s.loading}>
-          <span className={s.loadingDot} />
-          Loader…
-        </div>
+        <div className={s.loading}><span className={s.loadingDot} />Loader…</div>
       </div>
     );
   }
 
-  const acts      = visibleActs();
-  const tlByDay   = timelineByDay();
-  const tlDays    = [...tlByDay.keys()];
-  const tlTotal   = [...tlByDay.values()].reduce((n, v) => n + v.length, 0);
-  const isOwner   = group && me ? group.members[0]?.memberId === me.memberId : false;
-
-  // Default til første dag i tidsplanen
+  const acts     = visibleActs();
+  const tlByDay  = timelineByDay();
+  const tlDays   = [...tlByDay.keys()];
+  const tlTotal  = [...tlByDay.values()].reduce((n, v) => n + v.length, 0);
+  const isOwner  = group && me ? group.members[0]?.memberId === me.memberId : false;
   const activeDayKey = activePlanDay && tlDays.includes(activePlanDay) ? activePlanDay : (tlDays[0] ?? null);
 
-  // ── gruppe-tab indhold ────────────────────────────────────────────────────
+  // ── gruppe-tab ────────────────────────────────────────────────────────────
 
   const gruppeTab = (
     <div className={s.gruppePanel}>
       {me && group ? (
         <>
-          {/* Identitet & genoptag */}
           <div className={s.drawerSection}>
-            <p className={s.sectionTag}>Du er logget ind som</p>
+            <p className={s.sectionTag}>Du er</p>
             <div className={s.identityCard}>
               <div className={s.identityAvatar}>{initials(me.displayName)}</div>
               <div>
@@ -469,41 +503,37 @@ export default function RoskildePage() {
               </div>
             </div>
             <div className={s.resumeBox}>
-              <p className={s.resumeLabel}>Genoptag-link (virker på alle enheder)</p>
-              <button className={s.ghostBtn} onClick={copyResumeLink}>Kopiér genoptag-link</button>
+              <p className={s.resumeLabel}>Genoptag-link</p>
+              <button className={s.ghostBtn} onClick={copyResumeLink}>Kopiér link</button>
               <p className={s.resumeLabel}>Backup genkald-kode</p>
               <div className={s.recallBadge}>{me.recallCode}</div>
-              <p className={s.mutedSmall}>Group-ID til genkald: <code className={s.code}>{group.id}</code></p>
+              <p className={s.mutedSmall}>Group-ID: <code className={s.code}>{group.id}</code></p>
             </div>
           </div>
-
-          {/* Gruppe */}
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Gruppe · {group.name}</p>
             <div className={s.shareTokenRow}>
               <span className={s.shareTokenBadge}>{group.shareToken}</span>
               <button className={s.ghostBtn} onClick={copyShareToken}>Kopiér token</button>
             </div>
-            <p className={s.mutedSmall}>Del token med venner — de bruger det til at joine gruppen.</p>
+            <p className={s.mutedSmall}>Del token med venner så de kan joine.</p>
             <div className={s.memberList}>
               {group.members.map((m, i) => (
                 <div key={m.memberId} className={`${s.friendChip} ${m.memberId === me.memberId ? s.active : ""}`}>
                   <div className={s.memberAvatar} style={{ "--avatar-idx": i } as React.CSSProperties}>{initials(m.displayName)}</div>
                   <span>{m.displayName}</span>
-                  {i === 0 && <small>Oprettet gruppen</small>}
+                  {i === 0 && <small>Oprettede gruppen</small>}
                 </div>
               ))}
             </div>
-            {isOwner ? (
-              <button className={s.deleteBtn} onClick={handleDeleteGroup}>Slet gruppe</button>
-            ) : (
-              <button className={s.deleteBtn} onClick={handleLeaveGroup}>Forlad gruppe</button>
-            )}
+            {isOwner
+              ? <button className={s.deleteBtn} onClick={handleDeleteGroup}>Slet gruppe</button>
+              : <button className={s.deleteBtn} onClick={handleLeaveGroup}>Forlad gruppe</button>
+            }
           </div>
         </>
       ) : (
         <>
-          {/* Opret gruppe */}
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Opret gruppe</p>
             <form onSubmit={handleCreateGroup} className={s.stackForm}>
@@ -518,10 +548,7 @@ export default function RoskildePage() {
               <button type="submit" className={s.primaryBtn} disabled={busy}>Opret gruppe</button>
             </form>
           </div>
-
           <div className={s.orDivider}><span>eller</span></div>
-
-          {/* Join gruppe */}
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Join med token</p>
             <form onSubmit={handleJoinGroup} className={s.stackForm}>
@@ -536,10 +563,7 @@ export default function RoskildePage() {
               <button type="submit" className={s.ghostBtn} disabled={busy}>Join gruppe</button>
             </form>
           </div>
-
           <div className={s.orDivider}><span>genoptag</span></div>
-
-          {/* Genoptag med kode */}
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Genoptag med kode</p>
             <form onSubmit={handleResume} className={s.stackForm}>
@@ -548,8 +572,8 @@ export default function RoskildePage() {
                 <input className={s.fieldInput} value={recallGroup} onChange={(e) => setRecallGroup(e.target.value.trim())} placeholder="UUID fra gruppe-siden" maxLength={36} required />
               </label>
               <label className={s.fieldWrap}>
-                <span className={s.fieldLabel}>4-cifret genkald-kode</span>
-                <input className={s.fieldInput} value={recallCode} onChange={(e) => setRecallCode(e.target.value.trim())} placeholder="Fx 4827" maxLength={6} required inputMode="numeric" />
+                <span className={s.fieldLabel}>Genkald-kode</span>
+                <input className={s.fieldInput} value={recallCode} onChange={(e) => setRecallCode(e.target.value.trim())} placeholder="4-cifret kode" maxLength={6} required inputMode="numeric" />
               </label>
               <button type="submit" className={s.ghostBtn} disabled={busy}>Genoptag</button>
             </form>
@@ -564,26 +588,23 @@ export default function RoskildePage() {
   return (
     <div className={`${s.page} ${busy ? s.busy : ""}`}>
 
-      {/* header */}
       <header className={s.header}>
-        <Link href="/" className={s.backLink}>←</Link>
         <div className={s.headerCenter}>
           <span className={s.headerTitle}>Roskilde Venneplanner</span>
           {status && <span className={s.statusMsg}>{status}</span>}
         </div>
         <div className={s.headerActions}>
           {me && (
-            <button className={s.iconBtn} onClick={() => me && run(() => fetchSession(me.memberId))} aria-label="Opdatér">↻</button>
+            <button className={s.iconBtn} onClick={() => run(() => fetchSession(me.memberId))} aria-label="Opdatér">↻</button>
           )}
         </div>
       </header>
 
-      {/* stats strip */}
       <div className={s.statsStrip}>
         {[
-          { label: "Bruger",      value: me?.displayName ?? "Ikke tilknyttet gruppe" },
+          { label: "Bruger",      value: me?.displayName ?? "Ingen gruppe" },
           { label: "Gruppe",      value: group?.name ?? "—" },
-          { label: "Valgte acts", value: tlTotal },
+          { label: "Valgte shows",value: tlTotal },
           { label: "I line-up",   value: lineup.length },
         ].map(({ label, value }) => (
           <div key={label} className={s.statCard}>
@@ -598,7 +619,6 @@ export default function RoskildePage() {
         <section className={s.section}>
           <p className={s.sectionTag}>Line-up · {lineup.length} acts</p>
 
-          {/* Filterbar */}
           <div className={s.filterBar}>
             <input
               type="search"
@@ -616,9 +636,16 @@ export default function RoskildePage() {
                 <option value="alle">Alle typer</option>
                 {allTypes.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>
+            </div>
+            <div className={s.filterRow}>
               <select className={s.filterSelect} value={dayF} onChange={(e) => setDayF(e.target.value)}>
                 <option value="alle">Alle dage</option>
-                {allDays.map((d) => <option key={d} value={d}>{d}</option>)}
+                {sortedDays.map((d) => <option key={d} value={d}>{d}</option>)}
+              </select>
+              <select className={s.filterSelect} value={timeSlotF} onChange={(e) => setTimeSlotF(e.target.value as TimeSlot)}>
+                {TIME_SLOTS.map((ts) => (
+                  <option key={ts.id} value={ts.id}>{ts.label}{ts.range ? ` (${ts.range})` : ""}</option>
+                ))}
               </select>
             </div>
             <label className={s.toggleRow}>
@@ -639,48 +666,91 @@ export default function RoskildePage() {
           ) : (
             <div className={s.actsList}>
               {acts.map((act) => {
-                const picks   = picksFor(act.name);
-                const mine    = myPick(act.name);
-                const canPick = !!(me && group);
-                const stage   = act.lineupSceneLabel ?? act.stage ?? "";
-                const apps    = act.appearances?.length
-                  ? act.appearances
-                  : [{ dateLabel: act.dateLabel, timeLabel: act.timeLabel }];
-                const schedStr = apps.map((ap) => [ap.dateLabel, ap.timeLabel].filter(Boolean).join(" ")).join(", ") || "Programinfo mangler";
+                const apps     = getAppearances(act);
+                const expanded = expandedActs.has(act.name);
+                const canPick  = !!(me && group);
+                const anyPicked = group?.picks.some((p) => p.actName === act.name) ?? false;
 
                 return (
-                  <article key={act.name} className={s.actCard}>
-                    <div className={s.actTop}>
+                  <article key={act.name} className={`${s.actCard} ${anyPicked ? s.actCardPicked : ""}`}>
+                    {/* Titel-header — klikbar for expand */}
+                    <button
+                      className={s.actHeader}
+                      onClick={() => toggleExpand(act.name)}
+                      aria-expanded={expanded}
+                    >
                       <div className={s.actInfo}>
                         <h3 className={s.actName}>{act.name}</h3>
-                        <p className={s.actMeta}>{act.type ?? "Act"}{stage ? ` · ${stage}` : ""}</p>
-                        <p className={s.actMeta}>{schedStr}</p>
+                        <p className={s.actMeta}>
+                          {[act.type, act.lineupSceneLabel ?? act.stage, act.countryCode].filter(Boolean).join(" · ")}
+                        </p>
                       </div>
-                      <div className={s.catGrid}>
-                        {CATEGORIES.map((key) => {
-                          const meta = CAT_META[key];
+                      <span className={s.expandArrow}>{expanded ? "▴" : "▾"}</span>
+                    </button>
+
+                    {/* Appearances — altid synlige for single, expandable for multi */}
+                    {(expanded || apps.length === 1) && (
+                      <div className={s.appList}>
+                        {apps.map((app) => {
+                          const appDate  = app.date ?? "";
+                          const mine     = myPickFor(act.name, appDate);
+                          const gPicks   = groupPicksFor(act.name, appDate);
+                          const schedStr = [app.dateLabel, app.timeLabel, app.stage].filter(Boolean).join(" · ") || "Dato TBA";
+
                           return (
-                            <button
-                              key={key}
-                              className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
-                              onClick={() => handlePick(act.name, key)}
-                              disabled={!canPick}
-                              title={meta.label}
-                            >
-                              {meta.emoji}
-                            </button>
+                            <div key={appDate || schedStr} className={s.appRow}>
+                              <div className={s.appMeta}>
+                                <span className={s.appTime}>{app.timeLabel ?? "TBA"}</span>
+                                <span className={s.appDate}>{app.dateLabel ?? "Dato TBA"}</span>
+                                {app.stage && app.stage !== (act.lineupSceneLabel ?? act.stage) && (
+                                  <span className={s.appStage}>{app.stage}</span>
+                                )}
+                                {app.showTitle && <span className={s.appShowTitle}>{app.showTitle}</span>}
+                              </div>
+                              <div className={s.catGrid}>
+                                {CATEGORIES.map((key) => {
+                                  const meta = CAT_META[key];
+                                  return (
+                                    <button
+                                      key={key}
+                                      className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                                      onClick={() => handlePick(act.name, appDate, key)}
+                                      disabled={!canPick}
+                                      title={meta.label}
+                                    >
+                                      {meta.emoji}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              {gPicks.length > 0 && (
+                                <div className={s.pickTags}>
+                                  {gPicks.map((p) => (
+                                    <span key={`${p.memberId}-${appDate}`} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                                      {CAT_META[p.category].emoji} {initials(p.displayName)}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
+
+                        {/* Link til akt-siden */}
+                        {act.url && (
+                          <a href={act.url} target="_blank" rel="noopener noreferrer" className={s.actLink}>
+                            Se fuldt program på roskilde-festival.dk →
+                          </a>
+                        )}
                       </div>
-                    </div>
-                    {picks.length > 0 && (
-                      <div className={s.pickTags}>
-                        {picks.map((p) => (
-                          <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
-                            {CAT_META[p.category].emoji} {initials(p.displayName)}: {CAT_META[p.category].label}
-                          </span>
-                        ))}
-                      </div>
+                    )}
+
+                    {/* Kompakt overblik når collapsed og multi-appearance */}
+                    {!expanded && apps.length > 1 && (
+                      <p className={s.actMetaCollapsed}>
+                        {apps.length} optrædener · {apps[0]?.dateLabel ?? ""}
+                        {anyPicked && " · ✓ valgt"}
+                      </p>
                     )}
                   </article>
                 );
@@ -696,13 +766,12 @@ export default function RoskildePage() {
           <div className={s.section}>
             <div className={s.empty}>
               {group
-                ? "Marker acts i line-up — de samles her som en kronologisk tidsplan."
+                ? "Marker shows i line-up — de samles her som en kronologisk tidsplan."
                 : "Opret eller join en gruppe for at se jeres fælles tidsplan."}
             </div>
           </div>
         ) : (
           <>
-            {/* Sticky dagfaner */}
             <div className={s.dayTabs}>
               {tlDays.map((day) => (
                 <button
@@ -710,44 +779,40 @@ export default function RoskildePage() {
                   className={`${s.dayTabBtn} ${day === activeDayKey ? s.dayTabActive : ""}`}
                   onClick={() => setActivePlanDay(day)}
                 >
-                  {day.replace(/^\w+ /, "").replace(/\d{4}$/, "").trim()}
+                  {day.replace(/^(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY) /, "").replace(/ \d{4}$/, "")}
                 </button>
               ))}
             </div>
 
-            {/* Tidslinje for aktiv dag */}
             {activeDayKey && (() => {
               const items = tlByDay.get(activeDayKey) ?? [];
               let nowInserted = false;
               return (
                 <div className={s.timelineColumn}>
-                  {items.map((item, idx) => {
-                    const conflict   = hasConflict(items, idx);
-                    const itemMin    = item._app.timeLabel ? toMin(item._app.timeLabel) : null;
-                    const nextItem   = items[idx + 1];
-                    const nextMin    = nextItem?._app.timeLabel ? toMin(nextItem._app.timeLabel) : null;
+                  {items.map((entry, idx) => {
+                    const conflict = hasConflict(items, idx);
+                    const itemMin  = entry.sortMin < 1440 ? entry.sortMin : entry.sortMin - 1440;
 
-                    // Indsæt nu-markør lige EFTER det sidst passerede show
-                    const showNow = nowMin !== null && !nowInserted && itemMin !== null && (
-                      nowMin >= itemMin && (nextMin === null || nowMin < nextMin)
+                    const showNow = nowMin !== null && !nowInserted && (
+                      nowMin >= itemMin &&
+                      (idx === items.length - 1 || nowMin < (items[idx + 1].sortMin < 1440 ? items[idx + 1].sortMin : items[idx + 1].sortMin - 1440))
                     );
                     if (showNow) nowInserted = true;
 
                     return (
-                      <div key={`${item.name}-${item._app.timeLabel}-${idx}`}>
-                        <article
-                          className={`${s.timelineCard} ${conflict ? s.hasConflictSoft : ""}`}
-                        >
-                          <div className={s.timeSlot}>{item._app.timeLabel ?? "TBA"}</div>
+                      <div key={`${entry.act.name}-${entry.app.date ?? idx}`}>
+                        <article className={`${s.timelineCard} ${conflict ? s.hasConflictSoft : ""}`}>
+                          <div className={s.timeSlot}>
+                            {entry.app.timeLabel ?? "TBA"}
+                            {conflict && <span className={s.conflictDot} title="Sammenstød">⚡</span>}
+                          </div>
                           <div className={s.timelineBody}>
-                            <div className={s.timelineTop}>
-                              <div>
-                                <h4 className={s.actName}>{item.name}</h4>
-                                <p className={s.actMeta}>{item.type ?? "Act"} · {item._app.stage ?? item.lineupSceneLabel ?? "Scene TBA"}</p>
-                              </div>
-                            </div>
+                            <h4 className={s.actName}>{entry.act.name}</h4>
+                            <p className={s.actMeta}>
+                              {[entry.act.type, entry.app.stage ?? entry.act.lineupSceneLabel].filter(Boolean).join(" · ")}
+                            </p>
                             <div className={s.pickTags}>
-                              {item._picks.map((p) => (
+                              {entry.picks.map((p) => (
                                 <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
                                   {initials(p.displayName)} {CAT_META[p.category].emoji}
                                 </span>
@@ -779,10 +844,7 @@ export default function RoskildePage() {
 
       {/* Mobil tab bar */}
       <nav className={s.tabBar} aria-label="Navigation">
-        <button
-          className={`${s.tabBarBtn} ${activeTab === "lineup" ? s.tabBarBtnActive : ""}`}
-          onClick={() => switchTab("lineup")}
-        >
+        <button className={`${s.tabBarBtn} ${activeTab === "lineup" ? s.tabBarBtnActive : ""}`} onClick={() => switchTab("lineup")}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
             <line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/>
@@ -790,10 +852,7 @@ export default function RoskildePage() {
           </svg>
           <span className={s.tabBarLabel}>Line-up</span>
         </button>
-        <button
-          className={`${s.tabBarBtn} ${activeTab === "tidsplan" ? s.tabBarBtnActive : ""}`}
-          onClick={() => switchTab("tidsplan")}
-        >
+        <button className={`${s.tabBarBtn} ${activeTab === "tidsplan" ? s.tabBarBtnActive : ""}`} onClick={() => switchTab("tidsplan")}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
             <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
@@ -801,10 +860,7 @@ export default function RoskildePage() {
           <span className={s.tabBarLabel}>Tidsplan</span>
           {tlTotal > 0 && <span className={s.tabBadge}>{tlTotal}</span>}
         </button>
-        <button
-          className={`${s.tabBarBtn} ${activeTab === "gruppe" ? s.tabBarBtnActive : ""}`}
-          onClick={() => switchTab("gruppe")}
-        >
+        <button className={`${s.tabBarBtn} ${activeTab === "gruppe" ? s.tabBarBtnActive : ""}`} onClick={() => switchTab("gruppe")}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -817,7 +873,6 @@ export default function RoskildePage() {
 
       <footer className={s.footer}>
         <span>Roskilde Venneplanner · albertdieckmann.dk</span>
-        <Link href="/" className={s.footerLink}>← Tilbage</Link>
       </footer>
     </div>
   );

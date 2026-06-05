@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       ORDER BY joined_at ASC
     `,
     sql`
-      SELECT p.member_id, m.display_name, p.act_name, p.category
+      SELECT p.member_id, m.display_name, p.act_name, p.appearance_date, p.category
       FROM roskilde_picks_v2 p
       JOIN roskilde_members m ON m.member_id = p.member_id
       WHERE p.group_id = ${row.group_id}
@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
         memberId: p.member_id,
         displayName: p.display_name,
         actName: p.act_name,
+        appearanceDate: p.appearance_date,
         category: p.category,
       })),
     },
