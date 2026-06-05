@@ -1,5 +1,5 @@
-// POST /api/roskilde/setup          — opretter tabeller
-// POST /api/roskilde/setup?reset=1  — dropper og genopretter (dev only)
+// POST /api/roskilde/setup          — opretter tabeller (idempotent)
+// POST /api/roskilde/setup?reset=1  — dropper og genopretter (kræver token + ikke prod)
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,6 +13,14 @@ export async function POST(req: NextRequest) {
   }
 
   const reset = new URL(req.url).searchParams.get("reset") === "1";
+
+  // Reset er blokeret i produktion — for at beskytte brugerdata
+  if (reset && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "reset=1 er ikke tilladt i produktion" },
+      { status: 403 }
+    );
+  }
 
   if (reset) {
     await sql`DROP TABLE IF EXISTS roskilde_picks_v2 CASCADE`;
@@ -62,5 +70,8 @@ export async function POST(req: NextRequest) {
     )
   `;
 
-  return NextResponse.json({ ok: true, message: reset ? "Tabeller nulstillet og oprettet." : "Roskilde v2-tabeller oprettet." });
+  return NextResponse.json({
+    ok: true,
+    message: reset ? "Tabeller nulstillet og oprettet." : "Roskilde v2-tabeller oprettet (IF NOT EXISTS).",
+  });
 }
