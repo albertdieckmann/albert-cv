@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Polygon, Tooltip, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Tooltip, CircleMarker, Circle } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { AREA_LABELS } from "@/lib/fringe-area";
@@ -155,6 +155,13 @@ export function AreaMap() {
           </Tooltip>
         </Polygon>
       ))}
+      {/* Dashed outline roughly enclosing the Edinburgh Fringe festival footprint */}
+      <Circle
+        center={[55.948, -3.188]}
+        radius={1350}
+        pathOptions={{ color: "rgba(255,255,255,0.25)", fillOpacity: 0, weight: 1.5, dashArray: "6 5" }}
+      />
+
       {LANDMARKS.map(({ label, pos, icon }) => (
         <CircleMarker
           key={label}
