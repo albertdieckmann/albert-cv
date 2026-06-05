@@ -994,6 +994,50 @@
 
 /* ── member avatar i liste ───────────────────────────────────────────────── */
 
+/* ── nu-markør ───────────────────────────────────────────────────────────── */
+
+.nowMarker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0;
+  margin: 2px 0;
+  position: relative;
+}
+
+.nowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+  animation: nowPulse 2s ease-in-out infinite;
+}
+
+@keyframes nowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50%       { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+}
+
+.nowLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #ef4444;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.nowLine {
+  flex: 1;
+  height: 1px;
+  background: #ef4444;
+  opacity: 0.4;
+}
+
+/* ── member avatar i liste ───────────────────────────────────────────────── */
+
 .memberAvatar {
   width: 28px;
   height: 28px;

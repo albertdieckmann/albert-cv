@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       member_id  UUID NOT NULL REFERENCES roskilde_members(member_id) ON DELETE CASCADE,
       group_id   UUID NOT NULL REFERENCES roskilde_groups_v2(id) ON DELETE CASCADE,
       act_name   VARCHAR(200) NOT NULL,
-      category   VARCHAR(20) NOT NULL CHECK (category IN ('vil_gerne','måske','ikke')),
+      category   VARCHAR(20) NOT NULL CHECK (category IN ('interested','going','has_ticket')),
       updated_at TIMESTAMPTZ DEFAULT NOW(),
       PRIMARY KEY (member_id, act_name)
     )

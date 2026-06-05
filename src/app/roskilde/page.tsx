@@ -6,7 +6,7 @@ import s from "./roskilde.module.css";
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
-type PickCategory = "vil_gerne" | "måske" | "ikke";
+type PickCategory = "interested" | "going" | "has_ticket";
 type TabId = "lineup" | "tidsplan" | "gruppe";
 
 type Act = {
@@ -52,12 +52,12 @@ type Me = {
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
-const CATEGORIES: PickCategory[] = ["vil_gerne", "måske", "ikke"];
+const CATEGORIES: PickCategory[] = ["interested", "going", "has_ticket"];
 
 const CAT_META: Record<PickCategory, { label: string; emoji: string; btnCls: string }> = {
-  vil_gerne: { label: "Vil gerne", emoji: "👍", btnCls: s.catVilGerne },
-  måske:     { label: "Måske",     emoji: "🤔", btnCls: s.catMåske },
-  ikke:      { label: "Ikke",      emoji: "✕",  btnCls: s.catIkke },
+  interested: { label: "Interesseret",  emoji: "🍺",  btnCls: s.catInterested },
+  going:      { label: "Går",           emoji: "👍",  btnCls: s.catGoing },
+  has_ticket: { label: "Skal i pitten", emoji: "🕳️", btnCls: s.catHasTicket },
 };
 
 const LS_KEY = "roskilde-v2-member";
@@ -96,6 +96,11 @@ function initials(name: string): string {
   return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
+function toMin(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
 // ─── component ────────────────────────────────────────────────────────────────
 
 export default function RoskildePage() {
@@ -116,6 +121,7 @@ export default function RoskildePage() {
   const [dayF,      setDayF]      = useState("alle");
   const [selectedOnly, setSelectedOnly] = useState(false);
   const [activePlanDay, setActivePlanDay] = useState<string | null>(null);
+  const [nowMin, setNowMin] = useState<number | null>(null); // minutter siden midnat
 
   // gruppe tab
   const [displayName,  setDisplayName]  = useState("");
@@ -157,6 +163,17 @@ export default function RoskildePage() {
     api("/api/roskilde/lineup")
       .then((d) => setLineup(d.items ?? []))
       .catch(console.error);
+  }, []);
+
+  // Nu-markør: opdatér hvert minut
+  useEffect(() => {
+    function tick() {
+      const d = new Date();
+      setNowMin(d.getHours() * 60 + d.getMinutes());
+    }
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
@@ -407,7 +424,6 @@ export default function RoskildePage() {
       const overlapMembers = other._picks.filter((p) => aMembers.has(p.memberId));
       if (!overlapMembers.length) continue;
       // Grovt overlap: antag 90 min varighed
-      const toMin = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
       const aStart = toMin(tA), bStart = toMin(tB);
       if (Math.abs(aStart - bStart) < 90) return true;
     }
@@ -702,32 +718,51 @@ export default function RoskildePage() {
             {/* Tidslinje for aktiv dag */}
             {activeDayKey && (() => {
               const items = tlByDay.get(activeDayKey) ?? [];
+              let nowInserted = false;
               return (
                 <div className={s.timelineColumn}>
                   {items.map((item, idx) => {
-                    const conflict = hasConflict(items, idx);
+                    const conflict   = hasConflict(items, idx);
+                    const itemMin    = item._app.timeLabel ? toMin(item._app.timeLabel) : null;
+                    const nextItem   = items[idx + 1];
+                    const nextMin    = nextItem?._app.timeLabel ? toMin(nextItem._app.timeLabel) : null;
+
+                    // Indsæt nu-markør lige EFTER det sidst passerede show
+                    const showNow = nowMin !== null && !nowInserted && itemMin !== null && (
+                      nowMin >= itemMin && (nextMin === null || nowMin < nextMin)
+                    );
+                    if (showNow) nowInserted = true;
+
                     return (
-                      <article
-                        key={`${item.name}-${item._app.timeLabel}-${idx}`}
-                        className={`${s.timelineCard} ${conflict ? s.hasConflictSoft : ""}`}
-                      >
-                        <div className={s.timeSlot}>{item._app.timeLabel ?? "TBA"}</div>
-                        <div className={s.timelineBody}>
-                          <div className={s.timelineTop}>
-                            <div>
-                              <h4 className={s.actName}>{item.name}</h4>
-                              <p className={s.actMeta}>{item.type ?? "Act"} · {item._app.stage ?? item.lineupSceneLabel ?? "Scene TBA"}</p>
+                      <div key={`${item.name}-${item._app.timeLabel}-${idx}`}>
+                        <article
+                          className={`${s.timelineCard} ${conflict ? s.hasConflictSoft : ""}`}
+                        >
+                          <div className={s.timeSlot}>{item._app.timeLabel ?? "TBA"}</div>
+                          <div className={s.timelineBody}>
+                            <div className={s.timelineTop}>
+                              <div>
+                                <h4 className={s.actName}>{item.name}</h4>
+                                <p className={s.actMeta}>{item.type ?? "Act"} · {item._app.stage ?? item.lineupSceneLabel ?? "Scene TBA"}</p>
+                              </div>
+                            </div>
+                            <div className={s.pickTags}>
+                              {item._picks.map((p) => (
+                                <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                                  {initials(p.displayName)} {CAT_META[p.category].emoji}
+                                </span>
+                              ))}
                             </div>
                           </div>
-                          <div className={s.pickTags}>
-                            {item._picks.map((p) => (
-                              <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
-                                {initials(p.displayName)} {CAT_META[p.category].emoji}
-                              </span>
-                            ))}
+                        </article>
+                        {showNow && (
+                          <div className={s.nowMarker}>
+                            <span className={s.nowDot} />
+                            <span className={s.nowLabel}>nu</span>
+                            <span className={s.nowLine} />
                           </div>
-                        </div>
-                      </article>
+                        )}
+                      </div>
                     );
                   })}
                 </div>

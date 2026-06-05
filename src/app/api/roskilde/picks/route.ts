@@ -1,7 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
-const VALID_CATEGORIES = ["vil_gerne", "måske", "ikke"];
+const VALID_CATEGORIES = ["interested", "going", "has_ticket"];
 
 export async function POST(req: NextRequest) {
   const memberId = req.headers.get("x-member-id");
