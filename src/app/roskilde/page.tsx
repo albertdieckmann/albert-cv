@@ -171,8 +171,8 @@ export default function RoskildePage() {
   const [timeSlotF,    setTimeSlotF]    = useState<TimeSlot>("alle");
   const [selectedOnly, setSelectedOnly] = useState(false);
   const [activePlanDay, setActivePlanDay] = useState<string | null>(null);
-  const [expandedActs, setExpandedActs] = useState<Set<string>>(new Set());
   const [nowMin, setNowMin] = useState<number | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // gruppe tab
   const [displayName, setDisplayName] = useState("");
@@ -245,6 +245,13 @@ export default function RoskildePage() {
     tick();
     const id = setInterval(tick, 60_000);
     return () => clearInterval(id);
+  }, []);
+
+  // Scroll-to-top knap
+  useEffect(() => {
+    function onScroll() { setShowScrollTop(window.scrollY > 400); }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Scroll restore
@@ -369,13 +376,16 @@ export default function RoskildePage() {
     catch { flash(`Token: ${group.shareToken}`); }
   }
 
-  function toggleExpand(actName: string) {
-    setExpandedActs((prev) => {
-      const next = new Set(prev);
-      next.has(actName) ? next.delete(actName) : next.add(actName);
-      return next;
-    });
+  function resetFilters() {
+    setSearch("");
+    setStageF("alle");
+    setTypeF("alle");
+    setDayF("alle");
+    setTimeSlotF("alle");
+    setSelectedOnly(false);
   }
+
+  const filtersActive = search !== "" || stageF !== "alle" || typeF !== "alle" || dayF !== "alle" || timeSlotF !== "alle" || selectedOnly;
 
   // ── derived ───────────────────────────────────────────────────────────────
 
@@ -451,23 +461,30 @@ export default function RoskildePage() {
     );
   }
 
-  // Overlap: to picks fra SAMME person med start < 60 min fra hinanden
-  function hasConflict(
-    items: { act: Act; app: Appearance; picks: GroupPick[]; sortMin: number }[],
-    idx: number
-  ): boolean {
-    const item = items[idx];
-    if (!item.app.timeLabel) return false;
-    const aMin = item.sortMin;
-    for (let j = 0; j < items.length; j++) {
-      if (j === idx || !items[j].app.timeLabel) continue;
-      const bMin = items[j].sortMin;
-      if (Math.abs(aMin - bMin) >= 60) continue;
-      // Mindst ét fælles gruppemedlem i begge picks
-      const aMembers = new Set(item.picks.map((p) => p.memberId));
-      if (items[j].picks.some((p) => aMembers.has(p.memberId))) return true;
+  type TlEntry = { act: Act; app: Appearance; picks: GroupPick[]; sortMin: number };
+
+  // Gruppér timeline-entries i bånd: overlappende shows side om side
+  function buildBands(items: TlEntry[]): TlEntry[][] {
+    const used = new Set<number>();
+    const bands: TlEntry[][] = [];
+
+    for (let i = 0; i < items.length; i++) {
+      if (used.has(i)) continue;
+      const band: TlEntry[] = [items[i]];
+      used.add(i);
+      const aMembers = new Set(items[i].picks.map((p) => p.memberId));
+
+      for (let j = i + 1; j < items.length; j++) {
+        if (used.has(j)) continue;
+        if (Math.abs(items[j].sortMin - items[i].sortMin) >= 60) break; // sorted, so no later match
+        if (items[j].picks.some((p) => aMembers.has(p.memberId))) {
+          band.push(items[j]);
+          used.add(j);
+        }
+      }
+      bands.push(band);
     }
-    return false;
+    return bands;
   }
 
   // ── loading ───────────────────────────────────────────────────────────────
@@ -648,10 +665,15 @@ export default function RoskildePage() {
                 ))}
               </select>
             </div>
-            <label className={s.toggleRow}>
-              <input type="checkbox" checked={selectedOnly} onChange={(e) => setSelectedOnly(e.target.checked)} />
-              <span>Vis kun valgte</span>
-            </label>
+            <div className={s.filterBottomRow}>
+              <label className={s.toggleRow}>
+                <input type="checkbox" checked={selectedOnly} onChange={(e) => setSelectedOnly(e.target.checked)} />
+                <span>Vis kun valgte</span>
+              </label>
+              {filtersActive && (
+                <button className={s.resetBtn} onClick={resetFilters}>Nulstil filtre</button>
+              )}
+            </div>
           </div>
 
           {!group && (
@@ -665,95 +687,53 @@ export default function RoskildePage() {
             <div className={s.empty}>Ingen acts matcher dit filter.</div>
           ) : (
             <div className={s.actsList}>
-              {acts.map((act) => {
-                const apps     = getAppearances(act);
-                const expanded = expandedActs.has(act.name);
-                const canPick  = !!(me && group);
-                const anyPicked = group?.picks.some((p) => p.actName === act.name) ?? false;
+              {acts.flatMap((act) => {
+                const apps    = getAppearances(act);
+                const canPick = !!(me && group);
+                // Én kort pr. appearance
+                return apps.map((app) => {
+                  const appDate = app.date ?? "";
+                  const mine    = myPickFor(act.name, appDate);
+                  const gPicks  = groupPicksFor(act.name, appDate);
+                  const anyPicked = mine !== null || gPicks.length > 0;
+                  const schedStr  = [app.timeLabel, app.dateLabel, app.stage ?? act.lineupSceneLabel].filter(Boolean).join(" · ") || "Dato TBA";
 
-                return (
-                  <article key={act.name} className={`${s.actCard} ${anyPicked ? s.actCardPicked : ""}`}>
-                    {/* Titel-header — klikbar for expand */}
-                    <button
-                      className={s.actHeader}
-                      onClick={() => toggleExpand(act.name)}
-                      aria-expanded={expanded}
-                    >
-                      <div className={s.actInfo}>
-                        <h3 className={s.actName}>{act.name}</h3>
-                        <p className={s.actMeta}>
-                          {[act.type, act.lineupSceneLabel ?? act.stage, act.countryCode].filter(Boolean).join(" · ")}
-                        </p>
+                  return (
+                    <article key={`${act.name}-${appDate}`} className={`${s.actCard} ${anyPicked ? s.actCardPicked : ""}`}>
+                      <div className={s.actTop}>
+                        <div className={s.actInfo}>
+                          <h3 className={s.actName}>{act.name}</h3>
+                        </div>
+                        <div className={s.catGrid}>
+                          {CATEGORIES.map((key) => {
+                            const meta = CAT_META[key];
+                            return (
+                              <button
+                                key={key}
+                                className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                                onClick={() => handlePick(act.name, appDate, key)}
+                                disabled={!canPick}
+                                title={meta.label}
+                              >
+                                {meta.emoji}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <span className={s.expandArrow}>{expanded ? "▴" : "▾"}</span>
-                    </button>
-
-                    {/* Appearances — altid synlige for single, expandable for multi */}
-                    {(expanded || apps.length === 1) && (
-                      <div className={s.appList}>
-                        {apps.map((app) => {
-                          const appDate  = app.date ?? "";
-                          const mine     = myPickFor(act.name, appDate);
-                          const gPicks   = groupPicksFor(act.name, appDate);
-                          const schedStr = [app.dateLabel, app.timeLabel, app.stage].filter(Boolean).join(" · ") || "Dato TBA";
-
-                          return (
-                            <div key={appDate || schedStr} className={s.appRow}>
-                              <div className={s.appMeta}>
-                                <span className={s.appTime}>{app.timeLabel ?? "TBA"}</span>
-                                <span className={s.appDate}>{app.dateLabel ?? "Dato TBA"}</span>
-                                {app.stage && app.stage !== (act.lineupSceneLabel ?? act.stage) && (
-                                  <span className={s.appStage}>{app.stage}</span>
-                                )}
-                                {app.showTitle && <span className={s.appShowTitle}>{app.showTitle}</span>}
-                              </div>
-                              <div className={s.catGrid}>
-                                {CATEGORIES.map((key) => {
-                                  const meta = CAT_META[key];
-                                  return (
-                                    <button
-                                      key={key}
-                                      className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
-                                      onClick={() => handlePick(act.name, appDate, key)}
-                                      disabled={!canPick}
-                                      title={meta.label}
-                                    >
-                                      {meta.emoji}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                              {gPicks.length > 0 && (
-                                <div className={s.pickTags}>
-                                  {gPicks.map((p) => (
-                                    <span key={`${p.memberId}-${appDate}`} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
-                                      {CAT_META[p.category].emoji} {initials(p.displayName)}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-
-                        {/* Link til akt-siden */}
-                        {act.url && (
-                          <a href={act.url} target="_blank" rel="noopener noreferrer" className={s.actLink}>
-                            Se fuldt program på roskilde-festival.dk →
-                          </a>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Kompakt overblik når collapsed og multi-appearance */}
-                    {!expanded && apps.length > 1 && (
-                      <p className={s.actMetaCollapsed}>
-                        {apps.length} optrædener · {apps[0]?.dateLabel ?? ""}
-                        {anyPicked && " · ✓ valgt"}
-                      </p>
-                    )}
-                  </article>
-                );
+                      <p className={s.actMeta}>{schedStr}</p>
+                      {gPicks.length > 0 && (
+                        <div className={s.pickTags}>
+                          {gPicks.map((p) => (
+                            <span key={`${p.memberId}-${appDate}`} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                              {CAT_META[p.category].emoji} {initials(p.displayName)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </article>
+                  );
+                });
               })}
             </div>
           )}
@@ -786,40 +766,47 @@ export default function RoskildePage() {
 
             {activeDayKey && (() => {
               const items = tlByDay.get(activeDayKey) ?? [];
+              const bands = buildBands(items);
               let nowInserted = false;
+
               return (
                 <div className={s.timelineColumn}>
-                  {items.map((entry, idx) => {
-                    const conflict = hasConflict(items, idx);
-                    const itemMin  = entry.sortMin < 1440 ? entry.sortMin : entry.sortMin - 1440;
-
+                  {bands.map((band, bandIdx) => {
+                    const firstMin = band[0].sortMin < 1440 ? band[0].sortMin : band[0].sortMin - 1440;
+                    const nextBandFirstMin = bands[bandIdx + 1]
+                      ? (bands[bandIdx + 1][0].sortMin < 1440 ? bands[bandIdx + 1][0].sortMin : bands[bandIdx + 1][0].sortMin - 1440)
+                      : null;
                     const showNow = nowMin !== null && !nowInserted && (
-                      nowMin >= itemMin &&
-                      (idx === items.length - 1 || nowMin < (items[idx + 1].sortMin < 1440 ? items[idx + 1].sortMin : items[idx + 1].sortMin - 1440))
+                      nowMin >= firstMin && (nextBandFirstMin === null || nowMin < nextBandFirstMin)
                     );
                     if (showNow) nowInserted = true;
+                    const isConflict = band.length > 1;
 
                     return (
-                      <div key={`${entry.act.name}-${entry.app.date ?? idx}`}>
-                        <article className={`${s.timelineCard} ${conflict ? s.hasConflictSoft : ""}`}>
-                          <div className={s.timeSlot}>
-                            {entry.app.timeLabel ?? "TBA"}
-                            {conflict && <span className={s.conflictDot} title="Sammenstød">⚡</span>}
-                          </div>
-                          <div className={s.timelineBody}>
-                            <h4 className={s.actName}>{entry.act.name}</h4>
-                            <p className={s.actMeta}>
-                              {[entry.act.type, entry.app.stage ?? entry.act.lineupSceneLabel].filter(Boolean).join(" · ")}
-                            </p>
-                            <div className={s.pickTags}>
-                              {entry.picks.map((p) => (
-                                <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
-                                  {initials(p.displayName)} {CAT_META[p.category].emoji}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </article>
+                      <div key={`band-${bandIdx}`}>
+                        <div className={isConflict ? s.conflictBand : undefined}>
+                          {band.map((entry) => (
+                            <article
+                              key={`${entry.act.name}-${entry.app.date ?? bandIdx}`}
+                              className={`${s.timelineCard} ${isConflict ? s.timelineCardConflict : ""}`}
+                            >
+                              <div className={s.timeSlot}>{entry.app.timeLabel ?? "TBA"}</div>
+                              <div className={s.timelineBody}>
+                                <h4 className={s.actName}>{entry.act.name}</h4>
+                                <p className={s.actMeta}>
+                                  {[entry.act.type, entry.app.stage ?? entry.act.lineupSceneLabel].filter(Boolean).join(" · ")}
+                                </p>
+                                <div className={s.pickTags}>
+                                  {entry.picks.map((p) => (
+                                    <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                                      {initials(p.displayName)} {CAT_META[p.category].emoji}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </article>
+                          ))}
+                        </div>
                         {showNow && (
                           <div className={s.nowMarker}>
                             <span className={s.nowDot} />
@@ -874,6 +861,16 @@ export default function RoskildePage() {
       <footer className={s.footer}>
         <span>Roskilde Venneplanner · albertdieckmann.dk</span>
       </footer>
+
+      {showScrollTop && (
+        <button
+          className={s.scrollTopBtn}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll til top"
+        >
+          ↑
+        </button>
+      )}
     </div>
   );
 }

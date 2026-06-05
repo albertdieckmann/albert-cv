@@ -966,14 +966,71 @@
 }
 .actLink:hover { color: var(--accent); }
 
-/* ── conflict dot in timeline ────────────────────────────────────────────── */
+/* ── conflict band: overlappende shows side om side ──────────────────────── */
 
-.conflictDot {
-  display: block;
-  font-size: 10px;
-  margin-top: 0.2rem;
-  color: #f59e0b;
+.conflictBand {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-left: 2px solid #f59e0b;
 }
+
+.conflictBand .timelineCard {
+  flex: 1;
+  min-width: 0;
+  border-left: none;
+}
+
+.timelineCardConflict {
+  background: rgba(245, 158, 11, 0.04) !important;
+}
+
+/* ── filter bottom row ───────────────────────────────────────────────────── */
+
+.filterBottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.resetBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.625rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-height: 32px;
+}
+.resetBtn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── scroll-to-top ───────────────────────────────────────────────────────── */
+
+.scrollTopBtn {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.scrollTopBtn:hover { color: var(--accent); border-color: var(--accent); }
 
 /* ── dag-faner (tidsplan sub-nav) ────────────────────────────────────────── */
 
