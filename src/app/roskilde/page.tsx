@@ -170,9 +170,10 @@ export default function RoskildePage() {
   const [dayF,         setDayF]         = useState("alle");
   const [timeSlotF,    setTimeSlotF]    = useState<TimeSlot>("alle");
   const [selectedOnly, setSelectedOnly] = useState(false);
-  const [activePlanDay, setActivePlanDay] = useState<string | null>(null);
-  const [nowMin, setNowMin] = useState<number | null>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activePlanDay,  setActivePlanDay]  = useState<string | null>(null);
+  const [expandedActs,   setExpandedActs]   = useState<Set<string>>(new Set());
+  const [nowMin,         setNowMin]         = useState<number | null>(null);
+  const [showScrollTop,  setShowScrollTop]  = useState(false);
 
   // gruppe tab
   const [displayName, setDisplayName] = useState("");
@@ -374,6 +375,14 @@ export default function RoskildePage() {
     if (!group) return;
     try { await navigator.clipboard.writeText(group.shareToken); flash(`Token ${group.shareToken} kopieret!`); }
     catch { flash(`Token: ${group.shareToken}`); }
+  }
+
+  function toggleExpand(actName: string) {
+    setExpandedActs((prev) => {
+      const next = new Set(prev);
+      next.has(actName) ? next.delete(actName) : next.add(actName);
+      return next;
+    });
   }
 
   function resetFilters() {
@@ -687,38 +696,38 @@ export default function RoskildePage() {
             <div className={s.empty}>Ingen acts matcher dit filter.</div>
           ) : (
             <div className={s.actsList}>
-              {acts.flatMap((act) => {
-                const apps    = getAppearances(act);
-                const canPick = !!(me && group);
-                // Én kort pr. appearance
-                return apps.map((app) => {
+              {[...acts].sort((a, b) => a.name.localeCompare(b.name, "da")).map((act) => {
+                const apps     = getAppearances(act);
+                const canPick  = !!(me && group);
+                const isMulti  = apps.length > 1;
+                const expanded = expandedActs.has(act.name);
+                const anyPickedOnAct = apps.some((app) => {
+                  const appDate = app.date ?? "";
+                  return myPickFor(act.name, appDate) !== null || groupPicksFor(act.name, appDate).length > 0;
+                });
+
+                if (!isMulti) {
+                  // Enkelt appearance — fladt kort
+                  const app     = apps[0];
                   const appDate = app.date ?? "";
                   const mine    = myPickFor(act.name, appDate);
                   const gPicks  = groupPicksFor(act.name, appDate);
-                  const anyPicked = mine !== null || gPicks.length > 0;
-                  const schedStr  = [app.timeLabel, app.dateLabel, app.stage ?? act.lineupSceneLabel].filter(Boolean).join(" · ") || "Dato TBA";
+                  const schedStr = [app.timeLabel, app.dateLabel, app.stage ?? act.lineupSceneLabel].filter(Boolean).join(" · ") || "Dato TBA";
 
                   return (
-                    <article key={`${act.name}-${appDate}`} className={`${s.actCard} ${anyPicked ? s.actCardPicked : ""}`}>
+                    <article key={act.name} className={`${s.actCard} ${(mine || gPicks.length) ? s.actCardPicked : ""}`}>
                       <div className={s.actTop}>
-                        <div className={s.actInfo}>
-                          <h3 className={s.actName}>{act.name}</h3>
-                        </div>
+                        <div className={s.actInfo}><h3 className={s.actName}>{act.name}</h3></div>
                         <div className={s.catGrid}>
-                          {CATEGORIES.map((key) => {
-                            const meta = CAT_META[key];
-                            return (
-                              <button
-                                key={key}
-                                className={`${s.catBtn} ${meta.btnCls} ${mine === key ? s.catBtnActive : ""}`}
-                                onClick={() => handlePick(act.name, appDate, key)}
-                                disabled={!canPick}
-                                title={meta.label}
-                              >
-                                {meta.emoji}
-                              </button>
-                            );
-                          })}
+                          {CATEGORIES.map((key) => (
+                            <button
+                              key={key}
+                              className={`${s.catBtn} ${CAT_META[key].btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                              onClick={() => handlePick(act.name, appDate, key)}
+                              disabled={!canPick}
+                              title={CAT_META[key].label}
+                            >{CAT_META[key].emoji}</button>
+                          ))}
                         </div>
                       </div>
                       <p className={s.actMeta}>{schedStr}</p>
@@ -733,7 +742,61 @@ export default function RoskildePage() {
                       )}
                     </article>
                   );
-                });
+                }
+
+                // Multi-appearance — fold-ud
+                return (
+                  <article key={act.name} className={`${s.actCard} ${anyPickedOnAct ? s.actCardPicked : ""}`}>
+                    <button className={s.actHeader} onClick={() => toggleExpand(act.name)} aria-expanded={expanded}>
+                      <div className={s.actInfo}>
+                        <h3 className={s.actName}>{act.name}</h3>
+                        <p className={s.actMeta}>
+                          {act.type ? `${act.type} · ` : ""}{apps.length} optrædener
+                          {anyPickedOnAct ? " · ✓" : ""}
+                        </p>
+                      </div>
+                      <span className={s.expandArrow}>{expanded ? "▴" : "▾"}</span>
+                    </button>
+
+                    {expanded && (
+                      <div className={s.appList}>
+                        {apps.map((app) => {
+                          const appDate  = app.date ?? "";
+                          const mine     = myPickFor(act.name, appDate);
+                          const gPicks   = groupPicksFor(act.name, appDate);
+                          const schedStr = [app.timeLabel, app.dateLabel, app.stage ?? act.lineupSceneLabel].filter(Boolean).join(" · ") || "Dato TBA";
+                          return (
+                            <div key={appDate || schedStr} className={s.appRow}>
+                              <div className={s.appRowTop}>
+                                <p className={s.appMeta2}>{schedStr}</p>
+                                <div className={s.catGrid}>
+                                  {CATEGORIES.map((key) => (
+                                    <button
+                                      key={key}
+                                      className={`${s.catBtn} ${CAT_META[key].btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                                      onClick={() => handlePick(act.name, appDate, key)}
+                                      disabled={!canPick}
+                                      title={CAT_META[key].label}
+                                    >{CAT_META[key].emoji}</button>
+                                  ))}
+                                </div>
+                              </div>
+                              {gPicks.length > 0 && (
+                                <div className={s.pickTags}>
+                                  {gPicks.map((p) => (
+                                    <span key={`${p.memberId}-${appDate}`} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                                      {CAT_META[p.category].emoji} {initials(p.displayName)}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </article>
+                );
               })}
             </div>
           )}
@@ -792,17 +855,38 @@ export default function RoskildePage() {
                             >
                               <div className={s.timeSlot}>{entry.app.timeLabel ?? "TBA"}</div>
                               <div className={s.timelineBody}>
-                                <h4 className={s.actName}>{entry.act.name}</h4>
-                                <p className={s.actMeta}>
-                                  {[entry.act.type, entry.app.stage ?? entry.act.lineupSceneLabel].filter(Boolean).join(" · ")}
-                                </p>
-                                <div className={s.pickTags}>
-                                  {entry.picks.map((p) => (
-                                    <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
-                                      {initials(p.displayName)} {CAT_META[p.category].emoji}
-                                    </span>
-                                  ))}
+                                <div className={s.timelineTop}>
+                                  <div className={s.actInfo}>
+                                    <h4 className={s.actName}>{entry.act.name}</h4>
+                                    <p className={s.actMeta}>
+                                      {[entry.act.type, entry.app.stage ?? entry.act.lineupSceneLabel].filter(Boolean).join(" · ")}
+                                    </p>
+                                  </div>
+                                  {me && group && (
+                                    <div className={s.catGrid}>
+                                      {CATEGORIES.map((key) => {
+                                        const mine = myPickFor(entry.act.name, entry.app.date ?? "");
+                                        return (
+                                          <button
+                                            key={key}
+                                            className={`${s.catBtn} ${CAT_META[key].btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                                            onClick={() => handlePick(entry.act.name, entry.app.date ?? "", key)}
+                                            title={CAT_META[key].label}
+                                          >{CAT_META[key].emoji}</button>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
                                 </div>
+                                {entry.picks.filter((p) => p.memberId !== me?.memberId).length > 0 && (
+                                  <div className={s.pickTags}>
+                                    {entry.picks.filter((p) => p.memberId !== me?.memberId).map((p) => (
+                                      <span key={p.memberId} className={`${s.tag} ${CAT_META[p.category].btnCls}`}>
+                                        {initials(p.displayName)} {CAT_META[p.category].emoji}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </article>
                           ))}
