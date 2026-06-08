@@ -140,6 +140,7 @@ def _day_id_from_date_label(date_label: str | None) -> str | None:
         ("thursday", "thursday"),
         ("friday", "friday"),
         ("saturday", "saturday"),
+        ("first-days", "sunday"),
     ):
         if token in normalized:
             return day_id
