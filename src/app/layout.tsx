@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display, DM_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Serif_Display, DM_Mono, Plus_Jakarta_Sans, Barlow_Condensed } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -20,6 +20,12 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   variable: "--font-instrument-sans",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ["900"],
+  subsets: ["latin"],
+  variable: "--font-rf-display",
 });
 
 export const metadata: Metadata = {
@@ -43,7 +49,7 @@ export default function RootLayout({
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html
         lang="da"
-        className={`${dmSerif.variable} ${dmMono.variable} ${plusJakarta.variable}`}
+        className={`${dmSerif.variable} ${dmMono.variable} ${plusJakarta.variable} ${barlowCondensed.variable}`}
       >
         <body>{children}</body>
       </html>
