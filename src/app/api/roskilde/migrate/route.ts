@@ -19,6 +19,12 @@ export async function POST(req: NextRequest) {
     ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES roskilde_users(user_id) ON DELETE CASCADE
   `;
 
+  // Gør display_name nullable — nye members identificeres via user_id
+  await sql`
+    ALTER TABLE roskilde_members
+    ALTER COLUMN display_name DROP NOT NULL
+  `;
+
   // Hent alle members der endnu ikke har en user
   const members = await sql`
     SELECT member_id, display_name FROM roskilde_members WHERE user_id IS NULL
