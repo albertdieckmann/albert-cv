@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 const VALID_CATEGORIES = ["interested", "going", "has_ticket"];
 
 export async function POST(req: NextRequest) {
-  const memberId = req.headers.get("x-member-id");
-  if (!memberId) return NextResponse.json({ error: "Mangler member-id" }, { status: 400 });
+  const userId = req.headers.get("x-user-id");
+  if (!userId) return NextResponse.json({ error: "Mangler user-id" }, { status: 400 });
 
   const { actName, appearanceDate, category } = await req.json();
   if (!actName) return NextResponse.json({ error: "Manglende actName" }, { status: 400 });
@@ -14,23 +14,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ugyldig kategori" }, { status: 400 });
   }
 
-  const memberCheck = await sql`
-    SELECT group_id FROM roskilde_members WHERE member_id = ${memberId}
-  `;
-  if (!memberCheck.rows.length) return NextResponse.json({ error: "Ukendt member" }, { status: 403 });
-
-  const groupId = memberCheck.rows[0].group_id;
+  const userCheck = await sql`SELECT user_id FROM roskilde_users WHERE user_id = ${userId}`;
+  if (!userCheck.rows.length) return NextResponse.json({ error: "Ukendt bruger" }, { status: 403 });
 
   if (!category) {
     await sql`
-      DELETE FROM roskilde_picks_v2
-      WHERE member_id = ${memberId} AND act_name = ${actName} AND appearance_date = ${appearanceDate}
+      DELETE FROM roskilde_picks_v3
+      WHERE user_id = ${userId} AND act_name = ${actName} AND appearance_date = ${appearanceDate}
     `;
   } else {
     await sql`
-      INSERT INTO roskilde_picks_v2 (member_id, group_id, act_name, appearance_date, category, updated_at)
-      VALUES (${memberId}, ${groupId}, ${actName}, ${appearanceDate}, ${category}, NOW())
-      ON CONFLICT (member_id, act_name, appearance_date) DO UPDATE
+      INSERT INTO roskilde_picks_v3 (user_id, act_name, appearance_date, category, updated_at)
+      VALUES (${userId}, ${actName}, ${appearanceDate}, ${category}, NOW())
+      ON CONFLICT (user_id, act_name, appearance_date) DO UPDATE
       SET category = EXCLUDED.category, updated_at = NOW()
     `;
   }

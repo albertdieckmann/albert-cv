@@ -2,7 +2,7 @@ import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/roskilde/resume?groupId=<uuid>&code=<4cifre>
-// Finder member_id fra recall_code så brugeren kan genvinde adgang
+// Finder userId fra recall_code på et specifikt gruppemedlemskab
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const groupId = searchParams.get("groupId");
@@ -13,9 +13,10 @@ export async function GET(req: NextRequest) {
   }
 
   const result = await sql`
-    SELECT member_id, display_name
-    FROM roskilde_members
-    WHERE group_id = ${groupId} AND recall_code = ${code}
+    SELECT m.user_id, u.display_name
+    FROM roskilde_members m
+    JOIN roskilde_users u ON u.user_id = m.user_id
+    WHERE m.group_id = ${groupId} AND m.recall_code = ${code}
   `;
 
   if (!result.rows.length) {
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({
-    memberId: result.rows[0].member_id,
+    userId: result.rows[0].user_id,
     displayName: result.rows[0].display_name,
   });
 }

@@ -13,12 +13,26 @@ function randomRecallCode(): string {
 }
 
 export async function POST(req: NextRequest) {
-  const { groupName, displayName } = await req.json();
+  const { groupName, displayName, userId: existingUserId } = await req.json();
   if (!groupName?.trim()) return NextResponse.json({ error: "Gruppenavn mangler" }, { status: 400 });
-  if (!displayName?.trim()) return NextResponse.json({ error: "Dit navn mangler" }, { status: 400 });
+
+  let userId = existingUserId?.trim() ?? null;
+
+  if (!userId) {
+    if (!displayName?.trim()) return NextResponse.json({ error: "Dit navn mangler" }, { status: 400 });
+    const userResult = await sql`
+      INSERT INTO roskilde_users (display_name)
+      VALUES (${displayName.trim()})
+      RETURNING user_id
+    `;
+    userId = userResult.rows[0].user_id;
+  } else {
+    // Verificér at userId findes
+    const check = await sql`SELECT user_id FROM roskilde_users WHERE user_id = ${userId}`;
+    if (!check.rows.length) return NextResponse.json({ error: "Ukendt bruger-ID" }, { status: 404 });
+  }
 
   const shareToken = randomToken(8);
-
   const groupResult = await sql`
     INSERT INTO roskilde_groups_v2 (name, share_token)
     VALUES (${groupName.trim()}, ${shareToken})
@@ -28,11 +42,11 @@ export async function POST(req: NextRequest) {
 
   const recallCode = randomRecallCode();
   const memberResult = await sql`
-    INSERT INTO roskilde_members (group_id, display_name, recall_code)
-    VALUES (${groupId}, ${displayName.trim()}, ${recallCode})
+    INSERT INTO roskilde_members (user_id, group_id, recall_code)
+    VALUES (${userId}, ${groupId}, ${recallCode})
     RETURNING member_id
   `;
   const memberId = memberResult.rows[0].member_id;
 
-  return NextResponse.json({ memberId, groupId, shareToken, recallCode });
+  return NextResponse.json({ userId, memberId, groupId, shareToken, recallCode });
 }
