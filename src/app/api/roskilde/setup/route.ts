@@ -22,6 +22,8 @@ export async function POST(req: NextRequest) {
   }
 
   if (reset) {
+    await sql`DROP TABLE IF EXISTS rf_checkins CASCADE`;
+    await sql`DROP TABLE IF EXISTS rf_group_places CASCADE`;
     await sql`DROP TABLE IF EXISTS roskilde_picks_v3 CASCADE`;
     await sql`DROP TABLE IF EXISTS roskilde_picks_v2 CASCADE`;
     await sql`DROP TABLE IF EXISTS roskilde_members CASCADE`;
@@ -89,6 +91,44 @@ export async function POST(req: NextRequest) {
       item_count INTEGER NOT NULL,
       data       JSONB NOT NULL
     )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS rf_group_places (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      group_id    UUID NOT NULL REFERENCES roskilde_groups_v2(id) ON DELETE CASCADE,
+      name        TEXT NOT NULL,
+      emoji       TEXT,
+      created_by  UUID REFERENCES roskilde_members(member_id) ON DELETE SET NULL,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`CREATE INDEX IF NOT EXISTS idx_places_group ON rf_group_places (group_id)`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS rf_checkins (
+      id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      group_id        UUID NOT NULL REFERENCES roskilde_groups_v2(id) ON DELETE CASCADE,
+      member_id       UUID NOT NULL REFERENCES roskilde_members(member_id) ON DELETE CASCADE,
+      target_type     TEXT NOT NULL CHECK (target_type IN ('performance', 'place')),
+      performance_id  TEXT,
+      place_id        UUID REFERENCES rf_group_places(id) ON DELETE CASCADE,
+      checked_in_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      expires_at      TIMESTAMPTZ NOT NULL,
+      checked_out_at  TIMESTAMPTZ,
+      CHECK (
+        (target_type = 'performance' AND performance_id IS NOT NULL AND place_id IS NULL)
+        OR
+        (target_type = 'place' AND place_id IS NOT NULL AND performance_id IS NULL)
+      )
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_checkins_group_active
+      ON rf_checkins (group_id, expires_at)
+      WHERE checked_out_at IS NULL
   `;
 
   return NextResponse.json({

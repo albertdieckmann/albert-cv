@@ -1318,3 +1318,206 @@
     border-right: 1px solid var(--border);
   }
 }
+
+/* ── check-in: avatar stack ──────────────────────────────────────────────── */
+
+.avatarStack {
+  display: flex;
+  align-items: center;
+}
+
+.avatarCircle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 2px solid var(--bg1, #0d0d0d);
+  color: var(--muted);
+  font-family: var(--rf-display);
+  font-size: 10px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  margin-left: -6px;
+}
+.avatarCircle:first-child { margin-left: 0; }
+
+/* ── check-in: knapper ───────────────────────────────────────────────────── */
+
+.checkinBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255, 115, 0, 0.12);
+  color: #FF7300;
+  border: 1px solid rgba(255, 115, 0, 0.35);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checkinBtn:hover { background: rgba(255, 115, 0, 0.22); }
+.checkinBtn:disabled { opacity: 0.4; cursor: default; }
+
+.checkoutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(22, 193, 114, 0.12);
+  color: #16c172;
+  border: 1px solid rgba(22, 193, 114, 0.3);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checkoutBtn:hover { background: rgba(22, 193, 114, 0.22); }
+
+/* ── check-in: live prompt banner ────────────────────────────────────────── */
+
+.livePromptBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 115, 0, 0.08);
+  border: 1px solid rgba(255, 115, 0, 0.3);
+  border-left: 3px solid #FF7300;
+  margin-bottom: 0.5rem;
+}
+
+.livePromptText {
+  font-size: 0.875rem;
+  color: var(--fg);
+  flex: 1;
+  min-width: 0;
+}
+.livePromptText strong { color: #FF7300; }
+
+/* ── check-in: aktiv check-in badge ─────────────────────────────────────── */
+
+.activeCheckinBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(22, 193, 114, 0.08);
+  border: 1px solid rgba(22, 193, 114, 0.25);
+  margin-bottom: 0.75rem;
+}
+
+.activeCheckinLabel {
+  font-size: 0.8125rem;
+  color: #16c172;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── check-in: steder chips ──────────────────────────────────────────────── */
+
+.placesSection {
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  margin-bottom: 0.75rem;
+}
+
+.placesSectionTag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.625rem;
+}
+
+.placeChips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.placeChip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  min-height: 42px;
+}
+
+.placeChipName {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.addPlaceForm {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.addPlaceInput {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-size: 0.875rem;
+}
+
+.emojiInput {
+  width: 56px;
+  padding: 0.4rem 0.5rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-size: 1rem;
+  text-align: center;
+}
+
+.deleteSmBtn {
+  padding: 0.25rem 0.5rem;
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.deleteSmBtn:hover { color: #ef4444; border-color: rgba(239,68,68,0.4); }
+
+/* ── timeline: check-in row ──────────────────────────────────────────────── */
+
+.timelineCheckinRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+  flex-wrap: wrap;
+}

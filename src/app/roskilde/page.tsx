@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, Component, ReactNode } from "react";
 import s from "./roskilde.module.css";
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -54,6 +54,38 @@ type User = {
   userId: string;
   displayName: string;
 };
+
+// ─── check-in / presence types ────────────────────────────────────────────────
+
+type Place = { id: string; name: string; emoji?: string | null; created_by?: string | null };
+
+type PresenceMember = { name: string; checkedInAt: string; expiresAt: string };
+
+type PresenceTarget =
+  | { type: "performance"; performanceId: string; members: PresenceMember[] }
+  | { type: "place"; placeId: string; members: PresenceMember[] };
+
+type ActiveCheckin =
+  | { targetType: "performance"; performanceId: string }
+  | { targetType: "place"; placeId: string }
+  | null;
+
+type PresenceData = {
+  version: string;
+  targets: PresenceTarget[];
+  me: { active: ActiveCheckin };
+};
+
+// ─── error boundary for presence features ─────────────────────────────────────
+
+class PresenceBoundary extends Component<{ children: ReactNode }, { caught: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { caught: false };
+  }
+  static getDerivedStateFromError() { return { caught: true }; }
+  render() { return this.state.caught ? null : this.props.children; }
+}
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
@@ -136,6 +168,59 @@ function getAppearances(act: Act): Appearance[] {
   return [{ dateLabel: act.dateLabel, timeLabel: act.timeLabel, stage: act.lineupSceneLabel ?? act.stage, date: act.date }];
 }
 
+function perfId(actName: string, appearanceDate: string): string {
+  return `${actName}::${appearanceDate}`;
+}
+
+function parsePerformanceStartMs(date: string, timeLabel: string): number | null {
+  if (!date || !timeLabel) return null;
+  const clean = timeLabel.replace(".", ":");
+  const [h, m] = clean.split(":").map(Number);
+  if (isNaN(h)) return null;
+  const d = new Date(`${date}T00:00:00`);
+  d.setHours(h, m || 0, 0, 0);
+  return d.getTime();
+}
+
+function isLiveNow(app: Appearance, nowMs: number): boolean {
+  if (!app.date || !app.timeLabel) return false;
+  const startMs = parsePerformanceStartMs(app.date, app.timeLabel);
+  if (startMs === null) return false;
+  return nowMs >= startMs - 15 * 60 * 1000 && nowMs <= startMs + 2 * 60 * 60 * 1000;
+}
+
+function activePresenceMembers(
+  presence: PresenceData | null,
+  key: { type: "performance"; performanceId: string } | { type: "place"; placeId: string }
+): PresenceMember[] {
+  if (!presence) return [];
+  const now = Date.now();
+  const target = presence.targets.find((t) => {
+    if (t.type !== key.type) return false;
+    if (t.type === "performance" && key.type === "performance")
+      return t.performanceId === key.performanceId;
+    if (t.type === "place" && key.type === "place")
+      return t.placeId === key.placeId;
+    return false;
+  });
+  if (!target) return [];
+  return target.members.filter((m) => new Date(m.expiresAt).getTime() > now);
+}
+
+function AvatarStack({ members }: { members: PresenceMember[] }) {
+  const shown = members.slice(0, 4);
+  const rest = members.length - shown.length;
+  if (!shown.length) return null;
+  return (
+    <div className={s.avatarStack}>
+      {shown.map((m, i) => (
+        <div key={i} className={s.avatarCircle} title={m.name}>{initials(m.name)}</div>
+      ))}
+      {rest > 0 && <div className={s.avatarCircle}>+{rest}</div>}
+    </div>
+  );
+}
+
 function buildDayOrder(acts: Act[]): Map<string, string> {
   const firstDate = new Map<string, string>();
   for (const act of acts) {
@@ -187,6 +272,14 @@ export default function RoskildePage() {
 
   const [status, setStatus] = useState("");
   const [busy,   setBusy]   = useState(false);
+
+  // check-in / presence
+  const [presence,      setPresence]      = useState<PresenceData | null>(null);
+  const [places,        setPlaces]        = useState<Place[]>([]);
+  const [newPlaceName,  setNewPlaceName]  = useState("");
+  const [newPlaceEmoji, setNewPlaceEmoji] = useState("");
+  const presenceVersionRef = useRef<string | null>(null);
+  const pollTimerRef       = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const savedScrolls = useRef<Record<TabId, number>>({ lineup: 0, tidsplan: 0, gruppe: 0 });
   const statusTimer  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -252,6 +345,78 @@ export default function RoskildePage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // ── presence polling ──────────────────────────────────────────────────────
+
+  const fetchPresence = useCallback(async (token: string, uid: string) => {
+    try {
+      const since = presenceVersionRef.current;
+      const url = since
+        ? `/api/roskilde/g/${token}/presence?since=${encodeURIComponent(since)}`
+        : `/api/roskilde/g/${token}/presence`;
+      const res = await fetch(url, { headers: { "x-user-id": uid } });
+      if (res.status === 304) return;
+      if (!res.ok) return;
+      const data: PresenceData = await res.json();
+      presenceVersionRef.current = data.version;
+      setPresence(data);
+    } catch { /* best-effort */ }
+  }, []);
+
+  useEffect(() => {
+    // Brug groups + activeGroupId (state) i stedet for den afledte activeGroup
+    const group = groups.find(g => g.id === activeGroupId) ?? groups[0] ?? null;
+    const token = group?.shareToken;
+    const uid   = user?.userId;
+    if (!token || !uid) { setPresence(null); return; }
+
+    presenceVersionRef.current = null;
+
+    function clearPoll() {
+      if (pollTimerRef.current) { clearTimeout(pollTimerRef.current); pollTimerRef.current = null; }
+    }
+    const t = token;
+    const u = uid;
+    function schedulePoll() {
+      clearPoll();
+      if (document.hidden) return;
+      pollTimerRef.current = setTimeout(async () => {
+        await fetchPresence(t, u);
+        schedulePoll();
+      }, 60_000);
+    }
+    function onVisibility() {
+      if (!document.hidden) { fetchPresence(t, u); schedulePoll(); }
+      else clearPoll();
+    }
+
+    fetchPresence(t, u);
+    schedulePoll();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      clearPoll();
+    };
+  }, [groups, activeGroupId, user?.userId, fetchPresence]);
+
+  // ── places fetch ──────────────────────────────────────────────────────────
+
+  const fetchPlaces = useCallback(async (token: string, uid: string) => {
+    try {
+      const res = await fetch(`/api/roskilde/g/${token}/places`, { headers: { "x-user-id": uid } });
+      if (!res.ok) return;
+      const data = await res.json();
+      setPlaces(data.places ?? []);
+    } catch { /* best-effort */ }
+  }, []);
+
+  useEffect(() => {
+    const group = groups.find(g => g.id === activeGroupId) ?? groups[0] ?? null;
+    const token = group?.shareToken;
+    const uid   = user?.userId;
+    if (!token || !uid) { setPlaces([]); return; }
+    fetchPlaces(token, uid);
+  }, [groups, activeGroupId, user?.userId, fetchPlaces]);
 
   useEffect(() => {
     const saved = savedScrolls.current[activeTab];
@@ -392,6 +557,130 @@ export default function RoskildePage() {
       await fetchSession(user.userId);
       setEditingGroupId(null);
       flash("Gruppenavn opdateret.");
+    });
+  }
+
+  // ── check-in handlers ─────────────────────────────────────────────────────
+
+  async function handleCheckin(targetType: "performance" | "place", targetId: string) {
+    if (!activeGroup || !user) return;
+    const body =
+      targetType === "performance"
+        ? { targetType, performanceId: targetId }
+        : { targetType, placeId: targetId };
+
+    // Optimistisk: markér mig lokalt med det samme
+    const now = new Date().toISOString();
+    const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+    setPresence((prev) => {
+      const myName = user.displayName;
+      const newActive: ActiveCheckin =
+        targetType === "performance"
+          ? { targetType: "performance", performanceId: targetId }
+          : { targetType: "place", placeId: targetId };
+
+      // Fjern mig fra alle targets
+      const targets: PresenceTarget[] = (prev?.targets ?? []).map((t) => ({
+        ...t,
+        members: t.members.filter((m) => m.name !== myName),
+      })).filter((t) => t.members.length > 0);
+
+      // Tilføj mig til det nye target
+      const key = targetType === "performance" ? `perf::${targetId}` : `place::${targetId}`;
+      const existing = targets.find((t) =>
+        t.type === targetType &&
+        (t.type === "performance" ? t.performanceId === targetId : t.placeId === targetId)
+      );
+      if (existing) {
+        existing.members.push({ name: myName, checkedInAt: now, expiresAt });
+      } else {
+        const newTarget: PresenceTarget =
+          targetType === "performance"
+            ? { type: "performance", performanceId: targetId, members: [{ name: myName, checkedInAt: now, expiresAt }] }
+            : { type: "place", placeId: targetId, members: [{ name: myName, checkedInAt: now, expiresAt }] };
+        targets.push(newTarget);
+      }
+      void key;
+      return { version: now, targets, me: { active: newActive } };
+    });
+
+    // Send til server — ved fejl: revert ved næste poll
+    try {
+      const res = await fetch(`/api/roskilde/g/${activeGroup.shareToken}/checkins`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "x-user-id": user.userId },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const data: PresenceData = await res.json();
+        presenceVersionRef.current = data.version;
+        setPresence(data);
+      }
+    } catch { /* poll vil rette op */ }
+  }
+
+  async function handleCheckout() {
+    if (!activeGroup || !user) return;
+    // Optimistisk
+    setPresence((prev) => {
+      if (!prev) return prev;
+      const myName = user.displayName;
+      return {
+        ...prev,
+        targets: prev.targets
+          .map((t) => ({ ...t, members: t.members.filter((m) => m.name !== myName) }))
+          .filter((t) => t.members.length > 0),
+        me: { active: null },
+      };
+    });
+    try {
+      await fetch(`/api/roskilde/g/${activeGroup.shareToken}/checkins/current`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "x-user-id": user.userId },
+      });
+    } catch { /* poll retter op */ }
+    // Refresh
+    if (activeGroup?.shareToken && user?.userId) {
+      fetchPresence(activeGroup.shareToken, user.userId);
+    }
+  }
+
+  async function handleAddPlace(e: React.FormEvent) {
+    e.preventDefault();
+    if (!activeGroup || !user || !newPlaceName.trim()) return;
+    await run(async () => {
+      const res = await fetch(`/api/roskilde/g/${activeGroup.shareToken}/places`, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "x-user-id": user.userId },
+        body: JSON.stringify({ name: newPlaceName.trim(), emoji: newPlaceEmoji.trim() || undefined }),
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? "Fejl"); }
+      const data = await res.json();
+      setPlaces((prev) => [...prev, data.place]);
+      setNewPlaceName("");
+      setNewPlaceEmoji("");
+    });
+  }
+
+  async function handleDeletePlace(placeId: string) {
+    if (!activeGroup || !user) return;
+    await run(async () => {
+      const res = await fetch(`/api/roskilde/g/${activeGroup.shareToken}/places/${placeId}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "x-user-id": user.userId },
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? "Fejl"); }
+      setPlaces((prev) => prev.filter((p) => p.id !== placeId));
+      // Fjern presence for slettet sted
+      setPresence((prev) =>
+        prev
+          ? { ...prev, targets: prev.targets.filter((t) => !(t.type === "place" && t.placeId === placeId)) }
+          : prev
+      );
     });
   }
 
@@ -548,10 +837,89 @@ export default function RoskildePage() {
 
   // ── gruppe-tab ────────────────────────────────────────────────────────────
 
+  // ── derived: check-in helpers ─────────────────────────────────────────────
+
+  const myActiveCheckin: ActiveCheckin = presence?.me?.active ?? null;
+
+  // Live-akter med min willingness som endnu ikke er tjekket ind
+  const livePromptActs: { actName: string; app: Appearance; pid: string }[] = [];
+  if (nowTs !== null && activeGroup && user) {
+    const myPickSet = new Set(myPicks.map((p) => perfId(p.actName, p.appearanceDate)));
+    for (const act of lineup) {
+      for (const app of getAppearances(act)) {
+        const pid = perfId(act.name, app.date ?? "");
+        if (!myPickSet.has(pid)) continue;
+        if (!isLiveNow(app, nowTs)) continue;
+        if (myActiveCheckin?.targetType === "performance" && (myActiveCheckin as { targetType: "performance"; performanceId: string }).performanceId === pid) continue;
+        livePromptActs.push({ actName: act.name, app, pid });
+      }
+    }
+  }
+
   const gruppeTab = (
     <div className={s.gruppePanel}>
       {user ? (
         <>
+          {/* Aktiv check-in */}
+          {myActiveCheckin && (
+            <div className={s.activeCheckinBar}>
+              <span className={s.activeCheckinLabel}>
+                {myActiveCheckin.targetType === "performance"
+                  ? `📍 ${myActiveCheckin.performanceId.split("::")[0]}`
+                  : `📍 ${places.find((p) => p.id === (myActiveCheckin as { targetType: "place"; placeId: string }).placeId)?.name ?? "Sted"}`}
+              </span>
+              <button className={s.checkoutBtn} onClick={handleCheckout}>Tjek ud</button>
+            </div>
+          )}
+
+          {/* Steder */}
+          {(places.length > 0 || activeGroup) && (
+            <PresenceBoundary>
+              <div className={s.placesSection}>
+                <p className={s.placesSectionTag}>Hvor er folk?</p>
+                <div className={s.placeChips}>
+                  {places.map((place) => {
+                    const members = activePresenceMembers(presence, { type: "place", placeId: place.id });
+                    const isHere = myActiveCheckin?.targetType === "place" &&
+                      (myActiveCheckin as { targetType: "place"; placeId: string }).placeId === place.id;
+                    return (
+                      <div key={place.id} className={s.placeChip}>
+                        {place.emoji && <span>{place.emoji}</span>}
+                        <span className={s.placeChipName}>{place.name}</span>
+                        {members.length > 0 && <AvatarStack members={members} />}
+                        {isHere ? (
+                          <button className={s.checkoutBtn} onClick={handleCheckout}>Tjek ud</button>
+                        ) : (
+                          <button className={s.checkinBtn} onClick={() => handleCheckin("place", place.id)} disabled={busy}>Her</button>
+                        )}
+                        {place.created_by === activeGroup?.memberId && (
+                          <button className={s.deleteSmBtn} onClick={() => handleDeletePlace(place.id)} title="Slet sted">×</button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                <form onSubmit={handleAddPlace} className={s.addPlaceForm}>
+                  <input
+                    className={s.emojiInput}
+                    value={newPlaceEmoji}
+                    onChange={(e) => setNewPlaceEmoji(e.target.value)}
+                    placeholder="🏕️"
+                    maxLength={4}
+                  />
+                  <input
+                    className={s.addPlaceInput}
+                    value={newPlaceName}
+                    onChange={(e) => setNewPlaceName(e.target.value)}
+                    placeholder="Tilføj sted…"
+                    maxLength={80}
+                  />
+                  <button type="submit" className={s.ghostBtnSm} disabled={busy || !newPlaceName.trim()}>Tilføj</button>
+                </form>
+              </div>
+            </PresenceBoundary>
+          )}
+
           {/* Profil */}
           <div className={s.drawerSection}>
             <p className={s.sectionTag}>Din profil</p>
@@ -922,6 +1290,15 @@ export default function RoskildePage() {
 
       {/* ══ TAB: TIDSPLAN ══ */}
       <div style={{ display: activeTab === "tidsplan" ? "block" : "none" }}>
+        {/* Live-prompt: akter der spiller nu med min willingness */}
+        <PresenceBoundary>
+          {livePromptActs.map(({ actName, pid }) => (
+            <div key={pid} className={s.livePromptBanner}>
+              <p className={s.livePromptText}><strong>{actName}</strong> spiller nu — er du der?</p>
+              <button className={s.checkinBtn} onClick={() => handleCheckin("performance", pid)} disabled={busy}>Jeg er her!</button>
+            </div>
+          ))}
+        </PresenceBoundary>
         {tlDays.length === 0 ? (
           <div className={s.section}>
             <div className={s.empty}>
@@ -1009,6 +1386,26 @@ export default function RoskildePage() {
                                     ))}
                                   </div>
                                 )}
+                              <PresenceBoundary>
+                                {(() => {
+                                  const pid = perfId(entry.act.name, entry.app.date ?? "");
+                                  const presMembers = activePresenceMembers(presence, { type: "performance", performanceId: pid });
+                                  const live = nowTs !== null && isLiveNow(entry.app, nowTs);
+                                  const imHere = myActiveCheckin?.targetType === "performance" &&
+                                    (myActiveCheckin as { targetType: "performance"; performanceId: string }).performanceId === pid;
+                                  if (!live && presMembers.length === 0) return null;
+                                  return (
+                                    <div className={s.timelineCheckinRow}>
+                                      {presMembers.length > 0 && <AvatarStack members={presMembers} />}
+                                      {live && (
+                                        imHere
+                                          ? <button className={s.checkoutBtn} onClick={handleCheckout}>Tjek ud</button>
+                                          : <button className={s.checkinBtn} onClick={() => handleCheckin("performance", pid)} disabled={busy}>Jeg er her</button>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                              </PresenceBoundary>
                               </div>
                             </article>
                           ))}
