@@ -619,7 +619,7 @@ export default function MadspildPage() {
         Data fra{' '}
         <a href="https://developer.sallinggroup.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)', textDecoration: 'none' }}>Salling Group API</a>
         {' · '}
-        <a href="/" style={{ color: 'var(--muted)', textDecoration: 'none' }}>albertdieckmann.dk</a>
+        <Link href="/" style={{ color: 'var(--muted)', textDecoration: 'none' }}>albertdieckmann.dk</Link>
       </footer>
     </div>
   )

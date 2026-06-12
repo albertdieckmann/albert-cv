@@ -55,7 +55,7 @@ export function GruppeContent({
     setEditGroupName(session.activeGroup?.name ?? "");
     setEditStartDate(session.activeGroup?.startDate?.slice(0, 10) ?? "");
     setEditEndDate(session.activeGroup?.endDate?.slice(0, 10)     ?? "");
-  }, [session.activeGroup?.id]);
+  }, [session.activeGroup?.id, session.activeGroup?.name, session.activeGroup?.startDate, session.activeGroup?.endDate]);
 
   const groupSettingsChanged = session.activeGroup != null && (
     editGroupName !== session.activeGroup.name ||

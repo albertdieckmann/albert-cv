@@ -571,6 +571,7 @@ export default function RoskildePage() {
 
     // Optimistisk: markér mig lokalt med det samme
     const now = new Date().toISOString();
+    // eslint-disable-next-line react-hooks/purity
     const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
     setPresence((prev) => {
       const myName = user.displayName;
@@ -1369,6 +1370,7 @@ export default function RoskildePage() {
                                           <button
                                             key={key}
                                             className={`${s.catBtn} ${CAT_META[key].btnCls} ${mine === key ? s.catBtnActive : ""}`}
+                                            // eslint-disable-next-line react-hooks/refs
                                             onClick={() => handlePick(entry.act.name, entry.app.date ?? "", key)}
                                             title={CAT_META[key].label}
                                           >{CAT_META[key].emoji}</button>
@@ -1400,6 +1402,7 @@ export default function RoskildePage() {
                                       {live && (
                                         imHere
                                           ? <button className={s.checkoutBtn} onClick={handleCheckout}>Tjek ud</button>
+                                          // eslint-disable-next-line react-hooks/refs
                                           : <button className={s.checkinBtn} onClick={() => handleCheckin("performance", pid)} disabled={busy}>Jeg er her</button>
                                       )}
                                     </div>

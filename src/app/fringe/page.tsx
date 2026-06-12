@@ -163,7 +163,7 @@ export default function FringePage() {
   useEffect(() => {
     const saved = savedScrolls.current[activeTab];
     requestAnimationFrame(() => { window.scrollTo(0, saved); });
-  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   useEffect(() => {
     if (dayStripScrolled.current) return;

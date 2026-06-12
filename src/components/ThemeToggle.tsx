@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 
 export default function ThemeToggle({ style }: { style?: React.CSSProperties }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
     if (saved) {
       setTheme(saved);

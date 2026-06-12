@@ -117,6 +117,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
     try {
       // Konverter til JPEG i browseren via canvas (håndterer HEIC, PNG, WebP osv.)
       const base64Jpeg = await convertToJpeg(file)
+      // eslint-disable-next-line react-hooks/purity
       const filename = `${Date.now()}-${file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '-')}.jpg`
 
       const res = await fetch('/api/admin/upload', {
