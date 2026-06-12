@@ -34,7 +34,7 @@ export type FringePick = {
   performance_end: string | null;
 };
 
-export type PurchaseCover = {
+type PurchaseCover = {
   covered_user_id: string;
   covered_user_name: string;
   settled: boolean;
@@ -56,8 +56,8 @@ export type Purchase = {
 };
 
 export type TabId  = "shows" | "plan" | "gruppe";
-export type Member = { id: string; name: string; role: string };
-export type Group  = { id: number; name: string; start_date?: string | null; end_date?: string | null };
+type Member = { id: string; name: string; role: string };
+type Group  = { id: number; name: string; start_date?: string | null; end_date?: string | null };
 export type ActiveGroup = {
   id: number;
   name: string;

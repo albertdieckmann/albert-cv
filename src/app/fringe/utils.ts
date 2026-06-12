@@ -1,8 +1,8 @@
 import type { Area } from "@/lib/fringe-area";
 import type { FringePick, ConflictEntry, ConflictLevel } from "./types";
 
-export const UI_KEY = "fringe-planner-ui-v2";
-export const EDINBURGH_TZ = "Europe/London";
+const UI_KEY = "fringe-planner-ui-v2";
+const EDINBURGH_TZ = "Europe/London";
 export const PAGE_SIZE = 50;
 
 // The Fringe API returns times in Edinburgh local time with no timezone suffix
