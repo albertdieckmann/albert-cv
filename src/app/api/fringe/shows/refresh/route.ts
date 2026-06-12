@@ -128,8 +128,7 @@ async function handleRefresh(req: NextRequest) {
         // Build VALUES list: ($1,$2,$3),($4,$5,$6),...
         const values = batch.map((_, j) => `($${j * 3 + 1},$${j * 3 + 2}::jsonb,$${j * 3 + 3})`).join(",");
         const params = batch.flatMap((show) => [show.id, JSON.stringify(show), now]);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (sql as any).query(
+        return (sql as unknown as { query: (...args: unknown[]) => Promise<unknown> }).query(
           `INSERT INTO fringe_shows_cache (id, data, refreshed_at) VALUES ${values}
            ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, refreshed_at = EXCLUDED.refreshed_at`,
           params,

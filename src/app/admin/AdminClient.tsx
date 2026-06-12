@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useClerk } from '@clerk/nextjs'
 
 interface StatItem { label: string; value: string }
@@ -193,7 +194,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
       <div style={s.sidebar}>
         <div style={s.sidebarTop}>
           <p style={s.brand}>AD_ Admin</p>
-          <a href="/" style={s.backLink}>← Tilbage til siden</a>
+          <Link href="/" style={s.backLink}>← Tilbage til siden</Link>
         </div>
         <nav style={s.nav}>
           {nav.map(n => (
