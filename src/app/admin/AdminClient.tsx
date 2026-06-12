@@ -63,7 +63,7 @@ const s = {
   statusMsg: (st: Status): React.CSSProperties => ({ fontSize: '0.8rem', color: st === 'ok' ? '#c8f060' : st === 'error' ? '#ff6060' : '#888880' }),
 }
 
-function SaveBar({ section, status, onSave }: { section: string; status: Status; onSave: () => void }) {
+function SaveBar({ status, onSave }: { status: Status; onSave: () => void }) {
   return (
     <div style={s.footer}>
       <button style={s.btn(status === 'loading')} onClick={onSave} disabled={status === 'loading'}>
@@ -241,7 +241,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj stat
           </button>
 
-          <SaveBar section="hero" status={statuses['hero'] ?? 'idle'} onSave={() => save('hero', hero)} />
+          <SaveBar status={statuses['hero'] ?? 'idle'} onSave={() => save('hero', hero)} />
         </>}
 
         {/* PROJEKTER */}
@@ -292,7 +292,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj projekt
           </button>
 
-          <SaveBar section="projects" status={statuses['projects'] ?? 'idle'} onSave={() => save('projects', { projects })} />
+          <SaveBar status={statuses['projects'] ?? 'idle'} onSave={() => save('projects', { projects })} />
         </>}
 
         {/* OM MIG */}
@@ -327,7 +327,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj punkt
           </button>
 
-          <SaveBar section="about" status={statuses['about'] ?? 'idle'} onSave={() => save('about', about)} />
+          <SaveBar status={statuses['about'] ?? 'idle'} onSave={() => save('about', about)} />
         </>}
 
         {/* ERFARING */}
@@ -371,7 +371,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj erfaring
           </button>
 
-          <SaveBar section="experience" status={statuses['experience'] ?? 'idle'} onSave={() => {
+          <SaveBar status={statuses['experience'] ?? 'idle'} onSave={() => {
             // Generer slugs for nye poster (dem der starter med 'ny-')
             const withSlugs = exps.map(e => ({
               ...e,
@@ -403,7 +403,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             + Tilføj kompetence
           </button>
 
-          <SaveBar section="skills" status={statuses['skills'] ?? 'idle'} onSave={() => save('skills', skills)} />
+          <SaveBar status={statuses['skills'] ?? 'idle'} onSave={() => save('skills', skills)} />
         </>}
 
         {/* KONTAKT */}
@@ -423,7 +423,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
           <label style={s.label}>Email</label>
           <input style={s.input} value={contact.email} onChange={e => setContact(c => ({ ...c, email: e.target.value }))} />
 
-          <SaveBar section="contact" status={statuses['contact'] ?? 'idle'} onSave={() => save('contact', contact)} />
+          <SaveBar status={statuses['contact'] ?? 'idle'} onSave={() => save('contact', contact)} />
         </>}
 
         {/* GALLERI */}
@@ -462,7 +462,7 @@ export default function AdminClient({ hero: h0, about: a0, skills: sk0, contact:
             </div>
           ))}
 
-          <SaveBar section="gallery" status={statuses['gallery'] ?? 'idle'} onSave={() => save('gallery', gallery)} />
+          <SaveBar status={statuses['gallery'] ?? 'idle'} onSave={() => save('gallery', gallery)} />
         </>}
 
       </main>

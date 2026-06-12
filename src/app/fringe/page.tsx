@@ -11,7 +11,7 @@ import {
 } from "./utils";
 import type {
   PickStatus, Performance, Show, FringePick, Purchase, ActiveGroup,
-  SessionData, TabId, PurchaseForm, ConflictEntry,
+  SessionData, TabId, PurchaseForm,
 } from "./types";
 import { computeConflicts } from "./utils";
 import { GruppeContent } from "./GruppeContent";

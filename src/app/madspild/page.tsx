@@ -232,20 +232,6 @@ function nextOpening(hours?: StoreHours[]): string | null {
   return null
 }
 
-function mapsUrl(store: Store): string {
-  const c = store.coordinates
-  if (Array.isArray(c) && c.length === 2) {
-    return `https://maps.google.com/?q=${c[1]},${c[0]}`
-  }
-  if (c && typeof c === 'object' && !Array.isArray(c)) {
-    const co = c as Record<string, number>
-    const lat = co.latitude ?? co.lat
-    const lon = co.longitude ?? co.lng ?? co.lon
-    if (lat && lon) return `https://maps.google.com/?q=${lat},${lon}`
-  }
-  const q = [store.address?.street, store.address?.zip, store.address?.city].filter(Boolean).join(' ')
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
-}
 
 const CATEGORY_KW: [string, string[]][] = [
   ['Mejeri & æg',   ['mælk', 'ost', 'yoghurt', 'fløde', 'smør', 'æg', 'kvark', 'cremefraiche', 'skyr', 'kefir']],

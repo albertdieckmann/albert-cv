@@ -12,7 +12,7 @@ function normalizeTs(val: unknown): string | null {
   return s.replace("T", " ").replace(/\.\d+Z$/, "").replace(/Z$/, "");
 }
 
-export async function buildGroupSession(userId: string, groupId: number) {
+export async function buildGroupSession(_userId: string, groupId: number) {
   const [membersResult, invitesResult, picksResult, purchasesResult, coversResult, groupResult] =
     await Promise.all([
       sql`SELECT user_id as id, user_name as name, role FROM fringe_group_members WHERE group_id = ${groupId} ORDER BY joined_at ASC`,
