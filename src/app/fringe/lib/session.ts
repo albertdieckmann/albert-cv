@@ -1,3 +1,4 @@
+import "server-only";
 import { sql } from "@vercel/postgres";
 
 // pg returns TIMESTAMP WITHOUT TIMEZONE columns as "YYYY-MM-DDTHH:MM:SS.000Z" (JS Date serialized as UTC).

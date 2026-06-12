@@ -1,3 +1,4 @@
+import "server-only";
 import { createHmac } from "crypto";
 
 const API_BASE = "https://api.edinburghfestivalcity.com";
