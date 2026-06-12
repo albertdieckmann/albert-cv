@@ -1,4 +1,4 @@
-import type { Area } from "@/lib/fringe-area";
+import type { Area } from "@/app/fringe/lib/area";
 import type { FringePick, ConflictEntry, ConflictLevel } from "./types";
 
 const UI_KEY = "fringe-planner-ui-v2";

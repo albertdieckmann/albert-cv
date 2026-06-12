@@ -5,10 +5,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // and return { rows: [] } by default.
 
 const mockSql = vi.fn().mockResolvedValue({ rows: [] });
+mockSql.query = vi.fn().mockResolvedValue({ rows: [] });
 vi.mock("@vercel/postgres", () => ({ sql: mockSql }));
 
-// ─── Mock @/lib/fringe-api ─────────────────────────────────────────────────────
-vi.mock("@/lib/fringe-api", () => ({
+// ─── Mock @/app/fringe/lib/api ─────────────────────────────────────────────────────
+vi.mock("@/app/fringe/lib/api", () => ({
   buildSignedUrl: (_path: string, params: Record<string, string>) =>
     `https://mock-fringe-api/events?from=${params.from ?? "0"}`,
 }));
@@ -230,8 +231,9 @@ describe("POST /api/fringe/shows/refresh — happy path", () => {
     expect(body.ok).toBe(true);
     expect(body.inserted).toBe(3);
     expect(body.refreshedAt).toBeDefined();
-    // sql called: 3 upserts + 1 delete-stale = 4 calls
-    expect(mockSql).toHaveBeenCalledTimes(4);
+    // 1 batch upsert via sql.query + 1 delete-stale via sql tagged template
+    expect(mockSql.query).toHaveBeenCalledTimes(1);
+    expect(mockSql).toHaveBeenCalledTimes(1);
   });
 
   it("filters out deleted shows", async () => {
@@ -291,37 +293,37 @@ describe("POST /api/fringe/shows/refresh — happy path", () => {
 
 describe("area assignment (fringe-area)", () => {
   it("assigns old_town for EH1 postcodes", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "EH1 1BB")).toBe("old_town");
   });
 
   it("assigns george_square for EH8 postcodes (non-EH89)", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "EH8 1TF")).toBe("george_square");
   });
 
   it("assigns pleasance for EH89 postcodes", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "EH89 8NY")).toBe("pleasance");
   });
 
   it("assigns new_town for EH2 postcodes", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "EH2 4AB")).toBe("new_town");
   });
 
   it("assigns southside for EH9 postcodes", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "EH9 1JN")).toBe("southside");
   });
 
   it("assigns other for unknown postcodes", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, "G1 1AA")).toBe("other");
   });
 
   it("assigns other when postcode is missing", async () => {
-    const { assignArea } = await import("@/lib/fringe-area");
+    const { assignArea } = await import("@/app/fringe/lib/area");
     expect(assignArea(undefined, undefined, undefined)).toBe("other");
   });
 });

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
-import type { Area } from "@/lib/fringe-area";
+import type { Area } from "@/app/fringe/lib/area";
 
 // Local type — mirrors Show in src/app/fringe/types.ts (kept separate to avoid CSS module import on server)
 type Show = {

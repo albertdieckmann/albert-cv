@@ -1,6 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import { buildGroupList, buildGroupSession } from "@/lib/fringe-session";
+import { buildGroupList, buildGroupSession } from "@/app/fringe/lib/session";
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth();

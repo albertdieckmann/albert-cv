@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
-import { buildGroupSession } from "@/lib/fringe-session";
+import { buildGroupSession } from "@/app/fringe/lib/session";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();

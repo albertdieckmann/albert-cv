@@ -1,5 +1,5 @@
 import s from "./fringe.module.css";
-import type { Area } from "@/lib/fringe-area";
+import type { Area } from "@/app/fringe/lib/area";
 
 export type PickStatus = "interested" | "going" | "has_ticket";
 

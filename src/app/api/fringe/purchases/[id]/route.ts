@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
-import { buildGroupSession } from "@/lib/fringe-session";
+import { buildGroupSession } from "@/app/fringe/lib/session";
 
 async function resolveOwner(purchaseId: number, userId: string) {
   const row = await sql`

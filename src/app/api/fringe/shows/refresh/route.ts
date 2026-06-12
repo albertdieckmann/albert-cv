@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
-import { buildSignedUrl } from "@/lib/fringe-api";
-import { assignArea } from "@/lib/fringe-area";
+import { buildSignedUrl } from "@/app/fringe/lib/api";
+import { assignArea } from "@/app/fringe/lib/area";
 
 // ─── Fringe API types ──────────────────────────────────────────────────────────
 

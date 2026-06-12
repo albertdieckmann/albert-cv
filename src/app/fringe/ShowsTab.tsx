@@ -1,6 +1,6 @@
 "use client";
 
-import { AREA_LABELS, type Area } from "@/lib/fringe-area";
+import { AREA_LABELS, type Area } from "@/app/fringe/lib/area";
 import { fmtEdinburgh, formatPerf, saveUi, PAGE_SIZE, toComparableIso } from "./utils";
 import { STATUS_META, STATUSES } from "./types";
 import type { SessionData, Show, Performance, FringePick, PickStatus, TabId } from "./types";
