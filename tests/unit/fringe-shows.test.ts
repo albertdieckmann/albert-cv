@@ -4,8 +4,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // sql is a tagged-template function; we need it to be callable as sql`...`
 // and return { rows: [] } by default.
 
-const mockSql = vi.fn().mockResolvedValue({ rows: [] });
-mockSql.query = vi.fn().mockResolvedValue({ rows: [] });
+const mockSqlQuery = vi.fn().mockResolvedValue({ rows: [] });
+const mockSql = Object.assign(vi.fn().mockResolvedValue({ rows: [] }), { query: mockSqlQuery });
 vi.mock("@vercel/postgres", () => ({ sql: mockSql }));
 
 // ─── Mock @/app/fringe/lib/api ─────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ describe("POST /api/fringe/shows/refresh — happy path", () => {
     expect(body.inserted).toBe(3);
     expect(body.refreshedAt).toBeDefined();
     // 1 batch upsert via sql.query + 1 delete-stale via sql tagged template
-    expect(mockSql.query).toHaveBeenCalledTimes(1);
+    expect(mockSqlQuery).toHaveBeenCalledTimes(1);
     expect(mockSql).toHaveBeenCalledTimes(1);
   });
 
